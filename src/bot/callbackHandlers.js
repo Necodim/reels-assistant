@@ -1,27 +1,65 @@
 const bot = require('./bot');
-const { updateUserState } = require('../db/userService');
+const buttons = require('./buttons');
+const { getUser, updateUserState } = require('../db/userService');
 
-async function home(callbackQuery) {
-    const chatId = callbackQuery.message.chat.id;
-    try {
-        await updateUserState(chatId, '');
-        await bot.sendMessage(chatId, 'Прикрепите ролик и напишите сопроводительное сообщение, если необходимо.');
-    } catch (error) {
-        console.error(error);
-    }
+const handleError = (error, data) => {
+  console.error(`Ошибка в callbackQuery (${data})`, error);
 }
 
-async function send_video(callbackQuery) {
-    const chatId = callbackQuery.message.chat.id;
-    try {
-        await updateUserState(chatId, 'videoAwaiting');
-        await bot.sendMessage(chatId, 'Прикрепите ролик и напишите сопроводительное сообщение, если необходимо.');
-    } catch (error) {
-        console.error(error);
-    }
+const home = async (callbackQuery) => {
+  const chatId = callbackQuery.message.chat.id;
+  const message = 'Главное меню';
+
+  try {
+    const user = await getUser(chatId);
+
+    const options = user.isExpert ? buttons.mainMenu.expert : buttons.mainMenu.user;
+    await bot.sendMessage(chatId, message, options);
+  } catch (error) {
+    handleError(error, callbackQuery.data);
+  }
+}
+
+const settings = async (callbackQuery) => {
+  const chatId = callbackQuery.message.chat.id;
+
+  try {
+    const user = await getUser(chatId);
+  } catch (error) {
+    handleError(error, callbackQuery.data);
+  }
+}
+
+const send_video = async (callbackQuery) => {
+  const chatId = callbackQuery.message.chat.id;
+  const message = 'Прикрепите ролик и напишите сопроводительное сообщение, если необходимо. Если передумали, вернитесь в главное меню.';
+  const options = buttons.goHome;
+
+  try {
+    await updateUserState(chatId, 'videoAwaiting');
+    await bot.sendMessage(chatId, message, options);
+  } catch (error) {
+    handleError(error, callbackQuery.data);
+  }
+}
+
+const get_ideas = async (callbackQuery) => {
+
+}
+
+const new_idea = async (callbackQuery) => {
+
+}
+
+const get_video = async (callbackQuery) => {
+
 }
 
 module.exports = {
-    home,
-    send_video,
+  home,
+  settings,
+  send_video,
+  get_ideas,
+  new_idea,
+  get_video,
 };

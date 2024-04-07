@@ -1,19 +1,23 @@
 const bot = require('./bot');
 const command = require('./commandHandlers');
 const callback = require('./callbackHandlers');
-const { videoAwaiting } = require('./messageHandlers');
-const { User } = require('../db/index');
+const { videoAwaiting, forwardExpertWaiting } = require('./messageHandlers');
+const { getUser, updateUserState } = require('../db/userService');
 
 bot.on('message', async (msg) => {
   const chatId = msg.chat.id;
+  // console.log(msg)
   
-  if (!msg.text.startsWith('/')) {
-    const user = await User.findOne({ chatId: chatId });
+  if (msg.forward_from || msg.video && !msg.caption?.startsWith('/')) {
+    const user = await getUser(msg);
     
     if (user && user.state !== '') {
       switch(user.state) {
         case 'videoAwaiting':
           await videoAwaiting(msg);
+          break;
+        case 'forwardExpertWaiting':
+          await forwardExpertWaiting(msg);
           break;
         default:
           await bot.sendMessage(chatId, `Неизвестный user.state (${user.state})`); // исправить на проде
@@ -22,32 +26,39 @@ bot.on('message', async (msg) => {
     } else {
       await bot.sendMessage(chatId, 'К такому меня жизнь ещё не готовила.'); // исправить на проде
     }
-  } else {
-    const cmd = msg.text.split(' ')[0].substring(1);
-    switch (cmd) {
-      case 'start':
-        await command.start(msg);
-        break;
-      case 'home':
-        await command.home(msg);
-        break;
-      case 'help':
-        await command.help(msg);
-        break;
-      case 'expert':
-        await command.expert(msg);
-        break;
-      default:
-        await bot.sendMessage(chatId, 'Я не знаю такую команду');
-        break;
+  } else if (msg.text) {
+    if (!msg.text.startsWith('/')) {
+      await bot.sendMessage(chatId, 'Я не такой умный, чтобы понимать обычный текст'); // исправить на проде
+    } else {
+      const cmd = msg.text.split(' ')[0].substring(1);
+      switch (cmd) {
+        case 'start':
+          await command.start(msg);
+          break;
+        case 'home':
+          await command.home(msg);
+          break;
+        case 'help':
+          await command.help(msg);
+          break;
+        case 'expert':
+          await command.expert(msg);
+          break;
+        default:
+          await bot.sendMessage(chatId, 'Я не знаю такую команду');
+          break;
+      }
     }
   }
 });
 
 bot.on('callback_query', async (callbackQuery) => {
+  const chatId = callbackQuery.message.chat.id;
   const data = callbackQuery.data;
+
   try {
     await bot.answerCallbackQuery(callbackQuery.id, { text: 'Секундочку...' });
+    await updateUserState(chatId, '');
 
     switch (data) {
       case 'home':
