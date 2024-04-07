@@ -14,7 +14,7 @@ const handleStartCommand = async (msg) => {
       ]
     }
   }
-  await bot.sendMessage(chatId, 'Привет');
+  await bot.sendMessage(chatId, 'Привет. Добавляю тебя в базу данных... Если всё добавится, я пришлю сообщение с приветствием.');
   try {
     await upsertUser(msg);
     await bot.sendMessage(chatId, message, options);

@@ -1,4 +1,4 @@
-const User = require('./index');
+const User = require('./userModel');
 
 async function upsertUser(msg) {
   try {
