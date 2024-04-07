@@ -2,10 +2,17 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const User = require('./userModel');
 
-mongoose.connect(process.env.MONGODB_URI)
-.then(() => console.log('MongoDB connected'))
-.catch(err => console.log(err));
+const initMongo = async () => {
+  try {
+    const mongo = await mongoose.connect(process.env.MONGODB_URI);
+    console.log(mongo);
+    console.log('MongoDB connected');
+  } catch (error) {
+    console.error('Ошибка подключения к MongoDB:', error);
+  }
+}
 
 module.exports = {
+  initMongo,
   User,
 };
