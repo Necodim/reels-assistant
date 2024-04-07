@@ -6,6 +6,10 @@ const schema = new mongoose.Schema({
   lastName: String,
   username: String,
   isExpert: { type: Boolean, default: false },
+  state: { 
+    type: String, 
+    default: '' 
+  },
 }, {
   timestamps: true
 });

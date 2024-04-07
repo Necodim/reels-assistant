@@ -1,4 +1,4 @@
-const User = require('./userModel');
+const User = require('./index');
 
 async function upsertUser(msg) {
   try {
@@ -30,6 +30,16 @@ async function upsertUser(msg) {
   }
 }
 
+async function updateUserState(chatId, newState) {
+  try {
+    await User.findOneAndUpdate({ chatId }, { $set: { state: newState } });
+  } catch (error) {
+    console.error('Ошибка при обновлении состояния пользователя:', error);
+    throw error;
+  }
+}
+
 module.exports = {
   upsertUser,
+  updateUserState,
 };
