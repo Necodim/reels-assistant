@@ -73,16 +73,16 @@ bot.on('callback_query', async (callbackQuery) => {
       case 'home':
         await callback.home(callbackQuery);
         break;
-      case 'send_video':
-        await callback.send_video(callbackQuery);
+      case 'sendVideo':
+        await callback.sendVideo(callbackQuery);
         break;
-      case 'new_idea':
-        await callback.new_idea(callbackQuery);
+      case 'createIdea':
+        await callback.createIdea(callbackQuery);
         break;
-      case 'difficulty':
+      case 'dfclt':
         await callback.difficulty(callbackQuery);
         break;
-      case 'hashtag':
+      case 'hshtg':
         await callback.hashtag(callbackQuery);
         break;
       default:

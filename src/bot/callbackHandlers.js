@@ -31,7 +31,7 @@ const settings = async (callbackQuery) => {
   }
 }
 
-const send_video = async (callbackQuery) => {
+const sendVideo = async (callbackQuery) => {
   const chatId = callbackQuery.message.chat.id;
   const message = 'Прикрепите ролик и напишите сопроводительное сообщение, если необходимо. Если передумали, вернитесь в главное меню.';
   const options = buttons.goHome;
@@ -44,11 +44,11 @@ const send_video = async (callbackQuery) => {
   }
 }
 
-const get_ideas = async (callbackQuery) => {
+const getIdeas = async (callbackQuery) => {
 
 }
 
-const new_idea = async (callbackQuery) => {
+const createIdea = async (callbackQuery) => {
   const chatId = callbackQuery.message.chat.id;
   const message = 'Отправьте в одном сообщении идею: видео и текстовое описание.';
   const options = buttons.goHome;
@@ -70,8 +70,8 @@ const difficulty = async (callbackQuery) => {
     reply_markup: {
       inline_keyboard: [
         [
-          { text: 'Коммерческая', callback_data: `hashtag:1:${videoId}` },
-          { text: 'Экспертная', callback_data: `hashtag:2:${videoId}` },
+          { text: 'Коммерческая', callback_data: `hshtg:1:${videoId}` },
+          { text: 'Экспертная', callback_data: `hshtg:2:${videoId}` },
         ],
       ]
     }
@@ -96,7 +96,7 @@ const hashtag = async (callbackQuery) => {
   const hNumber = callbackQuery.data.split(':')[1];
   const hashtag = hashtags.find(el => el.num == hNumber);
   const videoId = callbackQuery.data.split(':')[2];
-  
+
   try {
     const idea = await getIdea(videoId);
     const updateData = {
@@ -115,22 +115,22 @@ ${hashtag}`,
   }
 }
 
-const get_video = async (callbackQuery) => {
+const getVideo = async (callbackQuery) => {
 
 }
 
-const to_push = async (callbackQuery) => {
+const toPush = async (callbackQuery) => {
 
 }
 
 module.exports = {
   home,
   settings,
-  send_video,
-  get_ideas,
-  new_idea,
+  sendVideo,
+  getIdeas,
+  createIdea,
   difficulty,
   hashtag,
-  get_video,
-  to_push,
+  getVideo,
+  toPush,
 };

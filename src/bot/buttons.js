@@ -2,8 +2,8 @@ const mainMenu = {
   user: {
     reply_markup: {
       inline_keyboard: [
-        [{ text: 'Отправить ролик', callback_data: 'send_video' }],
-        [{ text: 'Получить идеи', callback_data: 'get_ideas' }],
+        [{ text: 'Отправить ролик', callback_data: 'sendVideo' }],
+        [{ text: 'Получить идеи', callback_data: 'getIdeas' }],
         [{ text: 'Настройки', callback_data: 'settings' }],
       ]
     }
@@ -11,9 +11,9 @@ const mainMenu = {
   expert: {
     reply_markup: {
       inline_keyboard: [
-        [{ text: 'Опубликовать идею', callback_data: 'new_idea' }],
-        [{ text: 'Оценить ролик', callback_data: 'get_video' }],
-        [{ text: 'Пушнуть подопечных', callback_data: 'to_push' }],
+        [{ text: 'Опубликовать идею', callback_data: 'createIdea' }],
+        [{ text: 'Оценить ролик', callback_data: 'getVideo' }],
+        [{ text: 'Пушнуть подопечных', callback_data: 'toPush' }],
         // [{ text: 'Настройки', callback_data: 'settings' }],
       ]
     }
