@@ -1,5 +1,6 @@
 const bot = require('./bot');
 const buttons = require('./buttons');
+const hashtags = require('./hashtags');
 const { getUser, updateUserState } = require('../db/userService');
 const { getIdea, updateIdea } = require('../db/ideaService');
 const { sendIdeaToChannel } = require('./channel');
@@ -69,8 +70,8 @@ const difficulty = async (callbackQuery) => {
     reply_markup: {
       inline_keyboard: [
         [
-          { text: 'Экспертная', callback_data: 'hashtag:expert:videoId' },
-          { text: 'Коммерческая', callback_data: 'hashtag:commercial:videoId' }
+          { text: 'Коммерческая', callback_data: `hashtag:1:${videoId}` },
+          { text: 'Экспертная', callback_data: `hashtag:2:${videoId}` },
         ],
       ]
     }
@@ -92,10 +93,10 @@ const hashtag = async (callbackQuery) => {
   const chatId = callbackQuery.message.chat.id;
   const message = 'Супер. Идея добавлена.';
   const options = buttons.goHome;
-  const hashtag = callbackQuery.data.split(':')[1];
+  const hNumber = callbackQuery.data.split(':')[1];
+  const hashtag = hashtags.find(el => el.num == hNumber);
   const videoId = callbackQuery.data.split(':')[2];
-
-  // исправить хэштеги на цифры, а цифры брать из отдельного файла
+  
   try {
     const idea = await getIdea(videoId);
     const updateData = {

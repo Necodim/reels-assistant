@@ -76,9 +76,9 @@ const ideaAwaiting = async (msg) => {
         reply_markup: {
           inline_keyboard: [
             [
-              { text: '1', callback_data: `difficulty:1:${idea.videId}` },
-              { text: '2', callback_data: `difficulty:2:${idea.videId}` },
-              { text: '3', callback_data: `difficulty:3:${idea.videId}` }
+              { text: '1', callback_data: `difficulty:1:${idea.videoId}` },
+              { text: '2', callback_data: `difficulty:2:${idea.videoId}` },
+              { text: '3', callback_data: `difficulty:3:${idea.videoId}` }
             ],
           ]
         }
