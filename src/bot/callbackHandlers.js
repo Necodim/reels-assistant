@@ -14,7 +14,6 @@ const home = async (callbackQuery) => {
 
   try {
     const user = await getUser(callbackQuery.message);
-    console.log('user:', user)
 
     const options = user.isExpert ? buttons.mainMenu.expert : buttons.mainMenu.user;
     await bot.sendMessage(chatId, message, options);

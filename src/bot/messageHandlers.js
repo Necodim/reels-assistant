@@ -3,6 +3,7 @@ const buttons = require('./buttons');
 const { getUser, getUsers, upsertUser, updateUserState } = require('../db/userService');
 const { createVideo } = require('../db/videoService');
 const { createIdea } = require('../db/ideaService');
+const { difficulty, hashtag } = require('./callbackHandlers');
 
 const videoAwaiting = async (msg) => {
   const chatId = msg.chat.id;
@@ -62,7 +63,13 @@ const ideaAwaiting = async (msg) => {
   const message = 'Отлично. Укажите, насколько сложно снять такой ролик, где 1 – очень просто, а 3 – очень сложно:';
 
   try {
-    if (msg.video && msg.caption) {
+    if (!msg.video && !msg.caption) {
+      await bot.sendMessage(chatId, 'Необходимо прислать ролик (не файлом) с описанием.');
+    } else if (!msg.video) {
+      await bot.sendMessage(chatId, 'Вы не прислали ролик. Необходимо прислать ролик (не файлом) с описанием.');
+    } else if (msg.video && !msg.caption) {
+      await bot.sendMessage(chatId, 'Вы не добавили описание. Необходимо прислать ролик (не файлом) с описанием.');
+    } else if (msg.video && msg.caption) {
       const idea = await createIdea(msg);
 
       const options = {
@@ -80,15 +87,25 @@ const ideaAwaiting = async (msg) => {
       await updateUserState(chatId, 'difficultyAwaiting');
       await bot.sendMessage(chatId, message, options);
     } else {
-      await bot.sendMessage(chatId, 'Пожалуйста, пришлите ролик с описанием.');
+      await bot.sendMessage(chatId, 'Что-то я ничего не понял. Необходимо прислать ролик (не файлом) с описанием.');
     }
   } catch (error) {
     console.error('Не удалось принять видео:', error)
   }
 }
 
+const difficultyAwaiting = async (msg) => {
+  await difficulty(msg);
+}
+
+const hashtagAwaiting = async (msg) => {
+  await hashtag(msg);
+}
+
 module.exports = {
   videoAwaiting,
   forwardExpertAwaiting,
   ideaAwaiting,
+  difficultyAwaiting,
+  hashtagAwaiting,
 }

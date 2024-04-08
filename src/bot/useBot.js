@@ -22,6 +22,12 @@ bot.on('message', async (msg) => {
         case 'ideaAwaiting':
           await ideaAwaiting(msg);
           break;
+        case 'difficultyAwaiting':
+          await difficultyAwaiting(msg);
+          break;
+        case 'hashtagAwaiting':
+          await hashtagAwaiting(msg);
+          break;
         default:
           await bot.sendMessage(chatId, `Неизвестный user.state (${user.state})`); // исправить на проде
         break;
@@ -74,7 +80,7 @@ bot.on('callback_query', async (callbackQuery) => {
         await callback.new_idea(callbackQuery);
         break;
       case 'difficulty':
-        await callback.new_idea(callbackQuery);
+        await callback.difficulty(callbackQuery);
         break;
       case 'hashtag':
         await callback.hashtag(callbackQuery);
