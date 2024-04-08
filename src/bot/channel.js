@@ -12,6 +12,9 @@ const sendIdeaToChannel = async (ideaId) => {
 
     const caption = `${idea.caption}
 
+Сложность: ${idea.difficulty}
+${idea.hashtag}
+
 Автор: @${user.username}`
 
     const options = {...buttons.channel.delete, caption};

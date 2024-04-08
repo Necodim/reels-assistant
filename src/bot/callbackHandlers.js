@@ -98,12 +98,7 @@ const hashtag = async (callbackQuery) => {
   const videoId = callbackQuery.data.split(':')[2];
 
   try {
-    const idea = await getIdea(videoId);
     const updateData = {
-      caption: `${caption}
-      
-Сложность: ${idea.difficulty}
-${hashtag}`,
       hashtag: hashtag
     }
     await updateIdeaById(videoId, updateData)
