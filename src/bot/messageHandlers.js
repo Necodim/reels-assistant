@@ -73,17 +73,7 @@ const ideaAwaiting = async (msg) => {
     } else if (msg.video && msg.caption) {
       const idea = await createIdea(msg);
 
-      const options = {
-        reply_markup: {
-          inline_keyboard: [
-            [
-              { text: '1', callback_data: `dfclt:1:${idea.id}` },
-              { text: '2', callback_data: `dfclt:2:${idea.id}` },
-              { text: '3', callback_data: `dfclt:3:${idea.id}` }
-            ],
-          ]
-        }
-      };
+      const options = buttons.difficulty(idea.id);
 
       await updateUserState(chatId, 'difficultyAwaiting');
       await bot.sendMessage(chatId, message, options);

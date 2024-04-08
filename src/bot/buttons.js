@@ -28,6 +28,15 @@ const goHome = {
   }
 }
 
+const addAnotherAndGoHome = {
+  reply_markup: {
+    inline_keyboard: [
+      [{ text: 'Опубликовать ещё одну', callback_data: 'createIdea' }],
+      [{ text: 'Главное меню', callback_data: 'home' }],
+    ]
+  }
+}
+
 const channel = {
   delete: {
     reply_markup: {
@@ -38,26 +47,37 @@ const channel = {
   }
 }
 
-const difficulty = {
-  reply_markup: {
-    inline_keyboard: [
-      [{ text: '1', callback_data: 'difficulty_1' }, { text: '2', callback_data: 'difficulty_2' }, { text: '3', callback_data: 'difficulty_3' }],
-    ]
+const difficulty = (id) => {
+  return {
+    reply_markup: {
+      inline_keyboard: [
+        [
+          { text: '1', callback_data: `dfclt:1:${id}` },
+          { text: '2', callback_data: `dfclt:2:${id}` },
+          { text: '3', callback_data: `dfclt:3:${id}` }
+        ],
+      ]
+    }
   }
 }
 
-const hashtags = {
-  reply_markup: {
-    inline_keyboard: [
-      [{ text: 'Экспертная', callback_data: 'hashtag_expert' }],
-      [{ text: 'Коммерческая', callback_data: 'hashtag_commercial' }],
-    ]
+const hashtags = (id) => {
+  return {
+    reply_markup: {
+      inline_keyboard: [
+        [
+          { text: 'Коммерческая', callback_data: `hshtg:1:${id}` },
+          { text: 'Экспертная', callback_data: `hshtg:2:${id}` },
+        ],
+      ]
+    }
   }
 }
 
 module.exports = {
   mainMenu,
   goHome,
+  addAnotherAndGoHome,
   channel,
   difficulty,
   hashtags,

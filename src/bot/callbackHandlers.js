@@ -66,16 +66,7 @@ const difficulty = async (callbackQuery) => {
   const difficulty = callbackQuery.data.split(':')[1];
   const videoId = callbackQuery.data.split(':')[2];
   const message = 'Спасибо, я сохранил вашу идею. Теперь выберите хэштег:';
-  const options = {
-    reply_markup: {
-      inline_keyboard: [
-        [
-          { text: 'Коммерческая', callback_data: `hshtg:1:${videoId}` },
-          { text: 'Экспертная', callback_data: `hshtg:2:${videoId}` },
-        ],
-      ]
-    }
-  };
+  const options = buttons.hashtags(videoId);
   const updateData = {
     difficulty: difficulty
   }
@@ -92,7 +83,7 @@ const difficulty = async (callbackQuery) => {
 const hashtag = async (callbackQuery) => {
   const chatId = callbackQuery.message.chat.id;
   const message = 'Супер. Идея добавлена.';
-  const options = buttons.goHome;
+  const options = buttons.addAnotherAndGoHome;
   const hNumber = callbackQuery.data.split(':')[1];
   const hashtag = findHashtagByNumber(hNumber);
   const videoId = callbackQuery.data.split(':')[2];
