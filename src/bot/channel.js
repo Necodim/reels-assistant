@@ -1,14 +1,14 @@
 const bot = require('./bot');
 const buttons = require('./buttons');
 const { getIdea } = require('../db/ideaService');
-const { getUser } = require('../db/userService');
+const { getUserById } = require('../db/userService');
 
 const channelId = -1002102561296;
 
 const sendIdeaToChannel = async (ideaId) => {
   try {
     const idea = await getIdea(ideaId);
-    const user = await getUser(idea.userId);
+    const user = await getUserById(idea.userId);
 
     const caption = `${idea.caption}
 

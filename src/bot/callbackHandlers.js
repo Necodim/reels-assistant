@@ -2,7 +2,7 @@ const bot = require('./bot');
 const buttons = require('./buttons');
 const hashtags = require('./hashtags');
 const { getUser, updateUserState } = require('../db/userService');
-const { getIdea, updateIdea, updateIdeaById } = require('../db/ideaService');
+const { getIdea, updateIdeaById } = require('../db/ideaService');
 const { sendIdeaToChannel } = require('./channel');
 
 const handleError = (error, data) => {
@@ -10,12 +10,12 @@ const handleError = (error, data) => {
 }
 
 const home = async (callbackQuery) => {
-  const chatId = callbackQuery.message.chat.id;
+  const chatId = callbackQuery.from.id;
   const message = 'Главное меню';
 
   try {
     console.log(callbackQuery)
-    const user = await getUser(callbackQuery.message);
+    const user = await getUser(callbackQuery);
     console.log(user)
 
     const options = user.isExpert ? buttons.mainMenu.expert : buttons.mainMenu.user;
@@ -27,7 +27,7 @@ const home = async (callbackQuery) => {
 
 const settings = async (callbackQuery) => {
   try {
-    const user = await getUser(callbackQuery.message);
+    const user = await getUser(callbackQuery);
   } catch (error) {
     handleError(error, callbackQuery.data);
   }

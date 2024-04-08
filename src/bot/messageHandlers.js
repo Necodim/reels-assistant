@@ -1,6 +1,6 @@
 const bot = require('./bot');
 const buttons = require('./buttons');
-const { getUser, getUsers, upsertUser, updateUserState } = require('../db/userService');
+const { getUsers, upsertUser, updateUserState } = require('../db/userService');
 const { createVideo } = require('../db/videoService');
 const { createIdea } = require('../db/ideaService');
 const { difficulty, hashtag } = require('./callbackHandlers');
@@ -37,7 +37,7 @@ const forwardExpertAwaiting = async (msg) => {
   if (msg.forward_from && !msg.forward_from.is_bot) {
     try {
       let message;
-      const foundUser = await getUser(msg.forward_from.id);
+      const foundUser = await getUserByChatId(msg.forward_from.id);
       if (foundUser && foundUser.isExpert) {
         const fwdUser = await upsertUser(msg, { isExpert: false });
         const name = !!fwdUser.username ? `@${fwdUser.username}` : !!fwdUser.firstName ? fwdUser.firstName : `с ID ${fwdUser.chatId}`;

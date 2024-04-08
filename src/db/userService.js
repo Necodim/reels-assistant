@@ -1,21 +1,33 @@
 const User = require('./userModel');
 
-const getUser = async (data) => {
-  let chatId;
-
-  if (typeof data === 'number') {
-    chatId = data;
-  } else if (typeof data === 'object' && data.from && typeof data.from.id === 'number') {
-    chatId = data.from.id;
-  } else {
-    throw new Error('Неверный формат входных данных для получения пользователя');
-  }
+const getUser = async (msg) => {
+  const chatId = msg.from.id;
 
   try {
     let user = await User.findOne({ chatId });
     return user;
   } catch (error) {
-    console.error(`Пользователь с ID ${chatId} не найден:`, error);
+    console.error(`В функции getUser пользователь с ID ${chatId} не найден:`, error);
+    throw error;
+  }
+}
+
+const getUserById = async (id) => {
+  try {
+    let user = await User.findOne({ id });
+    return user;
+  } catch (error) {
+    console.error(`В функции getUserById пользователь с ID ${id} не найден:`, error);
+    throw error;
+  }
+}
+
+const getUserByChatId = async (chatId) => {
+  try {
+    let user = await User.findOne({ chatId });
+    return user;
+  } catch (error) {
+    console.error(`В функции getUserByChatId пользователь с ID ${chatId} не найден:`, error);
     throw error;
   }
 }
@@ -81,6 +93,8 @@ const updateUserState = async (chatId, newState) => {
 
 module.exports = {
   getUser,
+  getUserById,
+  getUserByChatId,
   getUsers,
   upsertUser,
   updateUserState,
