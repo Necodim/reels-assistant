@@ -1,6 +1,6 @@
 const bot = require('./bot');
 const buttons = require('./buttons');
-const hashtags = require('./hashtags');
+const { findHashtagByNumber } = require('./hashtags');
 const { getUser, updateUserState } = require('../db/userService');
 const { getIdea, updateIdeaById } = require('../db/ideaService');
 const { sendIdeaToChannel } = require('./channel');
