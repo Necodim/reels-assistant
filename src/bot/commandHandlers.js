@@ -44,6 +44,7 @@ const help = async (msg) => {
 
 const expert = async (msg) => {
   const chatId = msg.chat.id;
+  const options = buttons.goHome;
   try {
     await updateUserState(chatId, 'forwardExpertWaiting');
     let message;

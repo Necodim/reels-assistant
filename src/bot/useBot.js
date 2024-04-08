@@ -1,7 +1,7 @@
 const bot = require('./bot');
 const command = require('./commandHandlers');
 const callback = require('./callbackHandlers');
-const { videoAwaiting, forwardExpertWaiting } = require('./messageHandlers');
+const { videoAwaiting, forwardExpertAwaiting, ideaAwaiting } = require('./messageHandlers');
 const { getUser, updateUserState } = require('../db/userService');
 
 bot.on('message', async (msg) => {
@@ -17,7 +17,13 @@ bot.on('message', async (msg) => {
           await videoAwaiting(msg);
           break;
         case 'forwardExpertWaiting':
-          await forwardExpertWaiting(msg);
+          await forwardExpertAwaiting(msg);
+          break;
+        case 'ideaAwaiting':
+          await ideaAwaiting(msg);
+          break;
+        case 'hashtagAwaiting':
+          await hashtagAwaiting(msg);
           break;
         default:
           await bot.sendMessage(chatId, `Неизвестный user.state (${user.state})`); // исправить на проде
@@ -57,7 +63,7 @@ bot.on('callback_query', async (callbackQuery) => {
   const data = callbackQuery.data;
 
   try {
-    await bot.answerCallbackQuery(callbackQuery.id, { text: 'Секундочку...' });
+    await bot.answerCallbackQuery(callbackQuery.id);
     await updateUserState(chatId, '');
 
     switch (data) {

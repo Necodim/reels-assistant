@@ -27,7 +27,26 @@ const goHome = {
   }
 }
 
+const difficulty = {
+  reply_markup: {
+    inline_keyboard: [
+      [{ text: '1', callback_data: 'difficulty_1' }, { text: '2', callback_data: 'difficulty_2' }, { text: '3', callback_data: 'difficulty_3' }],
+    ]
+  }
+}
+
+const hashtags = {
+  reply_markup: {
+    inline_keyboard: [
+      [{ text: 'Экспертная', callback_data: 'hashtag_expert' }],
+      [{ text: 'Коммерческая', callback_data: 'hashtag_commercial' }],
+    ]
+  }
+}
+
 module.exports = {
   mainMenu,
   goHome,
+  difficulty,
+  hashtags,
 }

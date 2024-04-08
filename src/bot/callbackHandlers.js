@@ -48,7 +48,16 @@ const get_ideas = async (callbackQuery) => {
 }
 
 const new_idea = async (callbackQuery) => {
+  const chatId = callbackQuery.message.chat.id;
+  const message = 'Отправьте в одном сообщении идею: видео и текстовое описание.';
+  const options = buttons.goHome;
 
+  try {
+    await updateUserState(chatId, 'ideaAwaiting');
+    await bot.sendMessage(chatId, message, options);
+  } catch (error) {
+    handleError(error, callbackQuery.data);
+  }
 }
 
 const get_video = async (callbackQuery) => {

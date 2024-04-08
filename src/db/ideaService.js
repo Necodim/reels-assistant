@@ -1,22 +1,21 @@
-const Video = require('./videoModel');
 const Idea = require('./ideaModel');
 const User = require('./userModel');
 
-const getVideo = async (id) => {
+const getIdea = async (id) => {
   try {
-    let video = await User.findOne({ videoId: id });
-    return video;
+    let idea = await User.findOne({ videoId: id });
+    return idea;
   } catch (error) {
-    console.error(`Видео с ID ${id} не найдено:`, error);
+    console.error(`Идея с ID ${id} не найдена:`, error);
     throw error;
   }
 }
 
-const createVideo = async (msg) => {
+const createIdea = async (msg) => {
   try {
     let user = await User.findOne({ chatId: msg.chat.id });
     if (user) {
-      const newVideo = new Video({
+      const newVideo = new Idea({
         userId: user.id,
         chatId: msg.chat.id,
         videoId: msg.video.file_id,
@@ -28,12 +27,12 @@ const createVideo = async (msg) => {
       throw Error;
     }
   } catch (error) {
-    console.error('Ошибка при создании нового видео в БД:', error);
+    console.error('Ошибка при создании новой идеи в БД:', error);
     throw error;
   }
 }
 
 module.exports = {
-  getVideo,
-  createVideo,
+  getIdea,
+  createIdea,
 };
