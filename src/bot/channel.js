@@ -8,6 +8,7 @@ const channelId = -1002102561296;
 const sendIdeaToChannel = async (ideaId) => {
   try {
     const idea = await getIdea(ideaId);
+    console.log(idea)
     const user = await getUserById(idea.userId);
 
     const caption = `${idea.caption}
