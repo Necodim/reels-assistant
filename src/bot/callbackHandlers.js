@@ -111,13 +111,11 @@ const toPush = async (callbackQuery) => {
 
 const channelMessageDelete = async (callbackQuery) => {
   const chatId = callbackQuery.message.chat.id;
-  const message = 'Эта идея удалена из базы данных';
   const ideaId = callbackQuery.data.split(':')[2];
   
   try {
     await deleteIdeaById(ideaId);
     await bot.deleteMessage(chatId, callbackQuery.message.message_id);
-    await bot.sendMessage(chatId, message);
   } catch (error) {
     handleError(error, callbackQuery.data);
   }
