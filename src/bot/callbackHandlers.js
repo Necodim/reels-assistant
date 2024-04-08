@@ -11,7 +11,7 @@ const home = async (callbackQuery) => {
   const message = 'Главное меню';
 
   try {
-    const user = await getUser(chatId);
+    const user = await getUser(callbackQuery.message);
 
     const options = user.isExpert ? buttons.mainMenu.expert : buttons.mainMenu.user;
     await bot.sendMessage(chatId, message, options);
@@ -21,10 +21,8 @@ const home = async (callbackQuery) => {
 }
 
 const settings = async (callbackQuery) => {
-  const chatId = callbackQuery.message.chat.id;
-
   try {
-    const user = await getUser(chatId);
+    const user = await getUser(callbackQuery.message);
   } catch (error) {
     handleError(error, callbackQuery.data);
   }
@@ -64,6 +62,10 @@ const get_video = async (callbackQuery) => {
 
 }
 
+const to_push = async (callbackQuery) => {
+
+}
+
 module.exports = {
   home,
   settings,
@@ -71,4 +73,5 @@ module.exports = {
   get_ideas,
   new_idea,
   get_video,
+  to_push,
 };

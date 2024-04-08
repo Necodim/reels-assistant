@@ -11,8 +11,9 @@ const mainMenu = {
   expert: {
     reply_markup: {
       inline_keyboard: [
-        [{ text: 'Новая идея', callback_data: 'new_idea' }],
+        [{ text: 'Опубликовать идею', callback_data: 'new_idea' }],
         [{ text: 'Оценить ролик', callback_data: 'get_video' }],
+        [{ text: 'Пушнуть подопечных', callback_data: 'to_push' }],
         // [{ text: 'Настройки', callback_data: 'settings' }],
       ]
     }

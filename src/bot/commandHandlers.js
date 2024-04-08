@@ -22,7 +22,7 @@ const home = async (msg) => {
   const message = 'Главное меню';
 
   try {
-    const user = await getUser(chatId);
+    const user = await getUser(msg);
     await updateUserState(chatId, '');
     const options = user.isExpert ? buttons.mainMenu.expert : buttons.mainMenu.user;
     await bot.sendMessage(chatId, message, options);

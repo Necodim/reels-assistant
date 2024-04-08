@@ -73,6 +73,9 @@ bot.on('callback_query', async (callbackQuery) => {
       case 'send_video':
         await callback.send_video(callbackQuery);
         break;
+      case 'new_idea':
+        await callback.new_idea(callbackQuery);
+        break;
       default:
         console.log(`Неизвестный callback_data_query: ${data}`);
         await bot.sendMessage(chatId, `Неизвестный callback_data_query: ${data}`);
