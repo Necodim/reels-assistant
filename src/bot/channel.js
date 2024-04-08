@@ -20,7 +20,6 @@ ${idea.hashtag}
 Автор: @${user.username}`
 
     const options = {...btns, caption};
-    console.log(JSON.stringify(options))
     await sendVideo(channelId, idea.videoId, options);
   } catch (error) {
     console.error('Не удалось отправить идею в канал:', error);
