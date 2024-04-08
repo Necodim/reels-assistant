@@ -54,8 +54,8 @@ const updateIdea = async (videoId, updateData) => {
 
 const updateIdeaById = async (id, updateData) => {
   try {
-    const updatedIdea = await Idea.findOneAndUpdate(
-      { id },
+    const updatedIdea = await Idea.findByIdAndUpdate(
+      id,
       { $set: updateData },
       { new: true }
     );

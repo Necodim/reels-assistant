@@ -46,9 +46,7 @@ const upsertUser = async (msg, params = {}) => {
   try {
     const chatId = msg.forward_from ? msg.forward_from.id : msg.from.id;
 
-    const baseData = {
-      chatId,
-    };
+    const baseData = new Object();
 
     if (!msg.forward_from) {
       Object.assign(baseData, {
@@ -66,15 +64,14 @@ const upsertUser = async (msg, params = {}) => {
       });
     }
 
-    let user = await User.findOne({ chatId });
+    const user = await User.findOneAndUpdate(
+      { chatId },
+      { $set: baseData },
+      { upsert: true }
+    );
 
-    if (user) {
-      await User.updateOne({ chatId }, { $set: baseData });
-    } else {
-      user = new User(baseData);
-      await user.save();
-    }
-
+    await user.save();
+    
     return user;
   } catch (error) {
     console.error('Ошибка при обновлении или создании пользователя:', error);
