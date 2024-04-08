@@ -11,7 +11,7 @@ const hashtags = [
 
 const findHashtagByNumber = (number) => {
   const hashtag = hashtags.find(el => el.num == number);
-  return hashtag;
+  return hashtag.name;
 }
 
 module.exports = {

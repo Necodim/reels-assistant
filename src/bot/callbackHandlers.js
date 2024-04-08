@@ -81,7 +81,7 @@ const difficulty = async (callbackQuery) => {
   }
 
   try {
-    const idea = await updateIdeaById(videoId, updateData);
+    await updateIdeaById(videoId, updateData);
     await updateUserState(chatId, 'hashtagAwaiting');
     await bot.sendMessage(chatId, message, options);
   } catch (error) {
@@ -96,11 +96,11 @@ const hashtag = async (callbackQuery) => {
   const hNumber = callbackQuery.data.split(':')[1];
   const hashtag = findHashtagByNumber(hNumber);
   const videoId = callbackQuery.data.split(':')[2];
+  const updateData = {
+    hashtag: hashtag
+  }
 
   try {
-    const updateData = {
-      hashtag: hashtag
-    }
     await updateIdeaById(videoId, updateData)
     await updateUserState(chatId, '');
     await bot.sendMessage(chatId, message, options);
