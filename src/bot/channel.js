@@ -2,6 +2,7 @@ const bot = require('./bot');
 const buttons = require('./buttons');
 const { getIdeaById } = require('../db/ideaService');
 const { getUserById } = require('../db/userService');
+const { sendVideo } = require('./callbackHandlers');
 
 const channelId = -1002102561296;
 
