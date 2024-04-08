@@ -59,6 +59,7 @@ const forwardExpertAwaiting = async (msg) => {
 }
 
 const ideaAwaiting = async (msg) => {
+  console.log(msg)
   const chatId = msg.chat.id;
   const message = 'Отлично. Укажите, насколько сложно снять такой ролик, где 1 – очень просто, а 3 – очень сложно:';
 
