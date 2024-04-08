@@ -60,13 +60,23 @@ const forwardExpertAwaiting = async (msg) => {
 const ideaAwaiting = async (msg) => {
   const chatId = msg.chat.id;
   const message = 'Отлично. Укажите, насколько сложно снять такой ролик, где 1 – очень просто, а 3 – очень сложно:';
-  const options = buttons.difficulty;
 
   try {
     if (msg.video && msg.caption) {
-      await createIdea(msg);
+      const idea = await createIdea(msg);
+
+      const options = {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              { text: '1', callback_data: `difficulty:1:${idea.videId}` },
+              { text: '2', callback_data: `difficulty:2:${idea.videId}` },
+              { text: '3', callback_data: `difficulty:3:${idea.videId}` }],
+          ]
+        }
+      };
+
       await updateUserState(chatId, 'difficultyAwaiting');
-      
       await bot.sendMessage(chatId, message, options);
     } else {
       await bot.sendMessage(chatId, 'Пожалуйста, пришлите ролик с описанием.');
@@ -76,37 +86,8 @@ const ideaAwaiting = async (msg) => {
   }
 }
 
-// передать ID идеи, чтобы внести туда сложность
-const difficultyAwaiting = async (msg) => {
-  const chatId = msg.chat.id;
-  const message = 'Спасибо, я сохранил вашу идею. Теперь выберите хэштег:';
-  const options = buttons.hashtags;
-  
-  try {
-    await updateUserState(chatId, 'hashtagAwaiting');
-    await bot.sendMessage(chatId, message, options);
-  } catch (error) {
-    console.error('Не удалось записать сложность съёмки:', error)
-  }
-}
-
-// передать ID идеи, чтобы внести туда хэштег
-const hashtagAwaiting = async (msg) => {
-  const chatId = msg.chat.id;
-  const message = 'Хэштег записан, идея добавлена.';
-  const options = buttons.goHome;
-
-  try {
-    await bot.sendMessage(chatId, message, options);
-  } catch (error) {
-    console.error('Не удалось записать хэшетег:', error)
-  }
-}
-
 module.exports = {
   videoAwaiting,
   forwardExpertAwaiting,
   ideaAwaiting,
-  difficultyAwaiting,
-  hashtagAwaiting,
 }

@@ -5,6 +5,8 @@ const ideaSchema = new mongoose.Schema({
   chatId: Number,
   videoId: String,
   caption: String,
+  difficulty: Number,
+  hashtag: String,
   createdAt: { type: Date, default: Date.now }
 });
 

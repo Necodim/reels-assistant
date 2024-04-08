@@ -4,7 +4,7 @@ const User = require('./userModel');
 
 const getVideo = async (id) => {
   try {
-    let video = await User.findOne({ videoId: id });
+    let video = await Video.findOne({ videoId: id });
     return video;
   } catch (error) {
     console.error(`Видео с ID ${id} не найдено:`, error);
@@ -33,7 +33,29 @@ const createVideo = async (msg) => {
   }
 }
 
+const updateVideo = async (videoId, updateData) => {
+  try {
+    // Поиск видео по videoId и его обновление
+    const updatedVideo = await Video.findOneAndUpdate(
+      { videoId: videoId },
+      { $set: updateData },
+      { new: true } // Возвращает обновленный документ
+    );
+
+    if (updatedVideo) {
+      console.log('Видео обновлено успешно:', updatedVideo);
+      return updatedVideo;
+    } else {
+      throw new Error('Видео не найдено');
+    }
+  } catch (error) {
+    console.error('Ошибка при обновлении видео в БД:', error);
+    throw error;
+  }
+}
+
 module.exports = {
   getVideo,
   createVideo,
+  updateVideo,
 };

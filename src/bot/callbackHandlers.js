@@ -1,6 +1,7 @@
 const bot = require('./bot');
 const buttons = require('./buttons');
 const { getUser, updateUserState } = require('../db/userService');
+const { getIdea, updateIdea } = require('../db/ideaService');
 
 const handleError = (error, data) => {
   console.error(`Ошибка в callbackQuery (${data})`, error);
@@ -58,6 +59,59 @@ const new_idea = async (callbackQuery) => {
   }
 }
 
+const difficulty = async (callbackQuery) => {
+  const chatId = callbackQuery.message.chat.id;
+  const difficulty = callbackQuery.data.split(':')[1];
+  const videoId = callbackQuery.data.split(':')[2];
+  const message = 'Спасибо, я сохранил вашу идею. Теперь выберите хэштег:';
+  const options = {
+    reply_markup: {
+      inline_keyboard: [
+        [
+          { text: 'Экспертная', callback_data: 'hashtag:expert:videoId' },
+          { text: 'Коммерческая', callback_data: 'hashtag:commercial:videoId' }
+        ],
+      ]
+    }
+  };
+  const updateData = {
+    difficulty: difficulty
+  }
+
+  try {
+    const idea = await updateIdea(videoId, updateData);
+    await updateUserState(chatId, 'hashtagAwaiting');
+    await bot.sendMessage(chatId, message, options);
+  } catch (error) {
+    handleError(error, callbackQuery.data);
+  }
+}
+
+const hashtag = async (callbackQuery) => {
+  const chatId = callbackQuery.message.chat.id;
+  const message = 'Супер. Идея добавлена.';
+  const options = buttons.goHome;
+  const hashtag = callbackQuery.data.split(':')[1];
+  const videoId = callbackQuery.data.split(':')[2];
+
+  // исправить хэштеги на цифры, а цифры брать из отдельного файла
+  try {
+    const idea = await getIdea(videoId);
+    const updateData = {
+      caption: `${caption}
+      
+Сложность: ${idea.difficulty}
+${hashtag}`,
+      hashtag: hashtag
+    }
+    await updateIdea(videoId, updateData)
+    await updateUserState(chatId, '');
+    await bot.sendMessage(chatId, message, options);
+  } catch (error) {
+    handleError(error, callbackQuery.data);
+  }
+}
+
 const get_video = async (callbackQuery) => {
 
 }
@@ -72,6 +126,8 @@ module.exports = {
   send_video,
   get_ideas,
   new_idea,
+  difficulty,
+  hashtag,
   get_video,
   to_push,
 };

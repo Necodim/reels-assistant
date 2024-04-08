@@ -22,9 +22,6 @@ bot.on('message', async (msg) => {
         case 'ideaAwaiting':
           await ideaAwaiting(msg);
           break;
-        case 'hashtagAwaiting':
-          await hashtagAwaiting(msg);
-          break;
         default:
           await bot.sendMessage(chatId, `Неизвестный user.state (${user.state})`); // исправить на проде
         break;
@@ -60,7 +57,7 @@ bot.on('message', async (msg) => {
 
 bot.on('callback_query', async (callbackQuery) => {
   const chatId = callbackQuery.message.chat.id;
-  const data = callbackQuery.data;
+  const data = callbackQuery.data.split(':')[0];
 
   try {
     await bot.answerCallbackQuery(callbackQuery.id);
@@ -75,6 +72,12 @@ bot.on('callback_query', async (callbackQuery) => {
         break;
       case 'new_idea':
         await callback.new_idea(callbackQuery);
+        break;
+      case 'difficulty':
+        await callback.new_idea(callbackQuery);
+        break;
+      case 'hashtag':
+        await callback.hashtag(callbackQuery);
         break;
       default:
         console.log(`Неизвестный callback_data_query: ${data}`);
