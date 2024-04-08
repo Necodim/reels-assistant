@@ -1,7 +1,7 @@
 const bot = require('./bot');
 const { adminUsers } = require('./admin');
 const buttons = require('./buttons');
-const { upsertUser, updateUserState } = require('../db/userService');
+const { getUser, upsertUser, updateUserState } = require('../db/userService');
 
 const start = async (msg) => {
   const chatId = msg.chat.id;
@@ -23,11 +23,12 @@ const home = async (msg) => {
 
   try {
     const user = await getUser(msg);
+    console.log('user:', user)
     await updateUserState(chatId, '');
     const options = user.isExpert ? buttons.mainMenu.expert : buttons.mainMenu.user;
     await bot.sendMessage(chatId, message, options);
   } catch (error) {
-    console.error('Ошибка при получении / создании / обновлении пользователя в БД или при отправке ответа на команду /start:', error);
+    console.error('Ошибка при отправке ответа на команду /home:', error);
   }
 };
 
