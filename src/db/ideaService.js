@@ -1,12 +1,12 @@
 const Idea = require('./ideaModel');
 const User = require('./userModel');
 
-const getIdea = async (id) => {
+const getIdeaById = async (id) => {
   try {
     let idea = await Idea.findById(id);
     return idea;
   } catch (error) {
-    console.error(`В функции getIdea идея с ID ${id} не найдена:`, error);
+    console.error(`В функции getIdeaById идея с ID ${id} не найдена:`, error);
     throw error;
   }
 }
@@ -84,7 +84,7 @@ const updateIdeaById = async (id, updateData) => {
 
 
 module.exports = {
-  getIdea,
+  getIdeaById,
   getIdeaByVideoId,
   createIdea,
   updateIdea,

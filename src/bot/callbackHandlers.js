@@ -2,7 +2,7 @@ const bot = require('./bot');
 const buttons = require('./buttons');
 const { findHashtagByNumber } = require('./hashtags');
 const { getUser, updateUserState } = require('../db/userService');
-const { getIdea, updateIdeaById } = require('../db/ideaService');
+const { getIdeaById, updateIdeaById } = require('../db/ideaService');
 const { sendIdeaToChannel } = require('./channel');
 
 const handleError = (error, data) => {

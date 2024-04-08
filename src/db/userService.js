@@ -14,7 +14,7 @@ const getUser = async (msg) => {
 
 const getUserById = async (id) => {
   try {
-    let user = await User.findOne({ id });
+    let user = await User.findOne(id);
     return user;
   } catch (error) {
     console.error(`В функции getUserById пользователь с ID ${id} не найден:`, error);
