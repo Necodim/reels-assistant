@@ -2,6 +2,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const User = require('./userModel');
 const Video = require('./videoModel');
+const Idea = require('./ideaModel');
 
 const initMongo = async () => {
   try {
@@ -16,4 +17,5 @@ module.exports = {
   initMongo,
   User,
   Video,
+  Idea,
 };

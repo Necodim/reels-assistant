@@ -9,9 +9,7 @@ const channelId = -1002102561296;
 const sendIdeaToChannel = async (ideaId) => {
   try {
     const idea = await getIdeaById(ideaId);
-    console.log(idea)
     const user = await getUserById(idea.userId);
-    console.log(user)
 
     const caption = `${idea.caption}
 
@@ -21,7 +19,7 @@ ${idea.hashtag}
 Автор: @${user.username}`
 
     const options = {...buttons.channel.delete, caption};
-    await sendVideo(channelId, ideaId, options);
+    await sendVideo(channelId, idea.videoId, options);
   } catch (error) {
     console.error('Не удалось отправить идею в канал:', error);
   }
