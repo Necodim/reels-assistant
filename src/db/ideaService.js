@@ -52,9 +52,30 @@ const updateIdea = async (videoId, updateData) => {
   }
 }
 
+const updateIdeaById = async (id, updateData) => {
+  try {
+    const updatedIdea = await Idea.findOneAndUpdate(
+      { id: id },
+      { $set: updateData },
+      { new: true }
+    );
+
+    if (updatedIdea) {
+      console.log('Идея обновлена успешно:', updatedIdea);
+      return updatedIdea;
+    } else {
+      throw new Error('Идея не найдена');
+    }
+  } catch (error) {
+    console.error('Ошибка при обновлении идеи в БД:', error);
+    throw error;
+  }
+}
+
 
 module.exports = {
   getIdea,
   createIdea,
   updateIdea,
+  updateIdeaById,
 };

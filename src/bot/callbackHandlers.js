@@ -2,7 +2,7 @@ const bot = require('./bot');
 const buttons = require('./buttons');
 const hashtags = require('./hashtags');
 const { getUser, updateUserState } = require('../db/userService');
-const { getIdea, updateIdea } = require('../db/ideaService');
+const { getIdea, updateIdea, updateIdeaById } = require('../db/ideaService');
 const { sendIdeaToChannel } = require('./channel');
 
 const handleError = (error, data) => {
@@ -14,7 +14,9 @@ const home = async (callbackQuery) => {
   const message = 'Главное меню';
 
   try {
+    console.log(callbackQuery)
     const user = await getUser(callbackQuery.message);
+    console.log(user)
 
     const options = user.isExpert ? buttons.mainMenu.expert : buttons.mainMenu.user;
     await bot.sendMessage(chatId, message, options);
@@ -81,7 +83,7 @@ const difficulty = async (callbackQuery) => {
   }
 
   try {
-    const idea = await updateIdea(videoId, updateData);
+    const idea = await updateIdeaById(videoId, updateData);
     await updateUserState(chatId, 'hashtagAwaiting');
     await bot.sendMessage(chatId, message, options);
   } catch (error) {
@@ -106,7 +108,7 @@ const hashtag = async (callbackQuery) => {
 ${hashtag}`,
       hashtag: hashtag
     }
-    await updateIdea(videoId, updateData)
+    await updateIdeaById(videoId, updateData)
     await updateUserState(chatId, '');
     await bot.sendMessage(chatId, message, options);
     await sendIdeaToChannel(videoId);

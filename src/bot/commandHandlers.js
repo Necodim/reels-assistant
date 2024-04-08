@@ -53,7 +53,7 @@ const expert = async (msg) => {
     } else {
       message = 'Вам не доступен этот функционал.';
     }
-    await bot.sendMessage(chatId, message);
+    await bot.sendMessage(chatId, message, options);
   } catch (error) {
     console.error('Ошибка при отправке ответа на команду /expert', error);
   }
