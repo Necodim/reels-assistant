@@ -94,7 +94,7 @@ const hashtag = async (callbackQuery) => {
   const message = 'Супер. Идея добавлена.';
   const options = buttons.goHome;
   const hNumber = callbackQuery.data.split(':')[1];
-  const hashtag = hashtags.find(el => el.num == hNumber);
+  const hashtag = findHashtagByNumber(hNumber);
   const videoId = callbackQuery.data.split(':')[2];
 
   try {

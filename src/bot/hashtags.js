@@ -9,6 +9,11 @@ const hashtags = [
   },
 ]
 
+const findHashtagByNumber = (number) => {
+  const hashtag = hashtags.find(el => el.num == number);
+  return hashtag;
+}
+
 module.exports = {
-  hashtags,
+  findHashtagByNumber,
 }
