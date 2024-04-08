@@ -18,7 +18,7 @@ ${idea.hashtag}
 
 Автор: @${user.username}`
 
-    const options = {...buttons.channel.delete, caption};
+    const options = {...buttons.channel.delete(ideaId), caption};
     await sendVideo(channelId, idea.videoId, options);
   } catch (error) {
     console.error('Не удалось отправить идею в канал:', error);

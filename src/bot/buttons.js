@@ -37,16 +37,6 @@ const addAnotherAndGoHome = {
   }
 }
 
-const channel = {
-  delete: {
-    reply_markup: {
-      inline_keyboard: [
-        [{ text: 'Удалить', callback_data: 'channel:delete' }],
-      ]
-    }
-  }
-}
-
 const difficulty = (id) => {
   return {
     reply_markup: {
@@ -74,11 +64,23 @@ const hashtags = (id) => {
   }
 }
 
+const channel = {
+  delete: (id) => {
+    return {
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: 'Удалить', callback_data: `chanl:del:${id}` }],
+        ]
+      }
+    }
+  }
+}
+
 module.exports = {
   mainMenu,
   goHome,
   addAnotherAndGoHome,
-  channel,
   difficulty,
   hashtags,
+  channel,
 }

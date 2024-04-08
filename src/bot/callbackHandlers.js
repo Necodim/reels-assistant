@@ -2,7 +2,7 @@ const bot = require('./bot');
 const buttons = require('./buttons');
 const { findHashtagByNumber } = require('./hashtags');
 const { getUser, updateUserState } = require('../db/userService');
-const { getIdeaById, updateIdeaById } = require('../db/ideaService');
+const { getIdeaById, updateIdeaById, deleteIdeaById } = require('../db/ideaService');
 const { sendIdeaToChannel } = require('./channel');
 
 const handleError = (error, data) => {
@@ -109,6 +109,16 @@ const toPush = async (callbackQuery) => {
 
 }
 
+const channelMessageDelete = async (callbackQuery) => {
+  const chatId = callbackQuery.message.chat.id;
+  const message = 'Эта идея удалена из базы данных';
+  const ideaId = callbackQuery.data.split(':')[2];
+  
+  await deleteIdeaById(ideaId);
+  await bot.deleteMessage(chatId, callbackQuery.message.id);
+  await bot.sendMessage(chatId, message);
+}
+
 module.exports = {
   home,
   settings,
@@ -119,4 +129,5 @@ module.exports = {
   hashtag,
   getVideo,
   toPush,
+  channelMessageDelete,
 };

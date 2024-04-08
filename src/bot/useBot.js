@@ -64,6 +64,7 @@ bot.on('message', async (msg) => {
 bot.on('callback_query', async (callbackQuery) => {
   const chatId = callbackQuery.message.chat.id;
   const data = callbackQuery.data.split(':')[0];
+  const action = callbackQuery.data.split(':')[1];
 
   try {
     await bot.answerCallbackQuery(callbackQuery.id);
@@ -85,6 +86,16 @@ bot.on('callback_query', async (callbackQuery) => {
       case 'hshtg':
         await callback.hashtag(callbackQuery);
         break;
+      case 'chanl':
+        switch (action) {
+          case 'del':
+            await callback.channelMessageDelete(callbackQuery);
+            break;
+          default:
+            console.log(`Неизвестный action (${action}) для callback_data_query: ${data}`);
+            await bot.sendMessage(chatId, `Неизвестный action (${action}) для callback_data_query: ${data}`);
+            break;
+        }
       default:
         console.log(`Неизвестный callback_data_query: ${data}`);
         await bot.sendMessage(chatId, `Неизвестный callback_data_query: ${data}`);

@@ -82,6 +82,16 @@ const updateIdeaById = async (id, updateData) => {
   }
 }
 
+const deleteIdeaById = async (id) => {
+  try {
+    const deletedIdea = await Idea.findByIdAndDelete(id);
+    return deletedIdea;
+  } catch (error) {
+    console.error('Ошибка при удалении идеи из БД:', error);
+    throw error;
+  }
+}
+
 
 module.exports = {
   getIdeaById,
@@ -89,4 +99,5 @@ module.exports = {
   createIdea,
   updateIdea,
   updateIdeaById,
+  deleteIdeaById,
 };
