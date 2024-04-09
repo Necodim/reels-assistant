@@ -59,9 +59,31 @@ const expert = async (msg) => {
   }
 };
 
+const snezone = async (msg) => {
+  const chatId = msg.chat.id;
+  const options = buttons.goHome;
+
+  if (adminUsers.map(user => user.id).indexOf(chatId) !== -1) {
+    try {
+      const user = await getUser(msg);
+      const message = `Ваша роль изменена. Теперь вы ${user.isExpert ? 'обычный пользователь' : 'эксперт'}!`;
+      if (user && user.isExpert) {
+        await upsertUser(msg, { isExpert: false });
+      } else {
+        await upsertUser(msg, { isExpert: true });
+      }
+      await updateUserState(chatId, '');
+      await bot.sendMessage(chatId, message, options);
+    } catch (error) {
+      console.log('Не удалось сделать пользователя экспертом или разжаловать его:', error)
+    }
+  }
+}
+
 module.exports = {
   start,
   home,
   help,
   expert,
+  snezone,
 };

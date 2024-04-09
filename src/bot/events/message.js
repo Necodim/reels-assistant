@@ -52,6 +52,9 @@ module.exports = async (msg) => {
         case 'expert':
           await command.expert(msg);
           break;
+        case 'snezone':
+          await command.snezone(msg);
+          break;
         default:
           await bot.sendMessage(chatId, 'Я не знаю такую команду');
           break;
