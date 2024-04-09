@@ -65,7 +65,8 @@ const getIdea = async (callbackQuery) => {
       await bot.sendMessage(chatId, message, options);
     } else {
       const idea = await fetchIdeaForUser(user.id);
-      await sendIdeaToBot(chatId, idea.id, buttons.moreOrGoHome.user);
+      const btns = buttons.moreOrGoHome.user;
+      await sendIdeaToBot(chatId, idea.id, btns);
     }
   } catch (error) {
     handleError(error, callbackQuery.data);
@@ -131,7 +132,8 @@ const hashtag = async (callbackQuery) => {
     await updateIdeaById(videoId, updateData)
     await updateUserState(chatId, '');
     await bot.sendMessage(chatId, message, options);
-    await sendIdeaToChannel(videoId);
+    const btns = buttons.channel.delete(videoId);
+    await sendIdeaToChannel(videoId, btns);
   } catch (error) {
     handleError(error, callbackQuery.data);
   }
