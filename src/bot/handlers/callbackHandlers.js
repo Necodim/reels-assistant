@@ -1,5 +1,5 @@
 const bot = require('../bot');
-const { sendIdeaToBot, sendIdeaToChannel } = require('../send');
+const { sendVideoToBot, sendIdeaToChannel } = require('../send');
 const buttons = require('../helpers/buttons');
 const products = require('../helpers/products');
 const { findHashtagByNumber } = require('../helpers/hashtags');
@@ -8,7 +8,7 @@ const { getIdeaById, updateIdeaById, deleteIdeaById } = require('../../db/servic
 const { checkDailyLimit, fetchIdeaForUser } = require('../../db/service/userIdeasService');
 
 const handleError = (error, callbackQuery) => {
-  if (error === 'Новые идеи не найдены') {
+  if (error.message === 'Новые идеи не найдены') {
     bot.sendMessage(callbackQuery.message.from.id, 'На данный момент новых идей нет, но скоро появятся. Мы работаем над этим 😉');
   } else {
     console.error(`Ошибка в callbackQuery (${callbackQuery.data})`, error);
@@ -69,8 +69,12 @@ const getIdea = async (callbackQuery) => {
       await bot.sendMessage(chatId, message, options);
     } else {
       const idea = await fetchIdeaForUser(user.id);
-      const btns = buttons.moreOrGoHome.user;
-      await sendIdeaToBot(chatId, idea.id, btns);
+      const caption = `${idea.caption}
+
+Сложность: ${idea.difficulty}
+${idea.hashtag}`
+      const options = {...buttons.moreOrGoHome.user, caption};
+      await sendVideoToBot(chatId, idea.videoId, options);
     }
   } catch (error) {
     handleError(error, callbackQuery);
