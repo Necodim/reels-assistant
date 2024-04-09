@@ -7,8 +7,12 @@ const { getUser, updateUserState, getUserByChatId } = require('../../db/service/
 const { getIdeaById, updateIdeaById, deleteIdeaById } = require('../../db/service/ideaService');
 const { checkDailyLimit, fetchIdeaForUser } = require('../../db/service/userIdeasService');
 
-const handleError = (error, data) => {
-  console.error(`Ошибка в callbackQuery (${data})`, error);
+const handleError = (error, callbackQuery) => {
+  if (error === 'Новые идеи не найдены') {
+    bot.sendMessage(callbackQuery.message.from.id, 'На данный момент новых идей нет, но скоро появятся. Мы работаем над этим 😉');
+  } else {
+    console.error(`Ошибка в callbackQuery (${callbackQuery.data})`, error);
+  }
 }
 
 const home = async (callbackQuery) => {
@@ -21,7 +25,7 @@ const home = async (callbackQuery) => {
     const options = user.isExpert ? buttons.mainMenu.expert : buttons.mainMenu.user;
     await bot.sendMessage(chatId, message, options);
   } catch (error) {
-    handleError(error, callbackQuery.data);
+    handleError(error, callbackQuery);
   }
 }
 
@@ -29,7 +33,7 @@ const settings = async (callbackQuery) => {
   try {
     const user = await getUser(callbackQuery);
   } catch (error) {
-    handleError(error, callbackQuery.data);
+    handleError(error, callbackQuery);
   }
 }
 
@@ -42,7 +46,7 @@ const sendVideo = async (callbackQuery) => {
     await updateUserState(chatId, 'videoAwaiting');
     await bot.sendMessage(chatId, message, options);
   } catch (error) {
-    handleError(error, callbackQuery.data);
+    handleError(error, callbackQuery);
   }
 }
 
@@ -65,12 +69,11 @@ const getIdea = async (callbackQuery) => {
       await bot.sendMessage(chatId, message, options);
     } else {
       const idea = await fetchIdeaForUser(user.id);
-      console.log('idea', idea)
       const btns = buttons.moreOrGoHome.user;
       await sendIdeaToBot(chatId, idea.id, btns);
     }
   } catch (error) {
-    handleError(error, callbackQuery.data);
+    handleError(error, callbackQuery);
   }
 }
 
@@ -95,7 +98,7 @@ const createIdea = async (callbackQuery) => {
       await bot.sendMessage(chatId, message, options);
     }
   } catch (error) {
-    handleError(error, callbackQuery.data);
+    handleError(error, callbackQuery);
   }
 }
 
@@ -114,7 +117,7 @@ const difficulty = async (callbackQuery) => {
     await updateUserState(chatId, 'hashtagAwaiting');
     await bot.sendMessage(chatId, message, options);
   } catch (error) {
-    handleError(error, callbackQuery.data);
+    handleError(error, callbackQuery);
   }
 }
 
@@ -136,7 +139,7 @@ const hashtag = async (callbackQuery) => {
     const btns = buttons.channel.delete(videoId);
     await sendIdeaToChannel(videoId, btns);
   } catch (error) {
-    handleError(error, callbackQuery.data);
+    handleError(error, callbackQuery);
   }
 }
 
@@ -156,7 +159,7 @@ const channelMessageDelete = async (callbackQuery) => {
     await deleteIdeaById(ideaId);
     await bot.deleteMessage(chatId, callbackQuery.message.message_id);
   } catch (error) {
-    handleError(error, callbackQuery.data);
+    handleError(error, callbackQuery);
   }
 }
 

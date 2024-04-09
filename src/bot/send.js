@@ -15,8 +15,8 @@ const sendVideoToBot = async (chatId, videoId, options = {caption: ''}) => {
 };
 
 const sendIdeaToBot = async (chatId, ideaId, btns = {}) => {
-  console.log('btns:', JSON.stringify(btns));
   try {
+    console.log('ideaId', ideaId)
     const idea = await getIdeaById(ideaId);
     console.log('idea:', idea);
 
