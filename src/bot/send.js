@@ -24,6 +24,8 @@ const sendIdeaToBot = async (chatId, ideaId, btns) => {
 ${idea.hashtag}`
 
     const options = {...btns, caption: caption};
+    console.log(btns);
+    console.log(options);
     await sendVideoToBot(chatId, idea.videoId, options);
   } catch (error) {
     console.error(`Не удалось отправить идею пользователю ${chatId} в бот:`, error);
