@@ -65,6 +65,7 @@ const getIdea = async (callbackQuery) => {
       await bot.sendMessage(chatId, message, options);
     } else {
       const idea = await fetchIdeaForUser(user.id);
+      console.log('idea', idea)
       const btns = buttons.moreOrGoHome.user;
       await sendIdeaToBot(chatId, idea.id, btns);
     }
