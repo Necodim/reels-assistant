@@ -1,4 +1,4 @@
-const User = require('./userModel');
+const User = require('../models/userModel');
 
 const getUser = async (msg) => {
   const chatId = msg.from.id;

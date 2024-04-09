@@ -1,8 +1,8 @@
-const bot = require('./bot');
-const buttons = require('./buttons');
-const { getUsers, upsertUser, updateUserState } = require('../db/userService');
-const { createVideo } = require('../db/videoService');
-const { createIdea } = require('../db/ideaService');
+const bot = require('../bot');
+const buttons = require('../helpers/buttons');
+const { getUsers, upsertUser, updateUserState } = require('../../db/service/userService');
+const { createVideo } = require('../../db/service/videoService');
+const { createIdea } = require('../../db/service/ideaService');
 const { difficulty, hashtag } = require('./callbackHandlers');
 
 const videoAwaiting = async (msg) => {

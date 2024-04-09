@@ -1,9 +1,9 @@
-const bot = require('./bot');
-const buttons = require('./buttons');
-const { findHashtagByNumber } = require('./hashtags');
-const { getUser, updateUserState } = require('../db/userService');
-const { getIdeaById, updateIdeaById, deleteIdeaById } = require('../db/ideaService');
-const { sendIdeaToChannel } = require('./channel');
+const bot = require('../bot');
+const buttons = require('../helpers/buttons');
+const { findHashtagByNumber } = require('../helpers/hashtags');
+const { getUser, updateUserState } = require('../../db/service/userService');
+const { getIdeaById, updateIdeaById, deleteIdeaById } = require('../../db/service/ideaService');
+const { sendIdeaToChannel } = require('../send');
 
 const handleError = (error, data) => {
   console.error(`Ошибка в callbackQuery (${data})`, error);

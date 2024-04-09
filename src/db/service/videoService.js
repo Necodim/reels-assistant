@@ -1,6 +1,6 @@
-const Video = require('./videoModel');
-const Idea = require('./ideaModel');
-const User = require('./userModel');
+const Video = require('../models/videoModel');
+const Idea = require('../models/ideaModel');
+const User = require('../models/userModel');
 
 const getVideo = async (id) => {
   try {

@@ -1,5 +1,5 @@
-const Idea = require('./ideaModel');
-const User = require('./userModel');
+const Idea = require('../models/ideaModel');
+const User = require('../models/userModel');
 
 const getIdeaById = async (id) => {
   try {

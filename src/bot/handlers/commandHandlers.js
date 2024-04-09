@@ -1,7 +1,7 @@
-const bot = require('./bot');
-const { adminUsers } = require('./admin');
-const buttons = require('./buttons');
-const { getUser, upsertUser, updateUserState } = require('../db/userService');
+const bot = require('../bot');
+const { adminUsers } = require('../helpers/admin');
+const buttons = require('../helpers/buttons');
+const { getUser, upsertUser, updateUserState } = require('../../db/service/userService');
 
 const start = async (msg) => {
   const chatId = msg.chat.id;

@@ -1,10 +1,9 @@
 const bot = require('./bot');
-const command = require('./commandHandlers');
-const callback = require('./callbackHandlers');
-const { videoAwaiting, forwardExpertAwaiting, ideaAwaiting } = require('./messageHandlers');
-const { getUser, updateUserState } = require('../db/userService');
+const command = require('../handlers/commandHandlers');
+const { videoAwaiting, forwardExpertAwaiting, ideaAwaiting } = require('../handlers/messageHandlers');
+const { getUser } = require('../../db/service/userService');
 
-bot.on('message', async (msg) => {
+module.exports = async (msg) => {
   const chatId = msg.chat.id;
   // console.log(msg)
   
@@ -59,49 +58,4 @@ bot.on('message', async (msg) => {
       }
     }
   }
-});
-
-bot.on('callback_query', async (callbackQuery) => {
-  const chatId = callbackQuery.message.chat.id;
-  const data = callbackQuery.data.split(':')[0];
-  const action = callbackQuery.data.split(':')[1];
-
-  try {
-    await bot.answerCallbackQuery(callbackQuery.id);
-    await updateUserState(chatId, '');
-
-    switch (data) {
-      case 'home':
-        await callback.home(callbackQuery);
-        break;
-      case 'sendVideo':
-        await callback.sendVideo(callbackQuery);
-        break;
-      case 'createIdea':
-        await callback.createIdea(callbackQuery);
-        break;
-      case 'dfclt':
-        await callback.difficulty(callbackQuery);
-        break;
-      case 'hshtg':
-        await callback.hashtag(callbackQuery);
-        break;
-      case 'chanl':
-        switch (action) {
-          case 'del':
-            await callback.channelMessageDelete(callbackQuery);
-            break;
-          default:
-            console.log(`Неизвестный action (${action}) для callback_data_query: ${data}`);
-            await bot.sendMessage(chatId, `Неизвестный action (${action}) для callback_data_query: ${data}`);
-            break;
-        }
-      default:
-        console.log(`Неизвестный callback_data_query: ${data}`);
-        await bot.sendMessage(chatId, `Неизвестный callback_data_query: ${data}`);
-        break;
-    }
-  } catch (error) {
-    console.error(`Ошибка при получении callbackQuery ${data}:`, error);
-  }
-});
+}
