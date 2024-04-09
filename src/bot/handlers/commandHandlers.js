@@ -4,16 +4,13 @@ const buttons = require('../helpers/buttons');
 const { getUser, upsertUser, updateUserState } = require('../../db/service/userService');
 
 const start = async (msg) => {
-  console.log(msg)
   const chatId = msg.chat.id;
   const message = 'Добро пожаловать в инструмент для взаимодействия экспертов-рилсмэйкеров и блогеров. Вы можете бесплатно просматривать идеи экспертов и тут же их реализовывать, а также получать фидбэк на ваши посты. Для этого воспользуйтесь кнопками ниже:';
   
   try {
     const user = await upsertUser(msg);
-    console.log(user)
     await updateUserState(chatId, '');
     const options = user.isExpert ? buttons.mainMenu.expert : buttons.mainMenu.user;
-    console.log(options)
     await bot.sendMessage(chatId, message, options);
   } catch (error) {
     console.error('Ошибка при получении / создании / обновлении пользователя в БД или при отправке ответа на команду /start:', error);
