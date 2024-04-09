@@ -1,4 +1,4 @@
-const UserIdeas = require('../models/userIdeasModel');
+const UserIdea = require('../models/userIdeasModel');
 const Idea = require('../models/ideaModel');
 const DAILY_IDEA_LIMIT = 5;
 

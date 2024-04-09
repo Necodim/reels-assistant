@@ -9,6 +9,6 @@ const userIdeasSchema = new mongoose.Schema({
 userIdeasSchema.index({ userId: 1, ideaId: 1 }, { unique: true });
 userIdeasSchema.index({ sentAt: 1 });
 
-const UserIdeas = mongoose.model('UserIdeas', userIdeasSchema);
+const UserIdea = mongoose.model('UserIdea', userIdeasSchema);
 
-module.exports = UserIdeas;
+module.exports = UserIdea;
