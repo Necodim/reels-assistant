@@ -23,7 +23,7 @@ const sendIdeaToBot = async (chatId, ideaId, btns) => {
 Сложность: ${idea.difficulty}
 ${idea.hashtag}`
 
-    const options = {...btns, caption};
+    const options = {...btns, caption: caption};
     await sendVideoToBot(chatId, idea.videoId, options);
   } catch (error) {
     console.error(`Не удалось отправить идею пользователю ${chatId} в бот:`, error);
