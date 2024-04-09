@@ -15,7 +15,7 @@ const sendVideoToBot = async (chatId, videoId, options = {caption: ''}) => {
 };
 
 const sendIdeaToBot = async (chatId, ideaId, btns = {}) => {
-  console.log('btns:', JSON.stringidy(btns));
+  console.log('btns:', JSON.stringify(btns));
   try {
     const idea = await getIdeaById(ideaId);
     console.log('idea:', idea);
@@ -26,7 +26,7 @@ const sendIdeaToBot = async (chatId, ideaId, btns = {}) => {
 ${idea.hashtag}`
     console.log('caption:', caption);
     const options = {...btns, caption};
-    console.log('options:', JSON.stringidy(options));
+    console.log('options:', JSON.stringify(options));
     await sendVideoToBot(chatId, idea.videoId, options);
   } catch (error) {
     console.error(`Не удалось отправить идею пользователю ${chatId} в бот:`, error);
