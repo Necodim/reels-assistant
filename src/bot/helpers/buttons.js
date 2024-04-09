@@ -3,7 +3,7 @@ const mainMenu = {
     reply_markup: {
       inline_keyboard: [
         [{ text: 'Отправить ролик', callback_data: 'sendVideo' }],
-        [{ text: 'Получить идеи', callback_data: 'getIdeas' }],
+        [{ text: 'Получить идею', callback_data: 'getIdea' }],
         [{ text: 'Настройки', callback_data: 'settings' }],
       ]
     }
@@ -28,12 +28,34 @@ const goHome = {
   }
 }
 
-const addAnotherAndGoHome = {
-  reply_markup: {
-    inline_keyboard: [
-      [{ text: 'Опубликовать ещё одну', callback_data: 'createIdea' }],
-      [{ text: 'Главное меню', callback_data: 'home' }],
-    ]
+const moreOrGoHome = {
+  user: {
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: 'Получить ещё одну', callback_data: 'getIdea' }],
+        [{ text: 'Главное меню', callback_data: 'home' }],
+      ]
+    }
+  },
+  expert: {
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: 'Опубликовать ещё одну', callback_data: 'createIdea' }],
+        [{ text: 'Главное меню', callback_data: 'home' }],
+      ]
+    }
+  }
+}
+
+const purchase = {
+  user: {
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: 'Библиотека идей', callback_data: 'prchs:1' }],
+        [{ text: 'Рилс-ассистент', callback_data: 'prchs:2' }],
+        [{ text: 'Рилс-аутсорс', callback_data: 'prchs:3' }],
+      ]
+    }
   }
 }
 
@@ -79,7 +101,8 @@ const channel = {
 module.exports = {
   mainMenu,
   goHome,
-  addAnotherAndGoHome,
+  moreOrGoHome,
+  purchase,
   difficulty,
   hashtags,
   channel,

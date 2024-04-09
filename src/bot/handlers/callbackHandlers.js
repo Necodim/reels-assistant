@@ -1,9 +1,11 @@
 const bot = require('../bot');
+const { sendIdeaToBot, sendIdeaToChannel } = require('../send');
 const buttons = require('../helpers/buttons');
+const products = require('../helpers/products');
 const { findHashtagByNumber } = require('../helpers/hashtags');
-const { getUser, updateUserState } = require('../../db/service/userService');
+const { getUser, updateUserState, getUserByChatId } = require('../../db/service/userService');
 const { getIdeaById, updateIdeaById, deleteIdeaById } = require('../../db/service/ideaService');
-const { sendIdeaToChannel } = require('../send');
+const { checkDailyLimit, fetchIdeaForUser } = require('../../db/service/userIdeasService');
 
 const handleError = (error, data) => {
   console.error(`Ошибка в callbackQuery (${data})`, error);
@@ -44,8 +46,36 @@ const sendVideo = async (callbackQuery) => {
   }
 }
 
-const getIdeas = async (callbackQuery) => {
+const getIdea = async (callbackQuery) => {
+  const chatId = callbackQuery.message.chat.id;
 
+  try {
+    const user = await getUserByChatId(chatId);
+    const canFetch = await checkDailyLimit(user.id);
+    if (!canFetch) {
+      const message = `5 бесплатных идей для рилс на сегодня закончились, завтра будут новые!
+
+Что вам доступно сейчас:
+• Библиотека идей для рилс без лимитов за 990₽/месяц;
+• Рилс-ассистент, докрутит идею видео, даст обратную связь и напомнит о предстоящих публикациях за 2990₽/месяц;
+• Рилс-аутсорс, смонтирует рилс из ваших кадров 20900₽/месяц
+
+Вы можете приобрести доступ, нажав на одну из кнопок ниже:`;
+      const options = buttons.purchase.user;
+      await bot.sendMessage(chatId, message, options);
+    } else {
+      const idea = await fetchIdeaForUser(user.id);
+      await sendIdeaToBot(chatId, idea.id, buttons.moreOrGoHome.user);
+    }
+  } catch (error) {
+    handleError(error, callbackQuery.data);
+  }
+}
+
+const purchase = async (callbackQuery) => {
+  const pNumber = callbackQuery.data.split(':')[1];
+  const product = products[pNumber - 1];
+  console.log(product)
 }
 
 const createIdea = async (callbackQuery) => {
@@ -83,7 +113,7 @@ const difficulty = async (callbackQuery) => {
 const hashtag = async (callbackQuery) => {
   const chatId = callbackQuery.message.chat.id;
   const message = 'Супер. Идея добавлена.';
-  const options = buttons.addAnotherAndGoHome;
+  const options = buttons.moreOrGoHome.expert;
   const hNumber = callbackQuery.data.split(':')[1];
   const hashtag = findHashtagByNumber(hNumber);
   const videoId = callbackQuery.data.split(':')[2];
@@ -125,7 +155,8 @@ module.exports = {
   home,
   settings,
   sendVideo,
-  getIdeas,
+  getIdea,
+  purchase,
   createIdea,
   difficulty,
   hashtag,

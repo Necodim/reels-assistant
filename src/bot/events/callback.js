@@ -17,6 +17,12 @@ module.exports = async (callbackQuery) => {
     case 'sendVideo':
       await callback.sendVideo(callbackQuery);
       break;
+    case 'getIdea':
+      await callback.getIdea(callbackQuery);
+      break;
+    case 'prchs':
+      await callback.purchase(callbackQuery);
+      break;
     case 'createIdea':
       await callback.createIdea(callbackQuery);
       break;
