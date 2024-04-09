@@ -9,7 +9,7 @@ const { checkDailyLimit, fetchIdeaForUser } = require('../../db/service/userIdea
 
 const handleError = (error, callbackQuery) => {
   if (error.message === 'Новые идеи не найдены') {
-    bot.sendMessage(callbackQuery.message.from.id, 'На данный момент новых идей нет, но скоро появятся. Мы работаем над этим 😉');
+    bot.sendMessage(callbackQuery.from.id, 'На данный момент новых идей нет, но скоро появятся. Мы работаем над этим 😉');
   } else {
     console.error(`Ошибка в callbackQuery (${callbackQuery.data})`, error);
   }
@@ -38,7 +38,7 @@ const settings = async (callbackQuery) => {
 }
 
 const sendVideo = async (callbackQuery) => {
-  const chatId = callbackQuery.message.chat.id;
+  const chatId = callbackQuery.from.id;
   const message = 'Прикрепите ролик и напишите сопроводительное сообщение, если необходимо. Если передумали, вернитесь в главное меню.';
   const options = buttons.goHome;
 
@@ -51,7 +51,7 @@ const sendVideo = async (callbackQuery) => {
 }
 
 const getIdea = async (callbackQuery) => {
-  const chatId = callbackQuery.message.chat.id;
+  const chatId = callbackQuery.from.id;
 
   try {
     const user = await getUser(callbackQuery);
@@ -88,7 +88,7 @@ const purchase = async (callbackQuery) => {
 }
 
 const createIdea = async (callbackQuery) => {
-  const chatId = callbackQuery.message.chat.id;
+  const chatId = callbackQuery.from.id;
   const options = buttons.goHome;
   
   try {
@@ -107,7 +107,7 @@ const createIdea = async (callbackQuery) => {
 }
 
 const difficulty = async (callbackQuery) => {
-  const chatId = callbackQuery.message.chat.id;
+  const chatId = callbackQuery.from.id;
   const difficulty = callbackQuery.data.split(':')[1];
   const videoId = callbackQuery.data.split(':')[2];
   const message = 'Спасибо, я сохранил вашу идею. Теперь выберите хэштег:';
@@ -126,7 +126,7 @@ const difficulty = async (callbackQuery) => {
 }
 
 const hashtag = async (callbackQuery) => {
-  const chatId = callbackQuery.message.chat.id;
+  const chatId = callbackQuery.from.id;
   const message = 'Супер. Идея добавлена.';
   const options = buttons.moreOrGoHome.expert;
   const hNumber = callbackQuery.data.split(':')[1];
@@ -156,7 +156,7 @@ const toPush = async (callbackQuery) => {
 }
 
 const channelMessageDelete = async (callbackQuery) => {
-  const chatId = callbackQuery.message.chat.id;
+  const chatId = callbackQuery.from.id;
   const ideaId = callbackQuery.data.split(':')[2];
   
   try {
