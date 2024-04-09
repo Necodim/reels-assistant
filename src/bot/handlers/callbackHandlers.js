@@ -51,6 +51,7 @@ const getIdea = async (callbackQuery) => {
 
   try {
     const user = await getUser(callbackQuery);
+    console.log(user)
     const canFetch = await checkDailyLimit(user.id);
     if (!canFetch) {
       const message = `5 бесплатных идей для рилс на сегодня закончились, завтра будут новые!
@@ -80,12 +81,18 @@ const purchase = async (callbackQuery) => {
 
 const createIdea = async (callbackQuery) => {
   const chatId = callbackQuery.message.chat.id;
-  const message = 'Отправьте в одном сообщении идею: видео и текстовое описание.';
   const options = buttons.goHome;
-
+  
   try {
-    await updateUserState(chatId, 'ideaAwaiting');
-    await bot.sendMessage(chatId, message, options);
+    const user = await getUser(callbackQuery);
+    if (user.isExpert) {
+      const message = 'Отправьте в одном сообщении идею: видео и текстовое описание.';
+      await updateUserState(chatId, 'ideaAwaiting');
+      await bot.sendMessage(chatId, message, options);
+    } else {
+      const message = 'Вам не доступен этот функционал.';
+      await bot.sendMessage(chatId, message, options);
+    }
   } catch (error) {
     handleError(error, callbackQuery.data);
   }

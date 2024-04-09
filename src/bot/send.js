@@ -17,7 +17,6 @@ const sendVideoToBot = async (chatId, videoId, options = {caption: ''}) => {
 const sendIdeaToBot = async (chatId, ideaId, btns) => {
   try {
     const idea = await getIdeaById(ideaId);
-    const user = await getUserById(idea.userId);
 
     const caption = `${idea.caption}
 

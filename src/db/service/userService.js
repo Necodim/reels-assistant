@@ -4,7 +4,7 @@ const getUser = async (msg) => {
   const chatId = msg.from.id;
 
   try {
-    let user = await User.findOne({ chatId });
+    const user = await User.findOne({ chatId });
     return user;
   } catch (error) {
     console.error(`В функции getUser пользователь с ID ${chatId} не найден:`, error);
@@ -14,7 +14,7 @@ const getUser = async (msg) => {
 
 const getUserById = async (id) => {
   try {
-    let user = await User.findOne(id);
+    const user = await User.findOne(id);
     return user;
   } catch (error) {
     console.error(`В функции getUserById пользователь с ID ${id} не найден:`, error);
@@ -24,7 +24,7 @@ const getUserById = async (id) => {
 
 const getUserByChatId = async (chatId) => {
   try {
-    let user = await User.findOne({ chatId });
+    const user = await User.findOne({ chatId });
     return user;
   } catch (error) {
     console.error(`В функции getUserByChatId пользователь с ID ${chatId} не найден:`, error);
