@@ -2,19 +2,19 @@ const mainMenu = {
   user: {
     reply_markup: {
       inline_keyboard: [
-        [{ text: 'Отправить ролик', callback_data: 'sendVideo' }],
-        [{ text: 'Получить идею', callback_data: 'getIdea' }],
-        [{ text: 'Настройки', callback_data: 'settings' }],
+        [{ text: '⏯️ Отправить ролик', callback_data: 'sendVideo' }],
+        [{ text: '💡 Получить идею', callback_data: 'getIdea' }],
+        [{ text: '⚙️ Настройки', callback_data: 'settings' }],
       ]
     }
   },
   expert: {
     reply_markup: {
       inline_keyboard: [
-        [{ text: 'Опубликовать идею', callback_data: 'createIdea' }],
-        [{ text: 'Оценить ролик', callback_data: 'getVideo' }],
-        [{ text: 'Пушнуть подопечных', callback_data: 'toPush' }],
-        // [{ text: 'Настройки', callback_data: 'settings' }],
+        [{ text: '💡 Опубликовать идею', callback_data: 'createIdea' }],
+        [{ text: '⭐️ Оценить ролик', callback_data: 'getVideo' }],
+        [{ text: '🔔 Пушнуть подопечных', callback_data: 'toPush' }],
+        // [{ text: '⚙️ Настройки', callback_data: 'settings' }],
       ]
     }
   }
@@ -23,7 +23,7 @@ const mainMenu = {
 const goHome = {
   reply_markup: {
     inline_keyboard: [
-      [{ text: 'Главное меню', callback_data: 'home' }],
+      [{ text: '🏠 Главное меню', callback_data: 'home' }],
     ]
   }
 }
@@ -32,16 +32,16 @@ const moreOrGoHome = {
   user: {
     reply_markup: {
       inline_keyboard: [
-        [{ text: 'Получить ещё одну', callback_data: 'getIdea' }],
-        [{ text: 'Главное меню', callback_data: 'home' }],
+        [{ text: '💡 Получить ещё одну', callback_data: 'getIdea' }],
+        [{ text: '🏠 Главное меню', callback_data: 'home' }],
       ]
     }
   },
   expert: {
     reply_markup: {
       inline_keyboard: [
-        [{ text: 'Опубликовать ещё одну', callback_data: 'createIdea' }],
-        [{ text: 'Главное меню', callback_data: 'home' }],
+        [{ text: '💡 Опубликовать ещё одну', callback_data: 'createIdea' }],
+        [{ text: '🏠 Главное меню', callback_data: 'home' }],
       ]
     }
   }
@@ -51,9 +51,9 @@ const purchase = {
   user: {
     reply_markup: {
       inline_keyboard: [
-        [{ text: 'Библиотека идей', callback_data: 'prchs:1' }],
-        [{ text: 'Рилс-ассистент', callback_data: 'prchs:2' }],
-        [{ text: 'Рилс-аутсорс', callback_data: 'prchs:3' }],
+        [{ text: '💡 Библиотека идей', callback_data: 'prchs:1' }],
+        [{ text: '🛟 Рилс-ассистент', callback_data: 'prchs:2' }],
+        [{ text: '🎦 Рилс-аутсорс', callback_data: 'prchs:3' }],
       ]
     }
   }
@@ -78,8 +78,8 @@ const hashtags = (id) => {
     reply_markup: {
       inline_keyboard: [
         [
-          { text: 'Коммерческая', callback_data: `hshtg:1:${id}` },
-          { text: 'Экспертная', callback_data: `hshtg:2:${id}` },
+          { text: '💰 Коммерческая', callback_data: `hshtg:1:${id}` },
+          { text: '🧠 Экспертная', callback_data: `hshtg:2:${id}` },
         ],
       ]
     }
@@ -91,7 +91,7 @@ const channel = {
     return {
       reply_markup: {
         inline_keyboard: [
-          [{ text: 'Удалить', callback_data: `chanl:del:${id}` }],
+          [{ text: '🗑️ Удалить', callback_data: `chanl:del:${id}` }],
         ]
       }
     }
