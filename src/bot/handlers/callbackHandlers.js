@@ -50,7 +50,7 @@ const getIdea = async (callbackQuery) => {
   const chatId = callbackQuery.message.chat.id;
 
   try {
-    const user = await getUserByChatId(chatId);
+    const user = await getUser(callbackQuery);
     const canFetch = await checkDailyLimit(user.id);
     if (!canFetch) {
       const message = `5 бесплатных идей для рилс на сегодня закончились, завтра будут новые!
