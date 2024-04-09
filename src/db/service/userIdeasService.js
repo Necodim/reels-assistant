@@ -4,7 +4,7 @@ const Idea = require('../models/ideaModel');
 const DAILY_IDEA_LIMIT = 5;
 
 const findNewIdeaForUser = async (userId) => {
-  const userIdObj = mongoose.Types.ObjectId(userId);
+  const userIdObj = new mongoose.Types.ObjectId(userId);
 
   const newIdea = await Idea.aggregate([
     {
