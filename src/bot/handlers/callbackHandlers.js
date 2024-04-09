@@ -51,7 +51,6 @@ const getIdea = async (callbackQuery) => {
 
   try {
     const user = await getUser(callbackQuery);
-    console.log(user)
     const canFetch = await checkDailyLimit(user.id);
     if (!canFetch) {
       const message = `5 бесплатных идей для рилс на сегодня закончились, завтра будут новые!
