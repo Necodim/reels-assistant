@@ -231,10 +231,13 @@ const sendEvaluateMessage = async (callbackQuery) => {
   const message = 'Оценка отправлена пользователю';
 
   try {
+    await bot.answerCallbackQuery(callbackQuery.id, { text: 'Загрузка...', show_alert: false });
     const video = await updateVideoById(videoId, updateData);
-    await bot.sendMessage(chatId, message, options);
     await updateUserState(chatId, '');
+    await bot.sendMessage(chatId, message);
     await bot.sendMessage(video.chatId, video.evaluation);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    await home(callbackQuery);
   } catch (error) {
     handleError(error, callbackQuery);
   }

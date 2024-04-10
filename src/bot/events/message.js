@@ -73,7 +73,6 @@ module.exports = async (msg) => {
   } else if (msg.text) {
     if (!msg.text.startsWith('/')) {
       await checkUserState(msg);
-      await bot.sendMessage(chatId, 'Я не такой умный, чтобы понимать обычный текст'); // исправить на проде
     } else {
       await checkCommand(msg);
     }
