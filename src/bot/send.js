@@ -7,8 +7,8 @@ const channelId = -1002102561296;
 
 const sendVideoToBot = async (chatId, videoId, options = {caption: ''}) => {
   try {
-    await bot.sendVideo(chatId, videoId, options);
-    console.log(`Видео ${videoId} успешно отправлено`);
+    const botMessage = await bot.sendVideo(chatId, videoId, options);
+    return botMessage;
   } catch (error) {
     console.error(`Ошибка при отправке видео ${videoId}:`, error);
   }
