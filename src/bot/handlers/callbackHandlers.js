@@ -314,7 +314,7 @@ const toPush = async (callbackQuery) => {
 
 const channelMessageDelete = async (callbackQuery) => {
   console.log(callbackQuery)
-  const chatId = callbackQuery.chat.id;
+  const chatId = callbackQuery.message.chat.id;
   const ideaId = callbackQuery.data.split(':')[2];
   
   try {
