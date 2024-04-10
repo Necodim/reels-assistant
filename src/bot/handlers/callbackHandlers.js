@@ -172,24 +172,19 @@ const hashtag = async (callbackQuery) => {
 
 const getVideo = async (callbackQuery) => {
   const chatId = callbackQuery.from.id;
-  const message = `Оцените ролик пользователя. Принимается только текстовое описание без вложений.
-
-Для удобства мы подготовили для вас шаблон:
+  const message = `Оцените ролик пользователя. Принимается только текстовое описание без вложений. Для удобства мы подготовили для вас шаблон:
 <pre>Суть видео:
 Заголовок:
 Целевое действие:
 Видеоряд:
-Что улучшить:</pre>
-
-Нажмите на текст шаблона, чтобы скопировать его.`;
+Что улучшить:</pre>`;
   
   try {
     const video = await getNextUnratedVideo();
     await setVideoEvaluateTo(video.id, true);
     const videoOptions = {caption: video.caption};
     const videoMessage = await sendVideoToBot(chatId, video.videoId, videoOptions);
-    console.log(videoMessage)
-    const options = {...buttons.cancel.videoEvaluate(videoMessage.id), parse_mode: 'HTML'};
+    const options = {...buttons.cancel.videoEvaluate(video.id, videoMessage.message_id), parse_mode: 'HTML'};
     await bot.sendMessage(chatId, message, options);
     await updateUserState(chatId, 'evaluateAwaiting');
   } catch (error) {
