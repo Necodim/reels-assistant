@@ -65,9 +65,8 @@ const updateVideo = async (videoId, updateData) => {
 
 const updateVideoById = async (id, updateData) => {
   try {
-    // Поиск видео по videoId и его обновление
     const updatedVideo = await Video.findOneAndUpdate(
-      id,
+      { id: id },
       { $set: updateData },
       { new: true }
     );

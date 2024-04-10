@@ -13,6 +13,8 @@ const message = require('../events/message');
 const handleError = (error, callbackQuery) => {
   if (error.message === 'Новые идеи не найдены') {
     bot.sendMessage(callbackQuery.from.id, 'На данный момент новых идей нет, но скоро появятся. Мы работаем над этим 😉');
+  } else if (error.message === 'Новые видео для оценки не найдены') {
+    bot.sendMessage(callbackQuery.from.id, 'На данный момент новых видео от пользователей нет 😉');
   } else {
     console.error(`Ошибка в callbackQuery (${callbackQuery.data})`, error);
   }
