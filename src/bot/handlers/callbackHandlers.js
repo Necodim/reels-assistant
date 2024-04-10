@@ -6,6 +6,7 @@ const { findHashtagByNumber } = require('../helpers/hashtags');
 const { getUser, updateUserState, getUserByChatId } = require('../../db/service/userService');
 const { getIdeaById, updateIdeaById, deleteIdeaById } = require('../../db/service/ideaService');
 const { checkDailyLimit, fetchIdeaForUser } = require('../../db/service/userIdeasService');
+const { createFavoriteIdea } = require('../../db/service/favoriteIdeaService');
 
 const handleError = (error, callbackQuery) => {
   if (error.message === 'Новые идеи не найдены') {
@@ -73,11 +74,30 @@ const getIdea = async (callbackQuery) => {
 
 Сложность: ${idea.difficulty}
 ${idea.hashtag}`
+      // const options = {...buttons.moreOrGoHome.user(idea.id), caption}; // для добавления идеи в избранное
       const options = {...buttons.moreOrGoHome.user, caption};
       await sendVideoToBot(chatId, idea.videoId, options);
     }
   } catch (error) {
     handleError(error, callbackQuery);
+  }
+}
+
+const favorite = async (callbackQuery) => {
+  const chatId = callbackQuery.from.id;
+  const ideaId = callbackQuery.data.split(':')[1];
+
+  try {
+    const user = await getUserByChatId(chatId);
+    if (!user) {
+      throw new Error('Пользователь не найден');
+    }
+    
+    await createFavoriteIdea(user.id, ideaId);
+    await bot.answerCallbackQuery(callbackQuery.id, { text: 'Идея добавлена в избранное' });
+  } catch (error) {
+    console.error('Ошибка при добавлении идеи в избранное:', error);
+    await bot.answerCallbackQuery(callbackQuery.id, { text: 'Ошибка при добавлении идеи в избранное' });
   }
 }
 
@@ -167,11 +187,21 @@ const channelMessageDelete = async (callbackQuery) => {
   }
 }
 
+const test = async (callbackQuery) => {
+  console.log(callbackQuery);
+  try {
+    await bot.answerCallbackQuery(callbackQuery.id, { text: 'Тест успешно проведён' });
+  } catch (error) {
+    handleError(error, callbackQuery);
+  }
+}
+
 module.exports = {
   home,
   settings,
   sendVideo,
   getIdea,
+  favorite,
   purchase,
   createIdea,
   difficulty,
@@ -179,4 +209,5 @@ module.exports = {
   getVideo,
   toPush,
   channelMessageDelete,
+  test,
 };

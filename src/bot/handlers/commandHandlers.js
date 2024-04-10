@@ -80,10 +80,32 @@ const snezone = async (msg) => {
   }
 }
 
+const test = async (msg) => {
+  const chatId = msg.chat.id;
+  const message = 'Тест';
+  const options = {
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: 'Тест', callback_data: 'test' }],
+        [{ text: '🏠 Главное меню', callback_data: 'home' }],
+      ]
+    }
+  };
+
+  if (adminUsers.map(user => user.id).indexOf(chatId) !== -1) {
+    try {
+      await bot.sendMessage(chatId, message, options);
+    } catch (error) {
+      console.log('/test error:', error)
+    }
+  }
+}
+
 module.exports = {
   start,
   home,
   help,
   expert,
   snezone,
+  test,
 };

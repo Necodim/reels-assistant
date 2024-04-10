@@ -29,10 +29,20 @@ const goHome = {
 }
 
 const moreOrGoHome = {
+  // user: (ideaId = '') => {
+  //   return {
+  //     reply_markup: {
+  //       inline_keyboard: [
+  //         [{ text: '💡 Ещё идея', callback_data: 'getIdea' }, { text: '⭐️ В избранное', callback_data: `favrt:${ideaId}` }],
+  //         [{ text: '🏠 Главное меню', callback_data: 'home' }],
+  //       ]
+  //     }
+  //   }
+  // },
   user: {
     reply_markup: {
       inline_keyboard: [
-        [{ text: '💡 Получить ещё одну', callback_data: 'getIdea' }],
+        [{ text: '💡 Ещё идея', callback_data: 'getIdea' }],
         [{ text: '🏠 Главное меню', callback_data: 'home' }],
       ]
     }

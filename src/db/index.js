@@ -4,6 +4,7 @@ const User = require('./models/userModel');
 const Video = require('./models/videoModel');
 const Idea = require('./models/ideaModel');
 const UserIdeas = require('./models/userIdeasModel');
+const FavoriteIdea = require('./models/favoriteIdeaModel');
 
 const initMongo = async () => {
   try {
@@ -20,4 +21,5 @@ module.exports = {
   Video,
   Idea,
   UserIdeas,
+  FavoriteIdea,
 };

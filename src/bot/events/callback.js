@@ -20,6 +20,9 @@ module.exports = async (callbackQuery) => {
     case 'getIdea':
       await callback.getIdea(callbackQuery);
       break;
+    case 'favrt':
+      await callback.favorite(callbackQuery);
+      break;
     case 'prchs':
       await callback.purchase(callbackQuery);
       break;
@@ -42,6 +45,9 @@ module.exports = async (callbackQuery) => {
           await bot.sendMessage(chatId, `Неизвестный action (${action}) для callback_data_query: ${data}`);
           break;
       }
+      break;
+    case 'test':
+      await callback.test(callbackQuery);
       break;
     default:
       console.log(`Неизвестный callback_data_query: ${data}`);
