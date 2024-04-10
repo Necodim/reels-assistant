@@ -198,7 +198,7 @@ const cancelVideoEvaluate = async (callbackQuery) => {
   const messageWithVideoToDelete = callbackQuery.data.split(':')[2];
   try {
     await updateUserState(chatId, '');
-    await setVideoEvaluateTo(videoId, true);
+    await setVideoEvaluateTo(videoId, false);
     await bot.deleteMessage(chatId, callbackQuery.message.message_id);
     await bot.deleteMessage(chatId, messageWithVideoToDelete);
   } catch (error) {
