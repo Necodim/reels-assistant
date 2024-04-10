@@ -1,12 +1,22 @@
+const mongoose = require('mongoose');
 const Subscription = require('../models/subscriptionModel');
 const User = require('../models/userModel');
 
-const getSubscription = async (subscriptionId) => {
+const getSubscription = async (id) => {
   try {
-    const subscription = Subscription.findById(subscriptionId);
+    const subscription = Subscription.findById(id);
     return subscription;
   } catch (error) {
-    console.error(`Не удалось найти подписку ${subscriptionId}:`, error);
+    console.error(`Не удалось найти подписку по ID ${id}:`, error);
+  }
+};
+
+const getSubscriptionByCloudPaymentsId = async (subscriptionId) => {
+  try {
+    const subscription = Subscription.findOne({ subscriptionId: subscriptionId });
+    return subscription;
+  } catch (error) {
+    console.error(`Не удалось найти подписку по CloudPayments ID ${subscriptionId}:`, error);
   }
 };
 
@@ -43,16 +53,60 @@ const getUserSubscriptions = async (userId) => {
   }
 };
 
-const addSubscription = async (userId, subscriptionDetails) => {
+const addSubscription = async (data) => {
   try {
-    const subscription = new Subscription(subscriptionDetails);
+    const subscription = new Subscription(data);
     await subscription.save();
 
-    await User.findByIdAndUpdate(userId, { $push: { subscriptions: subscription._id } });
+    await User.findByIdAndUpdate(subscription.userId, { $push: { subscriptions: subscription._id } });
 
     console.log(`Подписка ${subscription.name} добавлена пользователю ${userId}`);
   } catch (error) {
     console.error('Ошибка при добавлении подписки:', error);
+  }
+};
+
+const updateSubscription = async (id, data) => {
+  try {
+    // Поиск и обновление подписки по subscriptionId
+    const updatedSubscription = await Subscription.findByIdAndUpdate(
+      id,
+      { $set: data },
+      { new: true } // Опция new: true гарантирует, что в ответе будет возвращен обновленный документ
+    );
+
+    if (!updatedSubscription) {
+      console.log(`Подписка с ID ${subscriptionId} не найдена.`);
+      return null;
+    }
+
+    console.log('Подписка успешно обновлена:', updatedSubscription);
+    return updatedSubscription;
+  } catch (error) {
+    console.error('Ошибка при обновлении подписки:', error);
+    throw error;
+  }
+};
+
+const updateSubscriptionByCloudPaymentsId = async (subscriptionId, data) => {
+  try {
+    // Поиск и обновление подписки по subscriptionId
+    const updatedSubscription = await Subscription.findOneAndUpdate(
+      { subscriptionId: subscriptionId },
+      { $set: data },
+      { new: true } // Опция new: true гарантирует, что в ответе будет возвращен обновленный документ
+    );
+
+    if (!updatedSubscription) {
+      console.log(`Подписка с ID ${subscriptionId} не найдена.`);
+      return null;
+    }
+
+    console.log('Подписка успешно обновлена:', updatedSubscription);
+    return updatedSubscription;
+  } catch (error) {
+    console.error('Ошибка при обновлении подписки:', error);
+    throw error;
   }
 };
 
@@ -69,7 +123,10 @@ const removeSubscription = async (userId, subscriptionId) => {
 
 module.exports = {
   getSubscription,
+  getSubscriptionByCloudPaymentsId,
   getUserSubscriptions,
   addSubscription,
+  updateSubscription,
+  updateSubscriptionByCloudPaymentsId,
   removeSubscription,
 }

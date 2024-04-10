@@ -77,9 +77,9 @@ const purchase = {
   user: {
     reply_markup: {
       inline_keyboard: [
-        // [{ text: '🔑 Доступ к боту', callback_data: 'prchs:1' }],
-        [{ text: '💡 Библиотека идей', callback_data: 'prchs:1' }],
-        [{ text: '🛟 Рилс-ассистент', callback_data: 'prchs:2' }],
+        [{ text: '🔑 Доступ к боту', callback_data: 'prchs:0' }],
+        // [{ text: '💡 Библиотека идей', callback_data: 'prchs:1' }],
+        // [{ text: '🛟 Рилс-ассистент', callback_data: 'prchs:2' }],
         // [{ text: '🎦 Рилс-аутсорс', callback_data: 'prchs:3' }],
       ]
     }

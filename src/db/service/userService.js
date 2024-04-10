@@ -32,6 +32,18 @@ const getUserByChatId = async (chatId) => {
   }
 }
 
+const getUserByUsername = async (username) => {
+  const chatId = msg.from.id;
+
+  try {
+    const user = await User.findOne({ username: username });
+    return user;
+  } catch (error) {
+    console.error(`В функции getUser пользователь с username ${username} не найден:`, error);
+    throw error;
+  }
+}
+
 const getUsers = async (params) => {
   try {
     const users = await User.find(params);
@@ -95,6 +107,7 @@ module.exports = {
   getUser,
   getUserById,
   getUserByChatId,
+  getUserByUsername,
   getUsers,
   upsertUser,
   updateUserState,

@@ -9,6 +9,8 @@ const { checkDailyLimit, fetchIdeaForUser } = require('../../db/service/userIdea
 const { createFavoriteIdea } = require('../../db/service/favoriteIdeaService');
 const { getVideoById, updateVideoById, setVideoEvaluateTo, getNextUnratedVideo } = require('../../db/service/videoService');
 const message = require('../events/message');
+const { getUserSubscriptions } = require('../../db/service/subscriptionService');
+const { formatDate } = require('../../helpers/dateHelper');
 
 const handleError = (error, callbackQuery) => {
   if (error.message === 'Новые идеи не найдены') {
@@ -63,12 +65,7 @@ const getIdea = async (callbackQuery) => {
     const canFetch = await checkDailyLimit(user.id);
     if (!canFetch) {
       const message = `5 бесплатных идей для рилс на сегодня закончились, завтра будут новые!
-
-Что вам доступно сейчас:
-💡 Библиотека идей для рилс без лимитов за 990₽/месяц;
-🛟 Рилс-ассистент: докрутит идею видео, даст обратную связь и напомнит о предстоящих публикациях за 2990₽/месяц;
-
-Вы можете приобрести доступ, нажав на одну из кнопок ниже:`;
+${products.text}`;
       const options = buttons.purchase.user;
       await bot.sendMessage(chatId, message, options);
     } else {
@@ -120,13 +117,16 @@ const sendMeVideo = async (callbackQuery) => {
 
 const purchase = async (callbackQuery) => {
   const chatId = callbackQuery.from.id;
-  const pNumber = callbackQuery.data.split(':')[1];
-  const product = products.products[pNumber - 1];
-  const message = product.name;
+  const pNumber = parseInt(callbackQuery.data.split(':')[1], 10);
+  const product = products.products[pNumber];
+  const message = `Продукт:
+${product.name}
+
+После нажатия на кнопку вас переведёт на страницу оплаты. После успешной оплаты возвращайтесь обратно, я сообщу, когда подписка будет оформлена.`
   const options = {
     reply_markup: {
       inline_keyboard: [
-        [{ text: '🔗 Перейти к оформлению', url: product.link }],
+        [{ text: '🔗 Оформить подписку', url: product.link }],
       ]
     }
   };
@@ -143,15 +143,29 @@ const subscription = async (callbackQuery) => {
   const chatId = callbackQuery.from.id;
   
   try {
-    const user = getUser(callbackQuery);
-    const message = `У вас нет подписки. Выберите необходимый функционал:
-💡 Библиотека идей для рилс без лимитов за 990₽/месяц;
-🛟 Рилс-ассистент: докрутит идею видео, даст обратную связь и напомнит о предстоящих публикациях за 2990₽/месяц;
-
-Можно оформить обе подписки (по отдельности). Чтобы приобрести доступ, нажмите на одну из кнопок ниже:`;
+    const user = await getUser(callbackQuery);
+    const subscriptions = await getUserSubscriptions(user.id);
+    let message
+    if (subscriptions.length) {
+      if (subscriptions.length > 0) {
+        const date = formatDate(subscriptions[0].end, 'd MMMM, HH:mm');
+        message = 'У вас больше одной подписки:';
+        subscriptions.forEach((subscription, i) => {
+          message = `${message}
+${(i+1)}. ${subscription.name} (дата продления: ${date})`;
+        });
+      } else {
+        const date = formatDate(subscriptions[0].end, 'd MMMM, HH:mm');
+        message = `У вас уже есть подписка. Дата продления: ${date}`;
+      }
+    } else {
+      message = `У вас нет подписки. В подписке за 990₽/месяц вам доступно:
+${products.text}`;
+    }
     const options = buttons.purchase.user;
+    await bot.sendMessage(chatId, message, options);
   } catch (error) {
-
+    console.error('Ошибка при отправке пользователю callbackQuery subscription:', error);
   }
 }
 
@@ -313,7 +327,6 @@ const toPush = async (callbackQuery) => {
 }
 
 const channelMessageDelete = async (callbackQuery) => {
-  console.log(callbackQuery)
   const chatId = callbackQuery.message.chat.id;
   const ideaId = callbackQuery.data.split(':')[2];
   
