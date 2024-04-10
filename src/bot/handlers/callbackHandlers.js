@@ -186,7 +186,8 @@ const getVideo = async (callbackQuery) => {
   try {
     const video = await getNextUnratedVideo();
     await setVideoEvaluateTo(video.id, true);
-    const videoMessage = await sendVideoToBot(chatId, video.videoId, video.caption);
+    const videoOptions = {caption: video.caption};
+    const videoMessage = await sendVideoToBot(chatId, video.videoId, videoOptions);
     const options = {...buttons.cancel.videoEvaluate(videoMessage.id), parse_mode: 'HTML'};
     await bot.sendMessage(chatId, message, options);
     await updateUserState(chatId, 'evaluateAwaiting');
