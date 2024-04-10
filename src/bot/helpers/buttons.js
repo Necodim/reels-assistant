@@ -4,7 +4,11 @@ const mainMenu = {
       inline_keyboard: [
         [{ text: '⏯️ Отправить ролик', callback_data: 'sendVideo' }],
         [{ text: '💡 Получить идею', callback_data: 'getIdea' }],
-        [{ text: '⚙️ Настройки', callback_data: 'settings' }],
+        [
+          { text: '💰 Подписка', callback_data: 'settings' },
+          { text: '❓ Помощь', callback_data: 'support' }
+        ],
+        // [{ text: '⚙️ Настройки', callback_data: 'settings' }],
       ]
     }
   },
@@ -120,6 +124,15 @@ const channel = {
   }
 }
 
+const snezone = {
+  reply_markup: {
+    inline_keyboard: [
+      [{ text: 'Написать в поддержку', url: 'https://t.me/snezone' }],
+      [{ text: '🏠 Главное меню', callback_data: 'home' }],
+    ]
+  }
+}
+
 module.exports = {
   mainMenu,
   goHome,
@@ -129,4 +142,5 @@ module.exports = {
   difficulty,
   hashtags,
   channel,
+  snezone,
 }

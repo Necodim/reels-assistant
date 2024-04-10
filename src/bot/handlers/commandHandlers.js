@@ -5,12 +5,18 @@ const { getUser, upsertUser, updateUserState } = require('../../db/service/userS
 
 const start = async (msg) => {
   const chatId = msg.chat.id;
-  const message = 'Добро пожаловать в инструмент для взаимодействия экспертов-рилсмэйкеров и блогеров. Вы можете бесплатно просматривать идеи экспертов и тут же их реализовывать, а также получать фидбэк на ваши посты. Для этого воспользуйтесь кнопками ниже:';
   
   try {
     const user = await upsertUser(msg);
     await updateUserState(chatId, '');
-    const options = user.isExpert ? buttons.mainMenu.expert : buttons.mainMenu.user;
+    let message, options;
+    if (user.isExpert) {
+      message = 'Вы можете опубликовывать идеи, оценивать ролики и отправлять пуши подопечным, чтобы они снимали видео, и не прокрастинировали. Для этого воспользуйтесь кнопками ниже:';
+      options = buttons.mainMenu.expert
+    } else {
+      message = 'Добро пожаловать в инструмент для взаимодействия экспертов-рилсмэйкеров и блогеров. Вы можете бесплатно просматривать идеи экспертов и тут же их реализовывать, а также получать фидбэк на ваши посты. Для этого воспользуйтесь кнопками ниже:';
+      options = buttons.mainMenu.user;
+    }
     await bot.sendMessage(chatId, message, options);
   } catch (error) {
     console.error('Ошибка при получении / создании / обновлении пользователя в БД или при отправке ответа на команду /start:', error);

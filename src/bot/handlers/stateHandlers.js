@@ -19,8 +19,16 @@ const videoAwaiting = async (msg) => {
 
       const experts = await getUsers({ isExpert: true });
       if (experts.length) {
+        const expertMessage = 'Поступил новый ролик на оценку!';
+        const expertOptions = {
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: '⭐️ Оценить ролик', callback_data: 'getVideo' }],
+            ]
+          }
+        }
         for (const expert of experts) {
-          await bot.sendMessage(expert.chatId, 'Поступил новый ролик!');
+          await bot.sendMessage(expert.chatId, expertMessage, expertOptions);
         }
       }
     } else {

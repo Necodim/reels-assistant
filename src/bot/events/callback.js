@@ -69,6 +69,9 @@ module.exports = async (callbackQuery) => {
           break;
       }
       break;
+    case 'support':
+      await callback.support(callbackQuery);
+      break;
     case 'test':
       await callback.test(callbackQuery);
       break;

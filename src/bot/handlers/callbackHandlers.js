@@ -193,7 +193,13 @@ const getVideo = async (callbackQuery) => {
 Видеоряд:
 Что улучшить:</code>
 
-👆 Нажмите на текст, чтобы скопировать.`;
+👆 Нажмите на текст, чтобы скопировать
+
+• вставьте текст в поле ввода сообщения
+• напишите обратную связь по каждому пункту
+• отправьте сообщение
+
+✅ оно автоматически уйдет получателю`;
   
   try {
     const video = await getNextUnratedVideo();
@@ -253,7 +259,7 @@ const sendEvaluateMessage = async (callbackQuery) => {
     await new Promise(resolve => setTimeout(resolve, 1000));
     await home(callbackQuery);
 
-    const videoMessage = `<b>Вы получили оценку ролика от эксперта на свой ролик</b>
+    const videoMessage = `<b>Вы получили оценку ролика от эксперта</b>
 <blockquote>${video.evaluation}</blockquote>
 `;
     const videoOptions = {
@@ -287,6 +293,18 @@ const channelMessageDelete = async (callbackQuery) => {
   }
 }
 
+const support = async (callbackQuery) => {
+  const chatId = callbackQuery.from.id;
+  const message = 'По всем вопросам пишите @snezone';
+  const options = buttons.snezone;
+
+  try {
+    await bot.sendMessage(chatId, message, options);
+  } catch (error) {
+    handleError(error, callbackQuery);
+  }
+}
+
 const test = async (callbackQuery) => {
   console.log(callbackQuery);
   try {
@@ -314,5 +332,6 @@ module.exports = {
   sendEvaluateMessage,
   toPush,
   channelMessageDelete,
+  support,
   test,
 };
