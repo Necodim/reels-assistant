@@ -65,8 +65,8 @@ const updateVideo = async (videoId, updateData) => {
 
 const updateVideoById = async (id, updateData) => {
   try {
-    const updatedVideo = await Video.findOneAndUpdate(
-      { id: id },
+    const updatedVideo = await Video.findByIdAndUpdate(
+      id,
       { $set: updateData },
       { new: true }
     );
