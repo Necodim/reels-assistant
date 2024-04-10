@@ -186,7 +186,7 @@ const getVideo = async (callbackQuery) => {
     const videoMessage = await sendVideoToBot(chatId, video.videoId, videoOptions);
     const options = {...buttons.cancel.videoEvaluate(video.id, videoMessage.message_id), parse_mode: 'HTML'};
     await bot.sendMessage(chatId, message, options);
-    await updateUserState(chatId, 'evaluateAwaiting');
+    await updateUserState(chatId, `evaluateAwaiting:${video.id}`);
   } catch (error) {
     handleError(error, callbackQuery);
   }
@@ -214,7 +214,7 @@ const editEvaluateMessage = async (callbackQuery) => {
   try {
     await setVideoEvaluateTo(videoId, true);
     await bot.sendMessage(chatId, message);
-    await updateUserState(chatId, 'evaluateAwaiting');
+    await updateUserState(chatId, `evaluateAwaiting:${videoId}`);
   } catch (error) {
     handleError(error, callbackQuery);
   }
