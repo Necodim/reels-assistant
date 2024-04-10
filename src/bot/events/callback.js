@@ -23,6 +23,9 @@ module.exports = async (callbackQuery) => {
     case 'favrt':
       await callback.favorite(callbackQuery);
       break;
+    case 'getvd':
+      await callback.sendMeVideo(callbackQuery);
+      break;
     case 'prchs':
       await callback.purchase(callbackQuery);
       break;

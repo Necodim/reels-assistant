@@ -104,6 +104,20 @@ const favorite = async (callbackQuery) => {
   }
 }
 
+const sendMeVideo = async (callbackQuery) => {
+  const chatId = callbackQuery.from.id;
+  const videoId = callbackQuery.data.split(':')[1];
+
+  try {
+    const video = await getVideoById(videoId);
+    const options = {caption: video.caption};
+    await sendVideoToBot(chatId, video.videoId, options);
+  } catch (error) {
+    console.error('Ошибка при отправке видео пользователю:', error);
+    await bot.answerCallbackQuery(callbackQuery.id, { text: 'Ошибка' });
+  }
+}
+
 const purchase = async (callbackQuery) => {
   const pNumber = callbackQuery.data.split(':')[1];
   const product = products[pNumber - 1];
@@ -210,9 +224,13 @@ const editEvaluateMessage = async (callbackQuery) => {
   const chatId = callbackQuery.from.id;
   const videoId = callbackQuery.data.split(':')[2];
   const message = 'Пришлите новый вариант оценки ролика';
+  const updateData = {
+    isEvaluated: true,
+    evaluation: '',
+  }
 
   try {
-    await setVideoEvaluateTo(videoId, true);
+    await updateVideoById(videoId, updateData);
     await bot.sendMessage(chatId, message);
     await updateUserState(chatId, `evaluateAwaiting:${videoId}`);
   } catch (error) {
@@ -222,22 +240,30 @@ const editEvaluateMessage = async (callbackQuery) => {
 
 const sendEvaluateMessage = async (callbackQuery) => {
   const chatId = callbackQuery.from.id;
-  const text = callbackQuery.message.text;
   const videoId = callbackQuery.data.split(':')[2];
-  const updateData = {
-    isEvaluated: true,
-    evaluation: text,
-  }
   const message = 'Оценка отправлена пользователю';
 
   try {
     await bot.answerCallbackQuery(callbackQuery.id, { text: 'Загрузка...', show_alert: false });
-    const video = await updateVideoById(videoId, updateData);
     await updateUserState(chatId, '');
     await bot.sendMessage(chatId, message);
-    await bot.sendMessage(video.chatId, video.evaluation);
+    const video = await getVideoById(videoId);
     await new Promise(resolve => setTimeout(resolve, 1000));
     await home(callbackQuery);
+
+    const videoMessage = `<b>Вы получили оценку ролика от эксперта на свой ролик</b>
+<blockquote>${video.evaluation}</blockquote>
+`;
+    const videoOptions = {
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: '🤔 Что за ролик?', callback_data: `getvd:${videoId}` }],
+          [{ text: '🏠 Главное меню', callback_data: 'home' }],
+        ]
+      },
+      parse_mode: 'HTML'
+    };
+    await bot.sendMessage(video.chatId, videoMessage, videoOptions);
   } catch (error) {
     handleError(error, callbackQuery);
   }
@@ -275,6 +301,7 @@ module.exports = {
   sendVideo,
   getIdea,
   favorite,
+  sendMeVideo,
   purchase,
   createIdea,
   difficulty,
