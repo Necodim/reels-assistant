@@ -13,7 +13,7 @@ const getVideo = async (videoId) => {
 
 const getVideoById = async (id) => {
   try {
-    let video = await Video.findOne(id);
+    let video = await Video.findById(id);
     return video;
   } catch (error) {
     console.error(`Видео с ID ${id} не найдено:`, error);
