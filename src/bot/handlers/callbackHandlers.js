@@ -113,15 +113,46 @@ const sendMeVideo = async (callbackQuery) => {
     const options = {caption: video.caption};
     await sendVideoToBot(chatId, video.videoId, options);
   } catch (error) {
-    console.error('Ошибка при отправке видео пользователю:', error);
     await bot.answerCallbackQuery(callbackQuery.id, { text: 'Ошибка' });
+    console.error('Ошибка при отправке видео пользователю:', error);
   }
 }
 
 const purchase = async (callbackQuery) => {
+  const chatId = callbackQuery.from.id;
   const pNumber = callbackQuery.data.split(':')[1];
-  const product = products[pNumber - 1];
-  console.log(product)
+  const product = products.products[pNumber - 1];
+  const message = product.name;
+  const options = {
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: '🔗 Перейти к оформлению', url: product.link }],
+      ]
+    }
+  };
+
+  try {
+    await bot.sendMessage(chatId, message, options);
+  } catch (error) {
+    await bot.answerCallbackQuery(callbackQuery.id, { text: 'Ошибка' });
+    console.error('Ошибка при отправке пользователю ссылок на оплату:', error);
+  }
+}
+
+const subscription = async (callbackQuery) => {
+  const chatId = callbackQuery.from.id;
+  
+  try {
+    const user = getUser(callbackQuery);
+    const message = `У вас нет подписки. Выберите необходимый функционал:
+💡 Библиотека идей для рилс без лимитов за 990₽/месяц;
+🛟 Рилс-ассистент: докрутит идею видео, даст обратную связь и напомнит о предстоящих публикациях за 2990₽/месяц;
+
+Можно оформить обе подписки (по отдельности). Чтобы приобрести доступ, нажмите на одну из кнопок ниже:`;
+    const options = buttons.purchase.user;
+  } catch (error) {
+
+  }
 }
 
 const createIdea = async (callbackQuery) => {
@@ -282,6 +313,7 @@ const toPush = async (callbackQuery) => {
 }
 
 const channelMessageDelete = async (callbackQuery) => {
+  console.log(callbackQuery)
   const chatId = callbackQuery.from.id;
   const ideaId = callbackQuery.data.split(':')[2];
   
@@ -323,6 +355,7 @@ module.exports = {
   favorite,
   sendMeVideo,
   purchase,
+  subscription,
   createIdea,
   difficulty,
   hashtag,

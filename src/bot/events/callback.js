@@ -29,6 +29,9 @@ module.exports = async (callbackQuery) => {
     case 'prchs':
       await callback.purchase(callbackQuery);
       break;
+    case 'subscription':
+      await callback.subscription(callbackQuery);
+      break;
     case 'createIdea':
       await callback.createIdea(callbackQuery);
       break;

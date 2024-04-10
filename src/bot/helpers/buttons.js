@@ -5,7 +5,7 @@ const mainMenu = {
         [{ text: '⏯️ Отправить ролик', callback_data: 'sendVideo' }],
         [{ text: '💡 Получить идею', callback_data: 'getIdea' }],
         [
-          { text: '💰 Подписка', callback_data: 'settings' },
+          { text: '💰 Подписка', callback_data: 'subscription' },
           { text: '❓ Помощь', callback_data: 'support' }
         ],
         // [{ text: '⚙️ Настройки', callback_data: 'settings' }],
@@ -77,6 +77,7 @@ const purchase = {
   user: {
     reply_markup: {
       inline_keyboard: [
+        // [{ text: '🔑 Доступ к боту', callback_data: 'prchs:1' }],
         [{ text: '💡 Библиотека идей', callback_data: 'prchs:1' }],
         [{ text: '🛟 Рилс-ассистент', callback_data: 'prchs:2' }],
         // [{ text: '🎦 Рилс-аутсорс', callback_data: 'prchs:3' }],
@@ -127,7 +128,7 @@ const channel = {
 const snezone = {
   reply_markup: {
     inline_keyboard: [
-      [{ text: 'Написать в поддержку', url: 'https://t.me/snezone' }],
+      [{ text: 'Написать в поддержку', url: 'tg://resolve?domain=snezone' }],
       [{ text: '🏠 Главное меню', callback_data: 'home' }],
     ]
   }
