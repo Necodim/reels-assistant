@@ -6,40 +6,44 @@ const DAILY_IDEA_LIMIT = 5;
 const findNewIdeaForUser = async (userId) => {
   const userIdObj = new mongoose.Types.ObjectId(userId);
 
-  const newIdea = await Idea.aggregate([
-    {
-      $lookup: {
-        from: "userideas",
-        let: { ideaId: "$_id" },
-        pipeline: [
-          { 
-            $match: { 
-              $expr: { 
-                $and: [ 
-                  { $eq: ["$ideaId", "$$ideaId"] }, 
-                  { $eq: ["$userId", userIdObj] }
-                ]
+  try {
+    const newIdea = await Idea.aggregate([
+      {
+        $lookup: {
+          from: "userideas",
+          let: { ideaId: "$_id" },
+          pipeline: [
+            { 
+              $match: { 
+                $expr: { 
+                  $and: [ 
+                    { $eq: ["$ideaId", "$$ideaId"] }, 
+                    { $eq: ["$userId", userIdObj] }
+                  ]
+                } 
               } 
-            } 
-          }
-        ],
-        as: "sentIdeas"
-      }
-    },
-    {
-      $match: {
-        "sentIdeas": { $size: 0 }
-      }
-    },
-    { $sort: { createdAt: 1 } },
-    { $limit: 1 }
-  ]);
-
-  if (newIdea.length === 0) {
-    throw new Error('Новые идеи не найдены');
+            }
+          ],
+          as: "sentIdeas"
+        }
+      },
+      {
+        $match: {
+          "sentIdeas": { $size: 0 }
+        }
+      },
+      { $sort: { createdAt: 1 } },
+      { $limit: 1 }
+    ]);
+  
+    if (newIdea.length === 0) {
+      throw new Error('Новые идеи не найдены');
+    }
+  
+    return newIdea[0];
+  } catch (error) {
+    console.error('Ошибка при поиске идеи эксперта в БД:', error);
   }
-
-  return newIdea[0];
 };
 
 const checkDailyLimit = async (userId) => {
@@ -49,15 +53,19 @@ const checkDailyLimit = async (userId) => {
   const endOfDay = new Date();
   endOfDay.setHours(23, 59, 59, 999);
 
-  const ideasCountToday = await UserIdea.countDocuments({
-    userId,
-    sentAt: {
-      $gte: startOfDay,
-      $lte: endOfDay
-    }
-  });
+  try {
+    const ideasCountToday = await UserIdea.countDocuments({
+      userId,
+      sentAt: {
+        $gte: startOfDay,
+        $lte: endOfDay
+      }
+    });
 
-  return ideasCountToday < DAILY_IDEA_LIMIT;
+    return ideasCountToday < DAILY_IDEA_LIMIT;
+  } catch (error) {
+    console.error('Ошибка при проверке дневного лимита пользователя:', error);
+  }
 };
 
 
@@ -78,14 +86,18 @@ const saveSentIdeaInfo = async (userId, ideaId) => {
 };
 
 const fetchIdeaForUser = async (userId) => {
-  const newIdea = await findNewIdeaForUser(userId);
-  if (!newIdea) {
-    throw new Error('Новые идеи не найдены');
+  try {
+    const newIdea = await findNewIdeaForUser(userId);
+    if (!newIdea) {
+      throw new Error('Новые идеи не найдены');
+    }
+  
+    await saveSentIdeaInfo(userId, newIdea._id);
+  
+    return newIdea;
+  } catch (error) {
+    console.error('Ошибка при запросе новой идеи для пользователя:', error);
   }
-
-  await saveSentIdeaInfo(userId, newIdea._id);
-
-  return newIdea;
 };
 
 module.exports = {

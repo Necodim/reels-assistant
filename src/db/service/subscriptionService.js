@@ -21,9 +21,11 @@ const getSubscriptionByCloudPaymentsId = async (subscriptionId) => {
 };
 
 const getUserSubscriptions = async (userId) => {
+  const userIdObj = new mongoose.Types.ObjectId(userId);
+
   try {
     const userWithSubscriptions = await User.aggregate([
-      { $match: { _id: mongoose.Types.ObjectId(userId) } },
+      { $match: { _id: userIdObj } },
       {
         $lookup: {
           from: 'subscriptions',
