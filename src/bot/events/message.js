@@ -10,6 +10,10 @@ module.exports = async (msg) => {
   if (msg.forward_from || msg.video && !msg.caption?.startsWith('/')) {
     const user = await getUser(msg);
     const stateData = user.state.split(':')[0];
+
+    console.log(user)
+    console.log(user.state)
+    console.log(user && user.state !== '')
     
     if (user && user.state !== '') {
       switch(stateData) {
