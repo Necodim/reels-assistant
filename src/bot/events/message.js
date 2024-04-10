@@ -1,6 +1,6 @@
 const bot = require('../bot');
 const command = require('../handlers/commandHandlers');
-const { videoAwaiting, forwardExpertAwaiting, ideaAwaiting } = require('../handlers/messageHandlers');
+const state = require('../handlers/stateHandlers');
 const { getUser } = require('../../db/service/userService');
 
 module.exports = async (msg) => {
@@ -9,23 +9,27 @@ module.exports = async (msg) => {
   
   if (msg.forward_from || msg.video && !msg.caption?.startsWith('/')) {
     const user = await getUser(msg);
+    const stateData = user.state.split(':')[0];
     
     if (user && user.state !== '') {
-      switch(user.state) {
+      switch(stateData) {
         case 'videoAwaiting':
-          await videoAwaiting(msg);
+          await state.videoAwaiting(msg);
           break;
         case 'forwardExpertWaiting':
-          await forwardExpertAwaiting(msg);
+          await state.forwardExpertAwaiting(msg);
           break;
         case 'ideaAwaiting':
-          await ideaAwaiting(msg);
+          await state.ideaAwaiting(msg);
           break;
         case 'difficultyAwaiting':
-          await difficultyAwaiting(msg);
+          await state.difficultyAwaiting(msg);
           break;
         case 'hashtagAwaiting':
-          await hashtagAwaiting(msg);
+          await state.hashtagAwaiting(msg);
+          break;
+        case 'evaluateAwaiting':
+          await state.evaluateAwaiting(msg, user.state);
           break;
         default:
           await bot.sendMessage(chatId, `Неизвестный user.state (${user.state})`); // исправить на проде

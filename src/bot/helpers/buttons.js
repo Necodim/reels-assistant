@@ -57,13 +57,25 @@ const moreOrGoHome = {
   }
 }
 
+const cancel = {
+  videoEvaluate: (videoId, videoMessageNumber) => {
+    return {
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: 'Отменить', callback_data: `cnlve:${videoId}:${videoMessageNumber}` }],
+        ]
+      }
+    }
+  }
+}
+
 const purchase = {
   user: {
     reply_markup: {
       inline_keyboard: [
         [{ text: '💡 Библиотека идей', callback_data: 'prchs:1' }],
         [{ text: '🛟 Рилс-ассистент', callback_data: 'prchs:2' }],
-        [{ text: '🎦 Рилс-аутсорс', callback_data: 'prchs:3' }],
+        // [{ text: '🎦 Рилс-аутсорс', callback_data: 'prchs:3' }],
       ]
     }
   }
@@ -112,6 +124,7 @@ module.exports = {
   mainMenu,
   goHome,
   moreOrGoHome,
+  cancel,
   purchase,
   difficulty,
   hashtags,

@@ -61,7 +61,6 @@ const forwardExpertAwaiting = async (msg) => {
 }
 
 const ideaAwaiting = async (msg) => {
-  console.log(msg)
   const chatId = msg.chat.id;
   const message = 'Отлично. Укажите, насколько сложно снять такой ролик, где 1 – очень просто, а 3 – очень сложно:';
 
@@ -95,10 +94,37 @@ const hashtagAwaiting = async (msg) => {
   await hashtag(msg);
 }
 
+const evaluateAwaiting = async (msg, state) => {
+  const videoId = state.split(':')[1];
+  const chatId = msg.chat.id;
+  const text = msg.text;
+  const message = `<b>Ваша оценка</b>
+<blockquote>${text}</blockquote>
+
+Отправляю эту оценку пользователю?`
+  const options = {
+    parse_mode: 'HTML',
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: '📝 Нет, изменить', callback_data: `evalt:edit:${videoId}` }],
+        [{ text: '✉️ Отправить', callback_data: `evalt:send:${videoId}` }],
+      ]
+    }
+  }
+
+  try {
+    await updateUserState(chatId, '');
+    await bot.sendMessage(chatId, message, options);
+  } catch (error) {
+    console.error('Не удалось начать оценку экспертом ролика пользователя:', error)
+  }
+}
+
 module.exports = {
   videoAwaiting,
   forwardExpertAwaiting,
   ideaAwaiting,
   difficultyAwaiting,
   hashtagAwaiting,
+  evaluateAwaiting,
 }

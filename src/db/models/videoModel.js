@@ -5,6 +5,8 @@ const videoSchema = new mongoose.Schema({
   chatId: Number,
   videoId: String,
   caption: String,
+  isEvaluated: { type: Boolean, default: false },
+  evaluation: { type: String, default: '' },
   createdAt: { type: Date, default: Date.now }
 });
 

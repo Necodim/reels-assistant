@@ -7,6 +7,8 @@ const { getUser, updateUserState, getUserByChatId } = require('../../db/service/
 const { getIdeaById, updateIdeaById, deleteIdeaById } = require('../../db/service/ideaService');
 const { checkDailyLimit, fetchIdeaForUser } = require('../../db/service/userIdeasService');
 const { createFavoriteIdea } = require('../../db/service/favoriteIdeaService');
+const { getVideoById, updateVideoById, setVideoEvaluateTo } = require('../../db/service/videoService');
+const message = require('../events/message');
 
 const handleError = (error, callbackQuery) => {
   if (error.message === 'Новые идеи не найдены') {
@@ -63,7 +65,6 @@ const getIdea = async (callbackQuery) => {
 Что вам доступно сейчас:
 💡 Библиотека идей для рилс без лимитов за 990₽/месяц;
 🛟 Рилс-ассистент: докрутит идею видео, даст обратную связь и напомнит о предстоящих публикациях за 2990₽/месяц;
-🎦 Рилс-аутсорс: смонтирует рилс из ваших кадров 20900₽/месяц
 
 Вы можете приобрести доступ, нажав на одну из кнопок ниже:`;
       const options = buttons.purchase.user;
@@ -168,7 +169,76 @@ const hashtag = async (callbackQuery) => {
 }
 
 const getVideo = async (callbackQuery) => {
+  const chatId = callbackQuery.from.id;
+  const message = `Оцените ролик пользователя. Принимается только текстовое описание без вложений.
 
+Для удобства мы подготовили для вас шаблон:
+<pre>Суть видео:
+Заголовок:
+Целевое действие:
+Видеоряд:
+Что улучшить:</pre>
+
+Нажмите на текст шаблона, чтобы скопировать его.`;
+  
+  try {
+    const video = await getNextUnratedVideo();
+    await setVideoEvaluateTo(video.id, true);
+    const videoMessage = await sendVideoToBot(chatId, video.videoId, video.caption);
+    const options = {...buttons.cancel.videoEvaluate(videoMessage.id), parse_mode: 'HTML'};
+    await bot.sendMessage(chatId, message, options);
+    await updateUserState(chatId, 'evaluateAwaiting');
+  } catch (error) {
+    handleError(error, callbackQuery);
+  }
+}
+
+const cancelVideoEvaluate = async (callbackQuery) => {
+  const chatId = callbackQuery.from.id;
+  const videoId = callbackQuery.data.split(':')[1];
+  const messageWithVideoToDelete = callbackQuery.data.split(':')[2];
+  try {
+    await updateUserState(chatId, '');
+    await setVideoEvaluateTo(videoId, true);
+    await bot.deleteMessage(chatId, callbackQuery.message.message_id);
+    await bot.deleteMessage(chatId, messageWithVideoToDelete);
+  } catch (error) {
+    handleError(error, callbackQuery);
+  }
+}
+
+const editEvaluateMessage = async (callbackQuery) => {
+  const chatId = callbackQuery.from.id;
+  const videoId = callbackQuery.data.split(':')[2];
+  const message = 'Пришлите новый вариант оценки ролика';
+
+  try {
+    await setVideoEvaluateTo(videoId, true);
+    await bot.sendMessage(chatId, message);
+    await updateUserState(chatId, 'evaluateAwaiting');
+  } catch (error) {
+    handleError(error, callbackQuery);
+  }
+}
+
+const sendEvaluateMessage = async (callbackQuery) => {
+  const chatId = callbackQuery.from.id;
+  const text = callbackQuery.message.text;
+  const videoId = callbackQuery.data.split(':')[2];
+  const updateData = {
+    isEvaluated: true,
+    evaluation: text,
+  }
+  const message = 'Оценка отправлена пользователю';
+
+  try {
+    const video = await updateVideoById(videoId, updateData);
+    await bot.sendMessage(chatId, message, options);
+    await updateUserState(chatId, '');
+    await bot.sendMessage(video.chatId, video.evaluation);
+  } catch (error) {
+    handleError(error, callbackQuery);
+  }
 }
 
 const toPush = async (callbackQuery) => {
@@ -191,6 +261,7 @@ const test = async (callbackQuery) => {
   console.log(callbackQuery);
   try {
     await bot.answerCallbackQuery(callbackQuery.id, { text: 'Тест успешно проведён' });
+    await bot.sendMessage(callbackQuery.from.id, 'Тест успешно проведён');
   } catch (error) {
     handleError(error, callbackQuery);
   }
@@ -207,6 +278,9 @@ module.exports = {
   difficulty,
   hashtag,
   getVideo,
+  cancelVideoEvaluate,
+  editEvaluateMessage,
+  sendEvaluateMessage,
   toPush,
   channelMessageDelete,
   test,

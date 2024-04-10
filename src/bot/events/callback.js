@@ -35,6 +35,26 @@ module.exports = async (callbackQuery) => {
     case 'hshtg':
       await callback.hashtag(callbackQuery);
       break;
+    case 'getVideo':
+      await callback.getVideo(callbackQuery);
+      break;
+    case 'cnlve':
+      await callback.cancelVideoEvaluate(callbackQuery);
+      break;
+    case 'evalt':
+      switch (action) {
+        case 'edit':
+          await callback.editEvaluateMessage(callbackQuery);
+          break;
+        case 'send':
+          await callback.sendEvaluateMessage(callbackQuery);
+          break;
+        default:
+          console.log(`Неизвестный action (${action}) для callback_data_query: ${data}`);
+          await bot.sendMessage(chatId, `Неизвестный action (${action}) для callback_data_query: ${data}`);
+          break;
+      }
+      break;
     case 'chanl':
       switch (action) {
         case 'del':
