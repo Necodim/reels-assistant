@@ -89,7 +89,7 @@ const purchase = {
     return {
       reply_markup: {
         inline_keyboard: [
-          [{ text: '🔗 Оформить подписку', url: 'tg://resolve?domain=reels_assistant_bot&appname=payment&' + link }],
+          [{ text: '🔗 Оформить подписку', url: link }],
           [{ text: '🏠 Главное меню', callback_data: 'home' }],
         ]
       }

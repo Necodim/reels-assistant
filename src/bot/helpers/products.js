@@ -1,6 +1,6 @@
 const link = (name, amount) => {
   // http://api.reelsassistant.ru/cloudpayments?
-  return `amount=${encodeURIComponent(amount)}&name=${encodeURIComponent(name)}`;
+  return `tg://resolve?domain=reels_assistant_bot&appname=cloudpayments&amount=${encodeURIComponent(amount)}&name=${encodeURIComponent(name)}`;
 }
 
 const products = [
