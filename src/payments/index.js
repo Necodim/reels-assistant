@@ -19,7 +19,7 @@ app.get('/cloudpayments', (req, res) => {
     const amount = req.query.amount;
     const name = req.query.name;
 
-    res.redirect(`/cloudpayments.html?amount=${encodeURIComponent(amount)}&name=${encodeURIComponent(name)}`);
+    res.redirect(`/src/payments/cloudpayments.html?amount=${encodeURIComponent(amount)}&name=${encodeURIComponent(name)}`);
   } catch (error) {
     res.status(500).send('Внутренняя ошибка сервера');
   }
