@@ -1,22 +1,6 @@
-const language = 'ru-RU'
-const tg = window.Telegram.WebApp;
-
-const getPaymentData = () => {
-  const urlParams = new URLSearchParams(tg.initData);
-  const amount = urlParams.get('amount');
-  const name = urlParams.get('name');
-  document.getElementById('payment-amount').innerHTML = amount;
-  document.getElementById('payment-name').innerHTML = name;
-  const data = {
-    amount: amount,
-    name: name
-  }
-  return data;
-}
-
 const pay = (data) => {
   var widget = new cp.CloudPayments({
-    language: language
+    language: 'ru-RU'
   })
   widget.pay('charge',
     {
@@ -55,60 +39,114 @@ const pay = (data) => {
   )
 }
 
+const validateName = (name) => {
+  const regex = /^[a-zA-Zа-яА-ЯёЁüÜöÖäÄß\s'-]+$/;
+  if (!name) {
+      return { valid: false, message: 'Имя не может быть пустым.' };
+  }
+  if (name.length > 50) {
+      return { valid: false, message: 'Имя не должно превышать 50 символов.' };
+  }
+  if (!regex.test(name)) {
+      return { valid: false, message: 'Имя содержит недопустимые символы.' };
+  }
+  return { valid: true, message: 'Имя валидно.' };
+}
+
+const validateSurname = (name) => {
+  const regex = /^[a-zA-Zа-яА-ЯёЁüÜöÖäÄß\s'-]+$/;
+  if (!name) {
+      return { valid: false, message: 'Фамилия не может быть пустой.' };
+  }
+  if (name.length > 50) {
+      return { valid: false, message: 'Фамилия не должна превышать 50 символов.' };
+  }
+  if (!regex.test(name)) {
+      return { valid: false, message: 'Фамилия содержит недопустимые символы.' };
+  }
+  return { valid: true, message: 'Фамилия валидна.' };
+}
+
+const validatePhone = (phoneNumber) => {
+  const regex = /^\+[1-9]\d{6,14}$/;
+  if (!phoneNumber) {
+      return { valid: false, message: 'Номер телефона не может быть пустым.' };
+  }
+  if (phoneNumber.length < 8) {
+      return { valid: false, message: 'Номер телефона должен содержать хотя бы 8 символов, включая знак +.' };
+  }
+  if (phoneNumber.length > 16) {
+      return { valid: false, message: 'Номер телефона не должен превышать 16 символов, включая знак +.' };
+  }
+  if (!regex.test(phoneNumber)) {
+      return { valid: false, message: 'Номер телефона должен быть в международном формате, начиная с '+', за которым следуют от 7 до 15 цифр.' };
+  }
+  return { valid: true, message: 'Номер телефона валиден.' };
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-  if (!!tg) {
-    tg.ready()
-    tg.expand();
+  const tg = window.Telegram.WebApp;
 
-    if (!!tg.initDataUnsafe?.user?.firstName) {
-      document.getElementById('firstName').closest('.input-block').remove();
-      data.user.firstName = tg.initDataUnsafe?.user?.firstName;
+  const getPaymentData = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const amount = urlParams.get('amount');
+    const name = urlParams.get('name');
+    document.getElementById('payment-amount').innerHTML = amount;
+    document.getElementById('payment-name').innerHTML = name;
+    const data = {
+      amount: amount,
+      name: name
     }
-    if (!!tg.initDataUnsafe?.user?.lastName) {
-      document.getElementById('lastName').closest('.input-block').remove();
-      datauser.lastName = tg.initDataUnsafe?.user?.lastName;
-    }
-
-    document.getElementById('request-phone').addEventListener('click', async () => {
-      try {
-        const contact = await tg.requestContact();
-        console.log(contact)
-        const phoneNumber = contact.phoneNumber;
-        const data = {
-          payment: getPaymentData(),
-          user: {
-            chatId: tg.initDataUnsafe?.user?.id,
-            firstName: tg.initDataUnsafe?.user?.firstName,
-            lastName: tg.initDataUnsafe?.user?.lastName,
-            phone: phoneNumber
-          }
-        }
-        pay(data);
-      } catch (error) {
-        console.error(error);
-      }
-    });
-  } else {
-    document.querySelector('#firstName').addEventListener('input', (e) => {
-      data.user.firstName = e.target.value;
-    });
-    document.querySelector('#lastName').addEventListener('input', (e) => {
-      data.user.lastName = e.target.value;
-    });
+    return data;
   }
 
+  const getUserData = () => {
+    const initData = new URLSearchParams(tg.initData);
+    const user = JSON.parse(initData.get('user'));
+    const data = {
+      id: user.id,
+      firstName: user.first_name,
+      lastName: user.last_name,
+      phone: ''
+    }
+    return data;
+  }
+
+  tg.ready()
+  tg.expand();
+  tg.enableClosingConfirmation();
+  document.getElementById('firstName').value = getUserData().firstName;
+  document.getElementById('lastName').value = getUserData.lastName;
+  
   const form = document.getElementById('paymentForm');
   form.addEventListener('submit', (event) => {
     event.preventDefault();
-    const phoneInput = document.getElementById('phone');
-    const phoneNumber = phoneInput.value;
+    const inputFirstName = document.getElementById('firstName');
+    const inputLastName = document.getElementById('lastName');
+    const inputPhone = document.getElementById('phone');
+
+    if (!!inputFirstName.value && !!inputLastName.value && !!inputPhone.value) {
+      tg.showAlert('Заполните все поля формы. Это необходимо для проведения платежа.');
+      return false;
+    } else if (!validateName(inputFirstName.value).valid) {
+      tg.showAlert(validateName(inputFirstName.value).message, () => inputFirstName.focus());
+      return false;
+    } else if (!validateSurname(inputLastName.value).valid) {
+      tg.showAlert(validateSurname(inputLastName.message), () => inputLastName.focus());
+      return false;
+    } else if (!validatePhone(inputPhone.value).valid) {
+      tg.showAlert(validatePhone(inputPhone.value).message, () => inputPhone.focus());
+      return false;
+    }
+    const phone = ;
+
     const data = {
       payment: getPaymentData(),
       user: {
-        chatId: tg.initDataUnsafe?.user?.id,
-        firstName: tg.initDataUnsafe?.user?.firstName,
-        lastName: tg.initDataUnsafe?.user?.lastName,
-        phone: phoneNumber
+        chatId: getUserData().id,
+        firstName: inputFirstName.value,
+        lastName: inputLastName.value,
+        phone: inputPhone.value
       }
     }
     pay(data);
