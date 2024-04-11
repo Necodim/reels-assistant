@@ -87,14 +87,18 @@ const validatePhone = (phoneNumber) => {
 document.addEventListener('DOMContentLoaded', () => {
   const tg = window.Telegram.WebApp;
 
+  const setPaymentData = () => {
+    const data = getPaymentData();
+    document.getElementById('payment-amount').innerHTML = data.amount;
+    document.getElementById('payment-name').innerHTML = data.name;
+  }
+
   const getPaymentData = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const amount = urlParams.get('amount');
     const name = urlParams.get('name');
-    document.getElementById('payment-amount').innerHTML = amount;
-    document.getElementById('payment-name').innerHTML = name;
     const data = {
-      amount: amount,
+      amount: parseInt(amount, 10),
       name: name
     }
     return data;
@@ -111,6 +115,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     return data;
   }
+
+  setPaymentData();
 
   tg.ready()
   tg.expand();
@@ -138,7 +144,6 @@ document.addEventListener('DOMContentLoaded', () => {
       tg.showAlert(validatePhone(inputPhone.value).message, () => inputPhone.focus());
       return false;
     }
-    const phone = ;
 
     const data = {
       payment: getPaymentData(),
