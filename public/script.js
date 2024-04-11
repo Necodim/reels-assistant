@@ -8,11 +8,11 @@ const pay = (data) => {
       description: data.payment.name,
       amount: data.payment.amount,
       currency: 'RUB',
-      accountId: data.user.chatId,
+      accountId: data.user.id,
       skin: 'mini',
       autoClose: 3,
       data: {
-        telegramId: data.user.chatId
+        telegram: data.user.id
       },
       // configuration: {
       //     common: {
