@@ -1,18 +1,29 @@
+const link = (name, amount) => {
+  // http://api.reelsassistant.ru/cloudpayments?
+  return `amount=${encodeURIComponent(amount)}&name=${encodeURIComponent(name)}`;
+}
+
 const products = [
   {
     name: 'Доступ к боту',
-    link: 'https://c.cloudpayments.ru/payments/7c59a44201354876979e8ff5d637d2ee',
     price: 990,
+    get link() {
+      return link(this.name, this.price);
+    }
   },
   {
     name: 'Библиотека идей',
-    link: 'https://c.cloudpayments.ru/payments/d3aa040464c94860a0cbee1dff89f111',
     price: 990,
+    get link() {
+      return link(this.name, this.price);
+    }
   },
   {
     name: 'Рилс-ассистент',
-    link: 'https://c.cloudpayments.ru/payments/26df2518b9d642fabfb7adf85ad7136b',
     price: 2990,
+    get link() {
+      return link(this.name, this.price);
+    }
   }
 ];
 

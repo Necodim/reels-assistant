@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const app = express();
 const { formatDate, nextMonth } = require('../helpers/dateHelper');
 const { addSubscription, updateSubscriptionByCloudPaymentsId, getSubscriptionByCloudPaymentsId, removeSubscription } = require('../db/service/subscriptionService');
@@ -10,18 +11,26 @@ const { products } = require('../bot/helpers/products');
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.status(200).send(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <title>Сайт работает</title>
-    </head>
-    <body>
-      <h1>Хорошие новости!</h1>
-      <p>Я работаю стабильно.</p>
-    </body>
-    </html>
-  `);
+  res.status(200).sendFile(path.join(__dirname, '..', '..', 'index.html'));
+});
+
+app.get('/cloudpayments', (req, res) => {
+  try {
+    const amount = req.query.amount;
+    const name = req.query.name;
+
+    res.redirect(`/cloudpayments.html?amount=${encodeURIComponent(amount)}&name=${encodeURIComponent(name)}`);
+  } catch (error) {
+    res.status(500).send('Внутренняя ошибка сервера');
+  }
+});
+
+app.get('/cloudpayments/success', (req, res) => {
+  res.status(200).sendFile(path.join(__dirname, 'success.html'));
+});
+
+app.get('/cloudpayments/fail', (req, res) => {
+  res.status(200).sendFile(path.join(__dirname, 'fail.html'));
 });
 
 // Обработчик вебхука check

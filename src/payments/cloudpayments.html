@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Оплата подписки</title>
+  <link href="style.css" rel="stylesheet">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://widget.cloudpayments.ru/bundles/cloudpayments.js"></script>
+</head>
+<body>
+  <div class="form-wrapper">
+    <h1>Оформление подписки</h1>
+    <p>Заполните форму для перехода к оплате</p>
+    <form id="paymentForm">
+      <div class="input-block">
+        <label for="firstName">Имя:</label>
+        <input type="text" id="firstName" name="firstName" placeholder="Иван" required>
+      </div>
+      <div class="input-block">
+        <label for="lastName">Фамилия:</label>
+        <input type="text" id="lastName" name="lastName" placeholder="Петров" required>
+      </div>
+      <div class="input-block">
+        <label for="phone">Номер телефона:</label>
+        <input type="tel" id="phone" name="phone" pattern="^\+[1-9]\d{6,14}$" placeholder="+79991234567" required>
+      </div>
+      <button type="submit">Перейти к оплате</button>
+    </form>
+    <button type="button" id="request-phone">Поделиться номером телефона</button>
+  </div>
+  <script src="cloudpaymentsWidget.js"></script>
+</body>
+</html>
