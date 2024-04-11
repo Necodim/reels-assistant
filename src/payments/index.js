@@ -53,22 +53,26 @@ app.post('/cloudpayments/pay', async (req, res) => {
   const { Data, Amount, SubscriptionId } = req.body;
 
   try {
-    const chatId = Data.telegram;
-    const price = parseInt(Amount, 10);
-    const name = products.find(product => product.price === price);
-    const user = await getUserByChatId(chatId);
-    const subscriptionDetails = {
-      userId: user.id,
-      name: name,
-      price: price,
-      subscriptionId: SubscriptionId,
-      end: nextMonth(),
+    if (!!req.body) {
+      const chatId = Data.telegram;
+      const price = parseInt(Amount, 10);
+      const name = products.find(product => product.price === price);
+      const user = await getUserByChatId(chatId);
+      const subscriptionDetails = {
+        userId: user.id,
+        name: name,
+        price: price,
+        subscriptionId: SubscriptionId,
+        end: nextMonth(),
+      }
+      await addSubscription(user.id, subscriptionDetails);
+      const message = 'Вы успешно оформили подписку. Теперь вам доступен новый функционал.'
+      const options = buttons.goHome;
+      await bot.sendMessage(user.chatId, message, options);
+      res.status(200).send({ code: 0 });
+    } else {
+      throw Error('Нет данных от CloudPayments')
     }
-    await addSubscription(user.id, subscriptionDetails);
-    const message = 'Вы успешно оформили подписку. Теперь вам доступен новый функционал.'
-    const options = buttons.goHome;
-    await bot.sendMessage(user.chatId, message, options);
-    res.status(200).send({ code: 0 });
   } catch (error) {
     console.error('Ошибка при сохранении подписки:', error);
     res.status(500).send({ code: 13 });
@@ -81,37 +85,41 @@ app.post('/cloudpayments/recurrent', async (req, res) => {
   console.log('recurrent', req.body);
   const { Id, Amount, Status, FailedTransactionsNumber, NextTransactionDate } = req.body;
   let message, options;
-  
-  try {
-    if (Status !== 'Active') {
-      const subscription = getSubscriptionByCloudPaymentsId(Id);
-      const user = getUserById(subscription.userId);
-      const amount = parseInt(Amount, 10);
 
-      switch (Status) {
-        case 'PastDue':
-          message = `Подписка просрочена. Нам не удалось списать ежемесячный платёж. Для платежа требуется ${amount}₽. `;
-          message += FailedTransactionsNumber < 2 ? 'Пополните баланс, мы попробуем списать ежемесячный платёж чуть позже.' : 'Проверьте баланс. После следующей попытки подписка отменится.';
-          options = buttons.goHome;
-          await bot.sendMessage(user.chatId, message, options);
-          break;
-        default:
-          message = 'Подписка отменена. Вы можете оформить подписку заново, нажав кнопку ниже 👇';
-          options = buttons.purchase.user;
-          await removeSubscription(user.id, subscription.id);
-          await bot.sendMessage(user.chatId, message, options);
-          break;
+  try {
+    if (!!req.body) {
+      if (Status !== 'Active') {
+        const subscription = getSubscriptionByCloudPaymentsId(Id);
+        const user = getUserById(subscription.userId);
+        const amount = parseInt(Amount, 10);
+  
+        switch (Status) {
+          case 'PastDue':
+            message = `Подписка просрочена. Нам не удалось списать ежемесячный платёж. Для платежа требуется ${amount}₽. `;
+            message += FailedTransactionsNumber < 2 ? 'Пополните баланс, мы попробуем списать ежемесячный платёж чуть позже.' : 'Проверьте баланс. После следующей попытки подписка отменится.';
+            options = buttons.goHome;
+            await bot.sendMessage(user.chatId, message, options);
+            break;
+          default:
+            message = 'Подписка отменена. Вы можете оформить подписку заново, нажав кнопку ниже 👇';
+            options = buttons.purchase.user;
+            await removeSubscription(user.id, subscription.id);
+            await bot.sendMessage(user.chatId, message, options);
+            break;
+        }
+      } else {
+        const subscription = await updateSubscriptionByCloudPaymentsId(Id, { end: NextTransactionDate });
+        const date = formatDate(subscription.end, 'd MMMM, HH:mm');
+        const user = getUserById(subscription.userId);
+  
+        message = `Подписка успешно продлена. Дата следующего списания: ${date}`
+        options = buttons.goHome;
+        await bot.sendMessage(user.chatId, message, options);
       }
+      res.status(200).send({ code: 0 });
     } else {
-      const subscription = await updateSubscriptionByCloudPaymentsId(Id, { end: NextTransactionDate });
-      const date = formatDate(subscription.end, 'd MMMM, HH:mm');
-      const user = getUserById(subscription.userId);
-      
-      message = `Подписка успешно продлена. Дата следующего списания: ${date}`
-      options = buttons.goHome;
-      await bot.sendMessage(user.chatId, message, options);
+      throw Error('Нет данных от CloudPayments')
     }
-    res.status(200).send({ code: 0 });
   } catch (error) {
     console.error('Ошибка при отмене подписки', error);
     res.status(500).send({ code: 13 });

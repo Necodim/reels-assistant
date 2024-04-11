@@ -1,4 +1,4 @@
-const pay = (data) => {
+const pay = (data, tg) => {
   var widget = new cp.CloudPayments({
     language: 'ru-RU'
   });
@@ -189,6 +189,6 @@ document.addEventListener('DOMContentLoaded', () => {
       },
       theme: tg.colorScheme === 'dark' ? 'modern' : 'mini'
     }
-    pay(data);
+    pay(data, tg);
   });
 });
