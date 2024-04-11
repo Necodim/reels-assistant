@@ -1,6 +1,6 @@
 const products = [
   {
-    name: 'Подписка на бота',
+    name: 'Доступ к боту',
     link: 'https://c.cloudpayments.ru/payments/7c59a44201354876979e8ff5d637d2ee',
     price: 990,
   },

@@ -43,7 +43,6 @@ const getUserSubscriptions = async (userId) => {
     ]);
 
     if (userWithSubscriptions.length > 0) {
-      console.log('Информация о подписках пользователя:', userWithSubscriptions[0].subscriptionsInfo);
       return userWithSubscriptions[0].subscriptionsInfo;
     } else {
       console.log('Пользователь не найден или у него нет подписок');

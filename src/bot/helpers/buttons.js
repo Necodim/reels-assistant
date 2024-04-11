@@ -81,7 +81,18 @@ const purchase = {
         // [{ text: '💡 Библиотека идей', callback_data: 'prchs:1' }],
         // [{ text: '🛟 Рилс-ассистент', callback_data: 'prchs:2' }],
         // [{ text: '🎦 Рилс-аутсорс', callback_data: 'prchs:3' }],
+        [{ text: '🏠 Главное меню', callback_data: 'home' }],
       ]
+    }
+  },
+  cloudpayments: (link) => {
+    return {
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: '🔗 Оформить подписку', url: link }],
+          [{ text: '🏠 Главное меню', callback_data: 'home' }],
+        ]
+      }
     }
   }
 }
