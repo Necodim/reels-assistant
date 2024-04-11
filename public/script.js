@@ -33,7 +33,7 @@ const pay = (data, tg) => {
       description: data.payment.name,
       amount: data.payment.amount,
       currency: 'RUB',
-      accountId: data.user.id,
+      accountId: String(data.user.id),
       skin: data.theme,
       autoClose: 3,
       data: {
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputLastName = document.getElementById('lastName');
   const inputPhone = document.getElementById('phone');
   inputPhone.addEventListener('input', (e) => e.target.value = e.target.value.replace(/[^\d+]/g, ''));
-  
+
   form.addEventListener('submit', (event) => {
     event.preventDefault();
 
