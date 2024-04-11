@@ -41,12 +41,14 @@ app.get('/cloudpayments/fail', (req, res) => {
 
 // Обработчик вебхука check
 app.post('/cloudpayments/check', (req, res) => {
+  console.log('check req', req);
   console.log('check', req.body);
   res.status(200).send({ code: 0 });
 });
 
 // Обработчик вебхука pay
 app.post('/cloudpayments/pay', async (req, res) => {
+  console.log('pay req', req);
   console.log('pay', req.body);
   const { Data, Amount, SubscriptionId } = req.body;
 
@@ -75,6 +77,7 @@ app.post('/cloudpayments/pay', async (req, res) => {
 
 // Обработчик вебхука recurrent
 app.post('/cloudpayments/recurrent', async (req, res) => {
+  console.log('recurrent req', req);
   console.log('recurrent', req.body);
   const { Id, Amount, Status, FailedTransactionsNumber, NextTransactionDate } = req.body;
   let message, options;

@@ -34,7 +34,7 @@ const pay = (data) => {
       amount: data.payment.amount,
       currency: 'RUB',
       accountId: data.user.id,
-      skin: 'mini',
+      skin: data.theme,
       autoClose: 3,
       data: {
         CloudPayments: {
@@ -163,6 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputFirstName = document.getElementById('firstName');
     const inputLastName = document.getElementById('lastName');
     const inputPhone = document.getElementById('phone');
+    inputPhone.addEventListener('input', (e) => e.target.value = e.target.value.replace(/[^\d+]/g, ''));
 
     if (!validateName(inputFirstName.value).valid && !validateSurname(inputLastName.value).valid && !validatePhone(inputPhone.value).valid) {
       tg.showAlert('Заполните все поля формы. Это необходимо для проведения платежа.');
@@ -185,7 +186,8 @@ document.addEventListener('DOMContentLoaded', () => {
         firstName: inputFirstName.value,
         lastName: inputLastName.value,
         phone: inputPhone.value
-      }
+      },
+      theme: tg.colorScheme === 'dark' ? 'modern' : 'mini'
     }
     pay(data);
   });
