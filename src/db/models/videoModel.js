@@ -7,7 +7,7 @@ const videoSchema = new mongoose.Schema({
   caption: String,
   isEvaluated: { type: Boolean, default: false },
   evaluation: { type: String, default: '' },
-  evaluatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  evaluatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: false },
   createdAt: { type: Date, default: Date.now }
 }, {
   timestamps: true
