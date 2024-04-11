@@ -11,6 +11,12 @@
 <body>
   <div class="form-wrapper">
     <h1>Оформление подписки</h1>
+    <div>
+      <div>
+        <span>Название: </span><span id="payment-name"></span>
+        <span>Сумма: </span><span id="payment-amount"></span>
+      </div>
+    </div>
     <p>Заполните форму для перехода к оплате</p>
     <form id="paymentForm">
       <div class="input-block">
@@ -30,5 +36,7 @@
     <button type="button" id="request-phone">Поделиться номером телефона</button>
   </div>
   <script src="script.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/eruda"></script>
+  <script>eruda.init()</script>
 </body>
 </html>

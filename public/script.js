@@ -5,6 +5,8 @@ const getPaymentData = () => {
   const urlParams = new URLSearchParams(window.location.search);
   const amount = urlParams.get('amount');
   const name = urlParams.get('name');
+  document.getElementById('payment-amount').innerHTML = amount;
+  document.getElementById('payment-name').innerHTML = name;
   const data = {
     amount: amount,
     name: name
