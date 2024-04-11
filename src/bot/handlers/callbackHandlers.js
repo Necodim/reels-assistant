@@ -1,5 +1,5 @@
 const bot = require('../bot');
-const { sendVideoToBot, sendIdeaToChannel } = require('../send');
+const { sendVideoToBot, sendIdeaOutside, sendAnswerOutside } = require('../send');
 const buttons = require('../helpers/buttons');
 const products = require('../helpers/products');
 const { findHashtagByNumber } = require('../helpers/hashtags');
@@ -218,7 +218,7 @@ const hashtag = async (callbackQuery) => {
     await updateUserState(chatId, '');
     await bot.sendMessage(chatId, message, options);
     const btns = buttons.channel.delete(videoId);
-    await sendIdeaToChannel(videoId, btns);
+    await sendIdeaOutside(videoId, btns);
   } catch (error) {
     handleError(error, callbackQuery);
   }
@@ -312,6 +312,7 @@ const sendEvaluateMessage = async (callbackQuery) => {
       parse_mode: 'HTML'
     };
     await bot.sendMessage(video.chatId, videoMessage, videoOptions);
+    await sendAnswerOutside(videoId);
   } catch (error) {
     handleError(error, callbackQuery);
   }
