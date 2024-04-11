@@ -3,7 +3,7 @@ const path = require('path');
 const app = express();
 const { formatDate, nextMonth } = require('../helpers/dateHelper');
 const { addSubscription, updateSubscriptionByCloudPaymentsId, getSubscriptionByCloudPaymentsId, removeSubscription } = require('../db/service/subscriptionService');
-const { getUserByUsername, getUserById } = require('../db/service/userService');
+const { getUserByUsername, getUserById, getUserByChatId } = require('../db/service/userService');
 const bot = require('../bot/bot');
 const { buttons } = require('../bot/helpers/buttons');
 const { products } = require('../bot/helpers/products');
@@ -12,14 +12,16 @@ app.use(express.json());
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
-  res.status(200).sendFile(path.join(__dirname, '..', '..', 'index.html'));
+  const amount = req.query.amount;
+  const name = req.query.name;
+  const params = `?amount=${encodeURIComponent(amount)}&name=${encodeURIComponent(name)}`;
+  res.redirect(`/index.html${params}`);
 });
 
 app.get('/cloudpayments', (req, res) => {
   try {
     const amount = req.query.amount;
     const name = req.query.name;
-    console.log(name, amount);
     const params = `?amount=${encodeURIComponent(amount)}&name=${encodeURIComponent(name)}`;
     res.redirect(`/index.html${params}`);
   } catch (error) {
@@ -28,27 +30,31 @@ app.get('/cloudpayments', (req, res) => {
 });
 
 app.get('/cloudpayments/success', (req, res) => {
+  console.log('success', req.body);
   res.status(200).sendFile(path.join(__dirname, 'success.html'));
 });
 
 app.get('/cloudpayments/fail', (req, res) => {
+  console.log('fail', req.body);
   res.status(200).sendFile(path.join(__dirname, 'fail.html'));
 });
 
 // Обработчик вебхука check
 app.post('/cloudpayments/check', (req, res) => {
+  console.log('check', req.body);
   res.status(200).send({ code: 0 });
 });
 
 // Обработчик вебхука pay
 app.post('/cloudpayments/pay', async (req, res) => {
+  console.log('pay', req.body);
   const { Data, Amount, SubscriptionId } = req.body;
 
   try {
-    const username = Data.telegram.replace('@', '');
+    const chatId = Data.telegram;
     const price = parseInt(Amount, 10);
     const name = products.find(product => product.price === price);
-    const user = await getUserByUsername(username);
+    const user = await getUserByChatId(chatId);
     const subscriptionDetails = {
       userId: user.id,
       name: name,
@@ -69,6 +75,7 @@ app.post('/cloudpayments/pay', async (req, res) => {
 
 // Обработчик вебхука recurrent
 app.post('/cloudpayments/recurrent', async (req, res) => {
+  console.log('recurrent', req.body);
   const { Id, Amount, Status, FailedTransactionsNumber, NextTransactionDate } = req.body;
   let message, options;
   
