@@ -69,22 +69,21 @@ document.addEventListener('DOMContentLoaded', () => {
       datauser.lastName = tg.initDataUnsafe?.user?.lastName;
     }
 
-    document.getElementById('request-phone').addEventListener('click', () => {
+    document.getElementById('request-phone').addEventListener('click', async () => {
       try {
-        const contact = tg.requestContact((contact) => {
-          const phoneNumber = contact.phoneNumber;
-          const data = {
-            payment: getPaymentData(),
-            user: {
-              chatId: tg.initDataUnsafe?.user?.id,
-              firstName: tg.initDataUnsafe?.user?.firstName,
-              lastName: tg.initDataUnsafe?.user?.lastName,
-              phone: phoneNumber
-            }
+        const contact = await tg.requestContact();
+        console.log(contact)
+        const phoneNumber = contact.phoneNumber;
+        const data = {
+          payment: getPaymentData(),
+          user: {
+            chatId: tg.initDataUnsafe?.user?.id,
+            firstName: tg.initDataUnsafe?.user?.firstName,
+            lastName: tg.initDataUnsafe?.user?.lastName,
+            phone: phoneNumber
           }
-          pay(data);
-        });
-        console.log(contact);
+        }
+        pay(data);
       } catch (error) {
         console.error(error);
       }
