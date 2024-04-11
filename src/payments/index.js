@@ -9,6 +9,7 @@ const { buttons } = require('../bot/helpers/buttons');
 const { products } = require('../bot/helpers/products');
 
 app.use(express.json());
+app.use(express.static('public'));
 
 app.get('/', (req, res) => {
   res.status(200).sendFile(path.join(__dirname, '..', '..', 'index.html'));
@@ -18,8 +19,7 @@ app.get('/cloudpayments', (req, res) => {
   try {
     const amount = req.query.amount;
     const name = req.query.name;
-
-    res.redirect(`/src/payments/cloudpayments.html?amount=${encodeURIComponent(amount)}&name=${encodeURIComponent(name)}`);
+    res.redirect(`/index.html?amount=${encodeURIComponent(amount)}&name=${encodeURIComponent(name)}`);
   } catch (error) {
     res.status(500).send('Внутренняя ошибка сервера');
   }
