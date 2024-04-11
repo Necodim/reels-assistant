@@ -19,15 +19,15 @@
     <form id="paymentForm">
       <div class="input-block">
         <label for="firstName">Имя:</label>
-        <input type="text" id="firstName" name="firstName" placeholder="Иван" required>
+        <input type="text" id="firstName" name="firstName" placeholder="Иван" autocomplete="given-name" required>
       </div>
       <div class="input-block">
         <label for="lastName">Фамилия:</label>
-        <input type="text" id="lastName" name="lastName" placeholder="Петров" required>
+        <input type="text" id="lastName" name="lastName" placeholder="Петров" autocomplete="family-name" required>
       </div>
       <div class="input-block">
         <label for="phone">Номер телефона:</label>
-        <input type="tel" id="phone" name="phone" pattern="^\+[1-9]\d{6,14}$" placeholder="+79991234567" required>
+        <input type="tel" id="phone" name="phone" pattern="^\+[1-9]\d{6,14}$" placeholder="+79991234567" autocomplete="tel" required>
       </div>
       <button type="submit">Перейти к оплате</button>
     </form>

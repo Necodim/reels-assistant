@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
   tg.expand();
   tg.enableClosingConfirmation();
   document.getElementById('firstName').value = getUserData().firstName;
-  document.getElementById('lastName').value = getUserData.lastName;
+  document.getElementById('lastName').value = getUserData().lastName;
   
   const form = document.getElementById('paymentForm');
   form.addEventListener('submit', (event) => {
