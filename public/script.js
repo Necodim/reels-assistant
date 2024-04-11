@@ -2,7 +2,7 @@ const language = 'ru-RU'
 const tg = window.Telegram.WebApp;
 
 const getPaymentData = () => {
-  const urlParams = new URLSearchParams(window.location.search);
+  const urlParams = new URLSearchParams(tg.initData);
   const amount = urlParams.get('amount');
   const name = urlParams.get('name');
   document.getElementById('payment-amount').innerHTML = amount;
@@ -12,14 +12,6 @@ const getPaymentData = () => {
     name: name
   }
   return data;
-}
-
-const data = {
-  payment: getPaymentData(),
-  user: {
-    firstName: '',
-    lastName: ''
-  }
 }
 
 const pay = (data) => {
@@ -78,17 +70,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.getElementById('request-phone').addEventListener('click', () => {
-      tg.requestContact().then((contact) => {
-        const userPhone = contact.phoneNumber;
-        data.user = {
-          firstName: tg.initDataUnsafe?.user?.firstName,
-          lastName: tg.initDataUnsafe?.user?.lastName,
-          phone: userPhone
-        }
-        pay(data);
-      }).catch((error) => {
+      try {
+        const contact = tg.requestContact((contact) => {
+          const phoneNumber = contact.phoneNumber;
+          const data = {
+            payment: getPaymentData(),
+            user: {
+              chatId: tg.initDataUnsafe?.user?.id,
+              firstName: tg.initDataUnsafe?.user?.firstName,
+              lastName: tg.initDataUnsafe?.user?.lastName,
+              phone: phoneNumber
+            }
+          }
+          pay(data);
+        });
+        console.log(contact);
+      } catch (error) {
         console.error(error);
-      });
+      }
     });
   } else {
     document.querySelector('#firstName').addEventListener('input', (e) => {
@@ -104,7 +103,15 @@ document.addEventListener('DOMContentLoaded', () => {
     event.preventDefault();
     const phoneInput = document.getElementById('phone');
     const phoneNumber = phoneInput.value;
-    data.user.phone = phoneNumber;
+    const data = {
+      payment: getPaymentData(),
+      user: {
+        chatId: tg.initDataUnsafe?.user?.id,
+        firstName: tg.initDataUnsafe?.user?.firstName,
+        lastName: tg.initDataUnsafe?.user?.lastName,
+        phone: phoneNumber
+      }
+    }
     pay(data);
   });
 });

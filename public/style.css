@@ -13,7 +13,7 @@ p {
 
 .form-wrapper {
   width: calc(100% - 16px * 2);
-  height: auto;
+  /* height: auto; */
   padding: 16px;
 }
 
