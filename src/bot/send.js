@@ -50,7 +50,7 @@ const sendAnswerOutside = async (videoId) => {
 Ответ от @${user.username}:
 <blockquote>${video.evaluation}</blockquote>`;
 
-    const options = {caption: caption, message_thread_id: group.ideas, parse_mode: 'HTML'};
+    const options = {caption: caption, message_thread_id: group.answers, parse_mode: 'HTML'};
     await sendVideoToBot(group.id, video.videoId, options);
   } catch (error) {
     console.error('Не удалось отправить оценку эксперта в группу:', error);

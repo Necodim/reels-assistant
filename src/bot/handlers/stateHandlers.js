@@ -119,12 +119,14 @@ const evaluateAwaiting = async (msg, state) => {
       ]
     }
   }
-  const updateData = {
-    isEvaluated: true,
-    evaluation: text,
-  }
 
   try {
+    const user = getUserByChatId(chatId);
+    const updateData = {
+      isEvaluated: true,
+      evaluation: text,
+      evaluatedBy: user.id
+    }
     await updateVideoById(videoId, updateData);
     await updateUserState(chatId, '');
     await bot.sendMessage(chatId, message, options);

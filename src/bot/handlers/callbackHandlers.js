@@ -272,12 +272,14 @@ const editEvaluateMessage = async (callbackQuery) => {
   const chatId = callbackQuery.from.id;
   const videoId = callbackQuery.data.split(':')[2];
   const message = 'Пришлите новый вариант оценки ролика';
-  const updateData = {
-    isEvaluated: true,
-    evaluation: '',
-  }
-
+  
   try {
+    const user = await getUserByChatId(chatId);
+    const updateData = {
+      isEvaluated: true,
+      evaluation: '',
+      evaluatedBy: user.id
+    }
     await updateVideoById(videoId, updateData);
     await bot.sendMessage(chatId, message);
     await updateUserState(chatId, `evaluateAwaiting:${videoId}`);
