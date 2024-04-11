@@ -131,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputLastName = document.getElementById('lastName');
     const inputPhone = document.getElementById('phone');
 
-    if (!!inputFirstName.value && !!inputLastName.value && !!inputPhone.value) {
+    if (!validateName(inputFirstName.value).valid && !validateSurname(inputLastName.value).valid && !validatePhone(inputPhone.value).valid) {
       tg.showAlert('Заполните все поля формы. Это необходимо для проведения платежа.');
       return false;
     } else if (!validateName(inputFirstName.value).valid) {
