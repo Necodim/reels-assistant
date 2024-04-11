@@ -1,7 +1,32 @@
 const pay = (data) => {
   var widget = new cp.CloudPayments({
     language: 'ru-RU'
-  })
+  });
+
+  const receipt = {
+    Items: [
+         {
+            label: 'Подписка: ' + data.payment.name,
+            price: data.payment.amount,
+            quantity: 1.00,
+            amount: data.payment.amount,
+            vat: 20,
+            method: 0, // тег-1214 признак способа расчета - признак способа расчета
+            object: 0, // тег-1212 признак предмета расчета - признак предмета товара, работы, услуги, платежа, выплаты, иного предмета расчета
+        }
+    ],
+    taxationSystem: 0,
+    phone: data.user.phone,
+    isBso: false,
+    amounts:
+    {
+        electronic: data.payment.amount, // Сумма оплаты электронными деньгами
+        advancePayment: 0.00, // Сумма из предоплаты (зачетом аванса) (2 знака после точки)
+        credit: 0.00, // Сумма постоплатой(в кредит) (2 знака после точки)
+        provision: 0.00 // Сумма оплаты встречным предоставлением (сертификаты, др. мат.ценности) (2 знака после точки)
+    }
+};
+
   widget.pay('charge',
     {
       publicId: 'pk_edf0062f62cf19ad99627da61c2e7',
@@ -12,6 +37,14 @@ const pay = (data) => {
       skin: 'mini',
       autoClose: 3,
       data: {
+        CloudPayments: {
+          CustomerReceipt: receipt,
+          recurrent: {
+           interval: 'Month',
+           period: 1, 
+           customerReceipt: receipt
+          }
+        },
         telegram: data.user.id
       },
       // configuration: {
@@ -29,7 +62,7 @@ const pay = (data) => {
     onSuccess: function (options) {
       tg.close();
     },
-    onFail: function (reason, options) { // fail
+    onFail: function (reason, options) {
       //действие при неуспешной оплате
     },
     onComplete: function (paymentResult, options) { //Вызывается как только виджет получает от api.cloudpayments ответ с результатом транзакции.
