@@ -6,18 +6,24 @@ const link = (name, amount) => {
 const products = [
   {
     name: 'Доступ к боту',
-    link: `tg://resolve?domain=reels_assistant_bot&appname=cloudpayments&amount=990&name=${encodeURIComponent('Доступ к боту')}`,
     price: 990,
+    get link() {
+      return link(this.name, this.price);
+    }
   },
   {
     name: 'Библиотека идей',
-    link: `tg://resolve?domain=reels_assistant_bot&appname=cloudpayments&amount=990&name=${encodeURIComponent('Библиотека идей')}`,
     price: 990,
+    get link() {
+      return link(this.name, this.price);
+    }
   },
   {
     name: 'Рилс-ассистент',
-    link: `tg://resolve?domain=reels_assistant_bot&appname=cloudpayments&amount=2990&name=${encodeURIComponent('Рилс-ассистент')}`,
     price: 2990,
+    get link() {
+      return link(this.name, this.price);
+    }
   }
 ];
 

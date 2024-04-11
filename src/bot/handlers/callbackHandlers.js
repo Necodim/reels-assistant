@@ -119,10 +119,12 @@ const purchase = async (callbackQuery) => {
   const chatId = callbackQuery.from.id;
   const pNumber = parseInt(callbackQuery.data.split(':')[1], 10);
   const product = products.products[pNumber];
+  const link = product.link;
+  console.log(link);
   const message = `<b>Продукт:</b> ${product.name}
 
 Нажмите на кнопку, чтобы перейти на страницу оплаты. После успешной оплаты возвращайтесь обратно, я сообщу, когда подписка будет оформлена.`
-  const options = {...buttons.purchase.cloudpayments(product.link), parse_mode: 'HTML' };
+  const options = {...buttons.purchase.cloudpayments(link), parse_mode: 'HTML' };
 
   try {
     await bot.sendMessage(chatId, message, options);
