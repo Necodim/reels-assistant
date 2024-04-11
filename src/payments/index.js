@@ -49,32 +49,33 @@ app.post('/cloudpayments/check', (req, res) => {
 app.post('/cloudpayments/pay', async (req, res) => {
   console.log('pay', req.body);
   const { Data, Amount, SubscriptionId } = req.body;
+  res.status(200).send({ code: 0 });
 
-  try {
-    if (!!Data && !!Amount && !!SubscriptionId) {
-      const chatId = Data.telegram;
-      const price = parseInt(Amount, 10);
-      const name = products.find(product => product.price === price);
-      const user = await getUserByChatId(chatId);
-      const subscriptionDetails = {
-        userId: user.id,
-        name: name,
-        price: price,
-        subscriptionId: SubscriptionId,
-        end: nextMonth(),
-      }
-      await addSubscription(user.id, subscriptionDetails);
-      const message = 'Вы успешно оформили подписку. Теперь вам доступен новый функционал.'
-      const options = buttons.goHome;
-      await bot.sendMessage(user.chatId, message, options);
-      res.status(200).send({ code: 0 });
-    } else {
-      throw Error('Нет данных от CloudPayments')
-    }
-  } catch (error) {
-    console.error('Ошибка при сохранении подписки:', error);
-    res.status(500).send({ code: 13 });
-  }
+  // try {
+  //   if (!!Data && !!Amount && !!SubscriptionId) {
+  //     const chatId = Data.telegram;
+  //     const price = parseInt(Amount, 10);
+  //     const name = products.find(product => product.price === price);
+  //     const user = await getUserByChatId(chatId);
+  //     const subscriptionDetails = {
+  //       userId: user.id,
+  //       name: name,
+  //       price: price,
+  //       subscriptionId: SubscriptionId,
+  //       end: nextMonth(),
+  //     }
+  //     await addSubscription(user.id, subscriptionDetails);
+  //     const message = 'Вы успешно оформили подписку. Теперь вам доступен новый функционал.'
+  //     const options = buttons.goHome;
+  //     await bot.sendMessage(user.chatId, message, options);
+  //     res.status(200).send({ code: 0 });
+  //   } else {
+  //     throw Error('Нет данных от CloudPayments')
+  //   }
+  // } catch (error) {
+  //   console.error('Ошибка при сохранении подписки:', error);
+  //   res.status(500).send({ code: 13 });
+  // }
 });
 
 // Обработчик вебхука recurrent
