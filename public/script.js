@@ -158,12 +158,13 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('lastName').value = getUserData().lastName;
   
   const form = document.getElementById('paymentForm');
+  const inputFirstName = document.getElementById('firstName');
+  const inputLastName = document.getElementById('lastName');
+  const inputPhone = document.getElementById('phone');
+  inputPhone.addEventListener('input', (e) => e.target.value = e.target.value.replace(/[^\d+]/g, ''));
+  
   form.addEventListener('submit', (event) => {
     event.preventDefault();
-    const inputFirstName = document.getElementById('firstName');
-    const inputLastName = document.getElementById('lastName');
-    const inputPhone = document.getElementById('phone');
-    inputPhone.addEventListener('input', (e) => e.target.value = e.target.value.replace(/[^\d+]/g, ''));
 
     if (!validateName(inputFirstName.value).valid && !validateSurname(inputLastName.value).valid && !validatePhone(inputPhone.value).valid) {
       tg.showAlert('Заполните все поля формы. Это необходимо для проведения платежа.');
