@@ -140,6 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const getUserData = () => {
     const initData = new URLSearchParams(tg.initData);
     const user = JSON.parse(initData.get('user'));
+    console.log(user)
     const data = {
       id: user.id,
       firstName: user.first_name,
@@ -204,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const data = {
       payment: getPaymentData(),
       user: {
-        chatId: getUserData().id,
+        id: getUserData().id,
         firstName: inputFirstName.value,
         lastName: inputLastName.value,
         phone: inputPhone.value
