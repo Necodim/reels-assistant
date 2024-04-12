@@ -20,6 +20,28 @@ const getSubscriptionByCloudPaymentsId = async (subscriptionId) => {
   }
 };
 
+const getUserSubscription = async (userId, subscriptionId) => {
+  try {
+    const userIdObj = new mongoose.Types.ObjectId(userId);
+    const subscriptionIdObj = new mongoose.Types.ObjectId(subscriptionId);
+
+    const subscription = await Subscription.findOne({
+      _id: subscriptionIdObj,
+      userId: userIdObj
+    }).populate('expertId', 'about');
+
+    if (subscription) {
+      return subscription;
+    } else {
+      console.log('Подписка не найдена или не принадлежит данному пользователю');
+      return null;
+    }
+  } catch (error) {
+    console.error('Ошибка при поиске конкретной подписки пользователя:', error);
+    return null;
+  }
+};
+
 const getUserSubscriptions = async (userId) => {
   const userIdObj = new mongoose.Types.ObjectId(userId);
 
@@ -129,6 +151,7 @@ const removeSubscription = async (userId, subscriptionId) => {
 module.exports = {
   getSubscription,
   getSubscriptionByCloudPaymentsId,
+  getUserSubscription,
   getUserSubscriptions,
   addSubscription,
   updateSubscription,

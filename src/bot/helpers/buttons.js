@@ -13,7 +13,7 @@ const mainMenu = (type) => {
     [{ text: '⏯️ Отправить ролик', callback_data: 'sendVideo' }],
     [{ text: '💡 Получить идею', callback_data: 'getIdea' }],
     [
-      { text: '💰 Подписка', callback_data: 'subscription' },
+      { text: '💳 Подписка', callback_data: 'subscription' },
       { text: '❓ Поддержка', callback_data: 'support' }
     ],
     // [{ text: '⚙️ Настройки', callback_data: 'stngs:user' }],
@@ -39,12 +39,15 @@ const mainMenu = (type) => {
 }
 
 const home = (type = '', id = '') => {
+  const method = type.split(':')[0];
   const buttons = new Array();
   const buttonLine = new Array();
-  switch (type) {
+  switch (method) {
     case 'about':
       buttonLine.push({ text: '💁‍♀️ Обо мне', callback_data: type });
       break;
+    case 'cnlsb':
+      buttonLine.push({ text: '❌ Отменить подписку', callback_data: type });
     case 'getIdea':
       if (!!id) {
         buttonLine.push({ text: '💡 Ещё идея', callback_data: type }, { text: '⭐️ В избранное', callback_data: `favrt:${id}` });
@@ -96,7 +99,7 @@ const purchase = {
         case 9: emoji = '🔟'; break;
         default: emoji = index + 1; break;
       }
-      currentLine.push({ text: emoji, callback_data: `cnlsb:${subscription._id}` });
+      currentLine.push({ text: emoji, callback_data: `getsb:${subscription._id}` });
       if ((index + 1) % 5 === 0 || index === subscriptions.length - 1) {
         buttons.push(currentLine);
         currentLine = [];
@@ -138,7 +141,7 @@ const hashtags = (id) => {
 
 const channel = {
   delete: (id) => {
-    return replyMarkup([[{ text: '🗑️ Удалить', callback_data: `chanl:del:${id}` }]]);
+    return replyMarkup([[{ text: '🗑️ Удалить', callback_data: `outsd:del:${id}` }]]);
   }
 }
 

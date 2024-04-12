@@ -79,7 +79,11 @@ const editForumTopic = async (topicId, name) => {
     const topic = await bot.editForumTopic(group.id, topicId, options);
     return topic;
   } catch (error) {
-    console.error('Не удалось изменить ветку в группе:', error);
+    if (error.response.body.description === 'Bad Request: TOPIC_NOT_MODIFIED') {
+      console.error('Ветка в группе не изменена');
+    } else {
+      console.error('Не удалось изменить ветку в группе:', error);
+    }
   }
 }
 
@@ -88,7 +92,11 @@ const closeForumTopic = async (topicId) => {
     const topic = await bot.closeForumTopic(group.id, topicId);
     return topic;
   } catch (error) {
-    console.error('Не удалось закрыть ветку в группе:', error);
+    if (error.response.body.description === 'Bad Request: TOPIC_NOT_MODIFIED') {
+      console.error('Ветка в группе не изменена');
+    } else {
+      console.error('Не удалось закрыть ветку в группе:', error);
+    }
   }
 }
 
@@ -97,7 +105,11 @@ const reopenForumTopic = async (topicId) => {
     const topic = await bot.reopenForumTopic(group.id, topicId);
     return topic;
   } catch (error) {
-    console.error('Не удалось открыть ветку в группе:', error);
+    if (error.response.body.description === 'Bad Request: TOPIC_NOT_MODIFIED') {
+      console.error('Ветка в группе не изменена');
+    } else {
+      console.error('Не удалось открыть ветку в группе:', error);
+    }
   }
 }
 

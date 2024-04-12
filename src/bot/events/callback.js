@@ -30,7 +30,13 @@ module.exports = async (callbackQuery) => {
       await callback.purchase(callbackQuery);
       break;
     case 'subscription':
-      await callback.subscription(callbackQuery);
+      await callback.createSubscription(callbackQuery);
+      break;
+    case 'getsb':
+      await callback.getSubscription(callbackQuery);
+      break;
+    case 'cnlsb':
+      await callback.cancelSubscription(callbackQuery);
       break;
     case 'createIdea':
       await callback.createIdea(callbackQuery);
@@ -46,9 +52,6 @@ module.exports = async (callbackQuery) => {
       break;
     case 'cnlve':
       await callback.cancelVideoEvaluate(callbackQuery);
-      break;
-    case 'cnlsb':
-      await callback.cancelSubscription(callbackQuery);
       break;
     case 'evalt':
       switch (action) {
@@ -81,7 +84,7 @@ module.exports = async (callbackQuery) => {
     case 'about':
       await callback.aboutExpert(callbackQuery);
       break;
-    case 'chanl':
+    case 'outsd':
       switch (action) {
         case 'del':
           await callback.outsideMessageDelete(callbackQuery);

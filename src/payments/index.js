@@ -6,7 +6,7 @@ const corsMiddleware = require('./corsMiddleware');
 const calculateHMAC = require('./hmacCalculator');
 const { formatDate, nextMonth } = require('../helpers/dateHelper');
 const { addSubscription, updateSubscriptionByCloudPaymentsId, getSubscriptionByCloudPaymentsId, removeSubscription, getUserSubscriptions } = require('../db/service/subscriptionService');
-const { getUserByUsername, getUserById, getUserByChatId } = require('../db/service/userService');
+const { getUserByUsername, getUserById, getUserByChatId, getLeastFrequentExpert } = require('../db/service/userService');
 const bot = require('../bot/bot');
 const buttons = require('../bot/helpers/buttons');
 const products = require('../bot/helpers/products');
@@ -69,8 +69,10 @@ app.post('/cloudpayments/pay', async (req, res) => {
         const productPrice = parseInt(Amount, 10);
         const productName = products.products.find(product => product.price === productPrice).name;
         const user = await getUserByChatId(chatId);
+        const expert = await getLeastFrequentExpert();
         const subscriptionDetails = {
           userId: user.id,
+          expertId: expert.id,
           name: productName,
           price: productPrice,
           subscriptionId: SubscriptionId,
@@ -78,7 +80,11 @@ app.post('/cloudpayments/pay', async (req, res) => {
           status: 'Active',
         }
         await addSubscription(subscriptionDetails);
-        const message = '✅ Вы успешно оформили подписку. Теперь вам доступен новый функционал.'
+        
+        const message = `✅ Вы успешно оформили подписку. Теперь вам доступен новый функционал.
+
+Информация о вашем эксперте:
+<blockquote>${expert.about}</blockquote>`
         const options = buttons.home();
         await bot.sendMessage(user.chatId, message, options);
         res.status(200).send({ code: 0 });

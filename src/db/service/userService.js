@@ -1,4 +1,5 @@
 const User = require('../models/userModel');
+const Subscription = require('../models/subscriptionModel');
 
 const getUser = async (msg) => {
   const chatId = msg.from.id;
@@ -53,6 +54,37 @@ const getUsers = async (params) => {
     throw error;
   }
 }
+
+const getLeastFrequentExpert = async () => {
+  try {
+    const expertFrequency = await Subscription.aggregate([
+      { $match: { expertId: { $exists: true } } },
+      { $group: { _id: "$expertId", count: { $sum: 1 } } },
+      { $sort: { count: 1 } },
+      { $limit: 1 }
+    ]);
+
+    if (expertFrequency.length === 0) {
+      console.error('Нет экспертов в подписках');
+      return null;
+    }
+
+    const randomExpertNumber = Math.floor(Math.random() * (expertFrequency.length));
+    const leastFrequentExpertId = expertFrequency[randomExpertNumber]._id;
+    const expert = await User.findOne({ _id: leastFrequentExpertId, isExpert: true });
+
+    if (!expert) {
+      console.error('Эксперт не найден');
+      return null;
+    }
+
+    return expert;
+  } catch (error) {
+    console.error('Ошибка при поиске наименее загруженного эксперта:', error);
+    throw error;
+  }
+}
+
 
 const upsertUser = async (msg, params = {}) => {
   try {
@@ -109,6 +141,7 @@ module.exports = {
   getUserByChatId,
   getUserByUsername,
   getUsers,
+  getLeastFrequentExpert,
   upsertUser,
   updateUserState,
 };

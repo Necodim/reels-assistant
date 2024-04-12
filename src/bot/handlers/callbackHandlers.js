@@ -3,7 +3,7 @@ const { sendVideoToBot, sendIdeaOutside, sendAnswerOutside } = require('../send'
 const buttons = require('../helpers/buttons');
 const products = require('../helpers/products');
 const { findHashtagByNumber } = require('../helpers/hashtags');
-const { getUser, updateUserState, getUserByChatId } = require('../../db/service/userService');
+const { getUser, updateUserState, getUserByChatId, getUserById } = require('../../db/service/userService');
 const { getIdeaById, updateIdeaById, deleteIdeaById } = require('../../db/service/ideaService');
 const { checkDailyLimit, fetchIdeaForUser } = require('../../db/service/userIdeasService');
 const { createFavoriteIdea } = require('../../db/service/favoriteIdeaService');
@@ -134,23 +134,23 @@ const purchase = async (callbackQuery) => {
   }
 }
 
-const subscription = async (callbackQuery) => {
+const createSubscription = async (callbackQuery) => {
   const chatId = callbackQuery.from.id;
   
   try {
     const user = await getUser(callbackQuery);
     const subscriptions = await getUserSubscriptions(user.id);
-    let message
+    let message;
     if (subscriptions.length > 0) {
       message = 'У вас больше одной подписки:';
       subscriptions.forEach((subscription, i) => {
         const date = formatDate(subscription.end, 'd MMMM, HH:mm');
-        message = `${message}
+        message += `
 ${(i+1)}. ${subscription.name} (дата продления: ${date})`;
       });
       message += `
 
-Если хотите оформить ещё одну подписку, выберите её в списке ниже, если хотите отказаться от подписки, нажмите соответствующее подписке число:`
+Если хотите оформить ещё одну подписку, выберите её в списке ниже. Для просмотра информации и управления конкретной подпиской, нажмите соответствующее ей число:`
     } else {
       message = `У вас нет подписок. В подписке за 990₽/месяц вы получите:
 ${products.text}`;
@@ -159,6 +159,28 @@ ${products.text}`;
     await bot.sendMessage(chatId, message, options);
   } catch (error) {
     console.error('Ошибка при отправке пользователю callbackQuery subscription:', error);
+  }
+}
+
+const getSubscription = async (callbackQuery) => {
+  const chatId = callbackQuery.from.id;
+  const subscriptionId = callbackQuery.data.split(':')[1];
+  
+  try {
+    const user = await getUser(callbackQuery);
+    const subscription = getUserSubscription(user.id, subscriptionId);
+    const options = {...buttons.home(`cnlsb:${subscription.id}`), parse_mode: 'HTML'};
+    console.log(subscription);
+    const date = formatDate(subscription.end, 'd MMMM, HH:mm');
+    const message = `Название: ${subscription.name}
+Дата ${subscription.status === 'Active' ? 'следующего списания' : 'окончания срока действия'}: ${date}
+Информация о вашем эксперте:
+<blockquote>Будет_Тут</blockquote>
+
+Для отмены подписки нажмите соответствующую кнопку или вернитесь в главное меню:`
+    await bot.sendMessage(chatId, message, options);
+  } catch (error) {
+    console.error('Ошибка при отправке пользователю callbackQuery getSubscription:', error);
   }
 }
 
@@ -426,7 +448,8 @@ module.exports = {
   sendMeVideo,
 
   purchase,
-  subscription,
+  createSubscription,
+  getSubscription,
   cancelSubscription,
 
   createIdea,
