@@ -36,7 +36,7 @@ const pay = (data, tg) => {
       accountId: String(data.user.id),
       skin: data.theme,
       autoClose: 3,
-      data: {
+      data: JSON.stringify({
         CloudPayments: {
           CustomerReceipt: receipt,
           recurrent: {
@@ -46,7 +46,7 @@ const pay = (data, tg) => {
           }
         },
         telegram: data.user.id
-      },
+      }),
       // configuration: {
       //     common: {
       //         successRedirectUrl: 'https://api.reelsassistant.ru/cloudpayments/success',
