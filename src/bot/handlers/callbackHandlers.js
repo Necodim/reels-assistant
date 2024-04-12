@@ -48,12 +48,21 @@ const settings = async (callbackQuery) => {
 
 const sendVideo = async (callbackQuery) => {
   const chatId = callbackQuery.from.id;
-  const message = 'Прикрепите ролик и напишите сопроводительное сообщение, если необходимо. Если передумали, вернитесь в главное меню.';
-  const options = buttons.home();
 
   try {
-    await updateUserState(chatId, 'videoAwaiting');
-    await bot.sendMessage(chatId, message, options);
+    const user = await getUser(callbackQuery);
+    const subscriptions = await getUserSubscriptions(user._id);
+    if (subscriptions.length) {
+      await updateUserState(chatId, 'videoAwaiting');
+      const message = 'Прикрепите ролик и напишите сопроводительное сообщение, если необходимо. Если передумали, вернитесь в главное меню:';
+      const options = buttons.home();
+      await bot.sendMessage(chatId, message, options);
+    } else {
+      await updateUserState(chatId, '');
+      const message = 'Эта функция доступна только по подписке. Перейдите в соответствующий раздел для оформления:';
+      const options = buttons.home('subscription');
+      await bot.sendMessage(chatId, message, options);
+    }
   } catch (error) {
     handleError(error, callbackQuery);
   }

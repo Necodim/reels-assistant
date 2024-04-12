@@ -61,6 +61,9 @@ const home = (type = '', id = '') => {
     case 'createIdea':
       buttonLine.push({ text: '💡 Опубликовать ещё одну', callback_data: type });
       break;
+    case 'subscription':
+      buttonLine.push({ text: '💳 Подписка', callback_data: 'subscription' });
+      break;
     case 'support':
       buttonLine.push({ text: '❓ Поддержка', callback_data: type });
       break;
