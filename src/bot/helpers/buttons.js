@@ -101,6 +101,7 @@ const purchase = {
       }
     });
     buttons.push([{ text: '🏠 Главное меню', callback_data: 'home' }]);
+    console.log(buttons);
 
     return {reply_markup: {inline_keyboard: buttons}};
   },

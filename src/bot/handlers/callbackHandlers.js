@@ -166,6 +166,7 @@ const cancelSubscription = async (callbackQuery) => {
   const chatId = callbackQuery.from.id;
   const subscriptionId = callbackQuery.data.split(':')[1];
   const options = buttons.goHome;
+  console.log(callbackQuery.data);
   
   try {
     const subscription = getSubscription(subscriptionId);
