@@ -11,7 +11,7 @@ const { buttons } = require('../bot/helpers/buttons');
 const { products } = require('../bot/helpers/products');
 
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
