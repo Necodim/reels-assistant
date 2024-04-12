@@ -9,10 +9,17 @@ const start = async (msg) => {
   try {
     const user = await upsertUser(msg);
     await updateUserState(chatId, '');
-    let message, options;
+    let message, options = {};
     if (user.isExpert) {
-      message = 'Вы можете опубликовывать идеи, оценивать ролики и отправлять пуши подопечным, чтобы они снимали видео, и не прокрастинировали. Для этого воспользуйтесь кнопками ниже:';
-      options = buttons.mainMenu('expert')
+      message = 'Вы можете опубликовывать идеи и оценивать ролики подопечных. Управление функционалом бота происходит через кнопки под сообщениями.'
+      if (!user.about) {
+        await updateUserState('aboutAwaiting');
+        message += `
+
+Но для начала расскажи о себе. Этот текст пользователь увидит, когда оформит подписку и станет вашим подопечным.`;
+      } else {
+        options = buttons.mainMenu('expert');
+      }
     } else {
       message = 'Добро пожаловать в инструмент для взаимодействия экспертов-рилсмэйкеров и блогеров. Вы можете бесплатно просматривать идеи экспертов и тут же их реализовывать, а также получать фидбэк на ваши посты. Для этого воспользуйтесь кнопками ниже:';
       options = buttons.mainMenu('user');
@@ -50,7 +57,7 @@ const help = async (msg) => {
 
 const expert = async (msg) => {
   const chatId = msg.chat.id;
-  const options = buttons.goHome;
+  const options = buttons.home();
   try {
     await updateUserState(chatId, 'forwardExpertWaiting');
     let message;
@@ -67,7 +74,7 @@ const expert = async (msg) => {
 
 const snezone = async (msg) => {
   const chatId = msg.chat.id;
-  const options = buttons.goHome;
+  const options = buttons.home();
 
   if (adminUsers.map(user => user.id).indexOf(chatId) !== -1) {
     try {

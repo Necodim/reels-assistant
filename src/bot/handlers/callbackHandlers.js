@@ -48,7 +48,7 @@ const settings = async (callbackQuery) => {
 const sendVideo = async (callbackQuery) => {
   const chatId = callbackQuery.from.id;
   const message = 'Прикрепите ролик и напишите сопроводительное сообщение, если необходимо. Если передумали, вернитесь в главное меню.';
-  const options = buttons.goHome;
+  const options = buttons.home();
 
   try {
     await updateUserState(chatId, 'videoAwaiting');
@@ -75,8 +75,8 @@ ${products.text}`;
 
 Сложность: ${idea.difficulty}
 ${idea.hashtag}`
-      // const options = {...buttons.moreOrGoHome.user(idea.id), caption}; // для добавления идеи в избранное
-      const options = {...buttons.moreOrGoHome.user, caption};
+      // const options = {...buttons.home('getIdea')(idea.id), caption}; // для добавления идеи в избранное
+      const options = {...buttons.home('getIdea'), caption};
       await sendVideoToBot(chatId, idea.videoId, options);
     }
   } catch (error) {
@@ -174,11 +174,11 @@ const cancelSubscription = async (callbackQuery) => {
     if (response.Success) {
       const date = formatDate(subscription.end, 'd MMMM, HH:mm');
       const message = `Вы успешно отменили подписку ${subscription.name}. Она будет действовать до ${date}`;
-      const options = buttons.goHome;
+      const options = buttons.home();
       await bot.sendMessage(chatId, message, options);
     } else {
       const message = 'Произошла ошибка, попробуйте ещё раз. Если ошибка повторится, обратитесь в поддержку.';
-      const options = buttons.supportOrGoHome;
+      const options = buttons.home('support');
       await bot.sendMessage(chatId, message, options);
       throw Error('CloudPayments не смог отменить подписку');
     }
@@ -189,7 +189,7 @@ const cancelSubscription = async (callbackQuery) => {
 
 const createIdea = async (callbackQuery) => {
   const chatId = callbackQuery.from.id;
-  const options = buttons.goHome;
+  const options = buttons.home();
   
   try {
     const user = await getUser(callbackQuery);
@@ -228,7 +228,7 @@ const difficulty = async (callbackQuery) => {
 const hashtag = async (callbackQuery) => {
   const chatId = callbackQuery.from.id;
   const message = 'Супер. Идея добавлена.';
-  const options = buttons.moreOrGoHome.expert;
+  const options = buttons.home('createIdea');
   const hNumber = callbackQuery.data.split(':')[1];
   const hashtag = findHashtagByNumber(hNumber);
   const videoId = callbackQuery.data.split(':')[2];
@@ -347,6 +347,41 @@ const toPush = async (callbackQuery) => {
 
 }
 
+const settingsUser = async (callbackQuery) => {
+  const chatId = callbackQuery.message.chat.id;
+  const message = 'Упс! А для настроек нет...';
+
+  try {
+    await bot.sendMessage(chatId, message);
+  } catch (error) {
+    handleError(error, callbackQuery);
+  }
+}
+
+const settingsExpert = async (callbackQuery) => {
+  const chatId = callbackQuery.message.chat.id;
+  const message = 'Здесь вы можете настроить информацию о себе.';
+  const options = buttons.home('about');
+
+  try {
+    await bot.sendMessage(chatId, message, options);
+  } catch (error) {
+    handleError(error, callbackQuery);
+  }
+}
+
+const aboutExpert = async (callbackQuery) => {
+  const chatId = callbackQuery.message.chat.id;
+  const message = 'Пришлите текст о себе. Этот текст пользователь увидит, когда оформит подписку и станет вашим подопечным.';
+
+  try {
+    await updateUserState('aboutAwaiting');
+    await bot.sendMessage(chatId, message);
+  } catch (error) {
+    handleError(error, callbackQuery);
+  }
+}
+
 const outsideMessageDelete = async (callbackQuery) => {
   const chatId = callbackQuery.message.chat.id;
   const ideaId = callbackQuery.data.split(':')[2];
@@ -404,6 +439,9 @@ module.exports = {
   sendEvaluateMessage,
 
   toPush,
+  settingsUser,
+  settingsExpert,
+  aboutExpert,
 
   outsideMessageDelete,
   support,

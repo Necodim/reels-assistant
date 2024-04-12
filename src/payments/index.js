@@ -79,7 +79,7 @@ app.post('/cloudpayments/pay', async (req, res) => {
         }
         await addSubscription(subscriptionDetails);
         const message = '✅ Вы успешно оформили подписку. Теперь вам доступен новый функционал.'
-        const options = buttons.goHome;
+        const options = buttons.home();
         await bot.sendMessage(user.chatId, message, options);
         res.status(200).send({ code: 0 });
       } else {
@@ -117,7 +117,7 @@ app.post('/cloudpayments/recurrent', async (req, res) => {
             case 'PastDue':
               message = `Подписка просрочена. Нам не удалось списать ежемесячный платёж. Для платежа требуется ${amount}₽. `;
               message += FailedTransactionsNumber < 2 ? 'Пополните баланс, мы попробуем списать ежемесячный платёж чуть позже.' : 'Проверьте баланс. После следующей попытки подписка отменится.';
-              options = buttons.goHome;
+              options = buttons.home();
               await bot.sendMessage(user.chatId, message, options);
               break;
             default:
@@ -133,7 +133,7 @@ app.post('/cloudpayments/recurrent', async (req, res) => {
           const user = getUserById(subscription.userId);
 
           message = `Подписка успешно продлена. Дата следующего списания: ${date}`
-          options = buttons.goHome;
+          options = buttons.home();
           await bot.sendMessage(user.chatId, message, options);
         }
         res.status(200).send({ code: 0 });

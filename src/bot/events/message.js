@@ -28,6 +28,9 @@ const checkUserState = async (msg) => {
       case 'evaluateAwaiting':
         await state.evaluateAwaiting(msg, user.state);
         break;
+      case 'aboutAwaiting':
+        await state.aboutAwaiting(msg);
+        break;
       default:
         await bot.sendMessage(chatId, `Неизвестный user.state (${user.state})`); // исправить на проде
         break;

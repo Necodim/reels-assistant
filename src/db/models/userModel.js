@@ -7,6 +7,7 @@ const schema = new mongoose.Schema({
   username: String,
   subscription: Object,
   isExpert: { type: Boolean, default: false },
+  about: String,
   state: { 
     type: String, 
     default: '' 

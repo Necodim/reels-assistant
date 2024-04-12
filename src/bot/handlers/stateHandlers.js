@@ -14,7 +14,7 @@ const videoAwaiting = async (msg) => {
       await updateUserState(chatId, '');
 
       const message = 'Спасибо, я отправил ваш ролик эксперту. Как только он ответит, я пришлю вам ответ.';
-      const options = buttons.goHome;
+      const options = buttons.home();
       await bot.sendMessage(chatId, message, options);
 
       const experts = await getUsers({ isExpert: true });
@@ -57,7 +57,7 @@ const forwardExpertAwaiting = async (msg) => {
         message = `Пользователь ${name} стал экспертом!`
         await bot.sendMessage(fwdUser.chatId, 'Роль изменена с пользователя на эксперта 🥳', buttons.mainMenu('expert'));
       }
-      const options = buttons.goHome;
+      const options = buttons.home();
       await updateUserState(chatId, '');
       await bot.sendMessage(chatId, message, options);
     } catch (error) {
@@ -135,6 +135,25 @@ const evaluateAwaiting = async (msg, state) => {
   }
 }
 
+const aboutAwaiting = async (msg) => {
+  const chatId = msg.chat.id;
+  const text = msg.text;
+  const message = `Отлично, вот ваша информация «Обо мне»:
+<blockquote>${text}</blockquote>
+Изменить её можно в соответствующем разделе ⚙️ Настройках.
+
+А теперь можете начать генерить идеи. Как только у вас появится подписчик, я сообщу об этом! Также я сообщу, если подписчик пришлёт вам ролик на оценку.`
+  const options = {...buttons.mainMenu('expert'), parse_mode: 'HTML'};
+
+  try {
+    await upsertUser(msg, { about: text });
+    await updateUserState('');
+    await bot.sendMessage(chatId, message, options);
+  } catch (error) {
+    console.error('Не удалось записать информацию об эксперте:', error)
+  }
+}
+
 module.exports = {
   videoAwaiting,
   forwardExpertAwaiting,
@@ -142,4 +161,5 @@ module.exports = {
   difficultyAwaiting,
   hashtagAwaiting,
   evaluateAwaiting,
+  aboutAwaiting,
 }

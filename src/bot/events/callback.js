@@ -64,6 +64,23 @@ module.exports = async (callbackQuery) => {
           break;
       }
       break;
+    case 'stngs':
+      switch (action) {
+        case 'user':
+          await callback.settingsUser(callbackQuery);
+          break;
+        case 'expert':
+          await callback.settingsExpert(callbackQuery);
+          break;
+        default:
+          console.log(`Неизвестный action (${action}) для callback_data_query: ${data}`);
+          await bot.sendMessage(chatId, `Неизвестный action (${action}) для callback_data_query: ${data}`);
+          break;
+      }
+      break;
+    case 'about':
+      await callback.aboutExpert(callbackQuery);
+      break;
     case 'chanl':
       switch (action) {
         case 'del':

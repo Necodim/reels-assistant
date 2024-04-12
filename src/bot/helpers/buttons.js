@@ -6,9 +6,7 @@ const replyMarkup = (btns) => {
   }
 }
 
-const goHomeButton = [{ text: '🏠 Главное меню', callback_data: 'home' }];
-
-const goHome = replyMarkup([goHomeButton]);
+const homeButton = [{ text: '🏠 Главное меню', callback_data: 'home' }];
 
 const mainMenu = (type) => {
   const userButtons = [
@@ -18,13 +16,12 @@ const mainMenu = (type) => {
       { text: '💰 Подписка', callback_data: 'subscription' },
       { text: '❓ Поддержка', callback_data: 'support' }
     ],
-    // [{ text: '⚙️ Настройки', callback_data: 'settings' }],
+    // [{ text: '⚙️ Настройки', callback_data: 'stngs:user' }],
   ];
   const expertButtons = [
     [{ text: '💡 Опубликовать идею', callback_data: 'createIdea' }],
     [{ text: '⭐️ Оценить ролик', callback_data: 'getVideo' }],
-    [{ text: '🔔 Пушнуть подопечных', callback_data: 'toPush' }],
-    // [{ text: '⚙️ Настройки', callback_data: 'settings' }],
+    [{ text: '⚙️ Настройки', callback_data: 'stngs:expert' }],
   ];
   let result;
   switch (type) {
@@ -41,39 +38,35 @@ const mainMenu = (type) => {
   return result;
 }
 
-const moreOrGoHome = {
-  // user: (ideaId = '') => {
-  //   return {
-  //     reply_markup: {
-  //       inline_keyboard: [
-  //         [{ text: '💡 Ещё идея', callback_data: 'getIdea' }, { text: '⭐️ В избранное', callback_data: `favrt:${ideaId}` }],
-  //         [{ text: '🏠 Главное меню', callback_data: 'home' }],
-  //       ]
-  //     }
-  //   }
-  // },
-  user: {
-    reply_markup: {
-      inline_keyboard: [
-        [{ text: '💡 Ещё идея', callback_data: 'getIdea' }],
-        goHomeButton,
-      ]
-    }
-  },
-  expert: {
-    reply_markup: {
-      inline_keyboard: [
-        [{ text: '💡 Опубликовать ещё одну', callback_data: 'createIdea' }],
-        goHomeButton,
-      ]
-    }
+const home = (type = '', id = '') => {
+  const buttons = new Array();
+  const buttonLine = new Array();
+  switch (type) {
+    case 'about':
+      buttonLine.push({ text: '💁‍♀️ Обо мне', callback_data: type });
+      break;
+    case 'getIdea':
+      if (!!id) {
+        buttonLine.push({ text: '💡 Ещё идея', callback_data: type }, { text: '⭐️ В избранное', callback_data: `favrt:${id}` });
+      } else {
+        buttonLine.push({ text: '💡 Ещё идея', callback_data: type });
+      }
+      break;
+    case 'createIdea':
+      buttonLine.push({ text: '💡 Опубликовать ещё одну', callback_data: type });
+      break;
+    case 'support':
+      buttonLine.push({ text: '❓ Поддержка', callback_data: type });
+      break;
+    default:
+      break;
   }
+  if (buttonLine.length) {
+    buttons.push(buttonLine);
+  }
+  buttons.push(homeButton);
+  return replyMarkup(buttons);
 }
-
-const supportOrGoHome = replyMarkup([
-  [{ text: '❓ Поддержка', callback_data: 'support' }],
-  goHomeButton
-]);
 
 const cancel = {
   videoEvaluate: (videoId, videoMessageNumber) => {
@@ -109,14 +102,14 @@ const purchase = {
         currentLine = [];
       }
     });
-    buttons.push(goHomeButton);
+    buttons.push(homeButton);
 
     return replyMarkup(buttons);
   },
   cloudpayments: (link) => {
     const buttons = [
       [{ text: '🔗 Оформить подписку', web_app: { url: link } }],
-      goHomeButton,
+      homeButton,
     ];
     return replyMarkup(buttons);
   }
@@ -149,14 +142,12 @@ const channel = {
   }
 }
 
-const snezone = replyMarkup([[{ text: 'Написать в поддержку', url: 'tg://resolve?domain=snezone' }], goHomeButton]);
+const snezone = replyMarkup([[{ text: 'Написать в поддержку', url: 'tg://resolve?domain=snezone' }], homeButton]);
 
 module.exports = {
   replyMarkup,
   mainMenu,
-  goHome,
-  moreOrGoHome,
-  supportOrGoHome,
+  home,
   cancel,
   purchase,
   difficulty,
