@@ -5,7 +5,9 @@ function calculateHMAC(req) {
   console.log('headers', req.headers)
   console.log('body', typeof req.body, req.body)
   let payload;
-  if (req.headers['content-type'] === 'application/json') {
+  if (req.headers['content-type'] === 'application/x-www-form-urlencoded') {
+    payload = new URLSearchParams(req.body).toString();
+  } else if (req.headers['content-type'] === 'application/json') {
     payload = JSON.stringify(req.body);
   } else {
     payload = req.body;
