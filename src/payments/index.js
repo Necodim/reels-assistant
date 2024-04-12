@@ -66,17 +66,21 @@ app.post('/cloudpayments/pay', async (req, res) => {
     try {
       if (!!Data && !!Amount && !!SubscriptionId) {
         const chatId = JSON.parse(Data).telegram;
-        const price = parseInt(Amount, 10);
-        const name = products.find(product => product.price === price);
+        console.log('chatId', chatId);
+        const productPrice = parseInt(Amount, 10);
+        const productName = products.find(product => product.productPrice === productPrice);
+        console.log('productName', productName);
         const user = await getUserByChatId(chatId);
+        console.log('user', user);
         const subscriptionDetails = {
           userId: user.id,
-          name: name,
-          price: price,
+          name: productName,
+          price: productPrice,
           subscriptionId: SubscriptionId,
           end: nextMonth(),
         }
-        await addSubscription(user.id, subscriptionDetails);
+        const subscription = await addSubscription(user.id, subscriptionDetails);
+        console.log('subscription', subscription);
         const message = 'Вы успешно оформили подписку. Теперь вам доступен новый функционал.'
         const options = buttons.goHome;
         await bot.sendMessage(user.chatId, message, options);
