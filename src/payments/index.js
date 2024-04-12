@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+const getData = require('./getData');
 const corsMiddleware = require('./corsMiddleware');
 const calculateHMAC = require('./hmacCalculator');
 const { formatDate, nextMonth } = require('../helpers/dateHelper');
@@ -10,9 +11,8 @@ const bot = require('../bot/bot');
 const { buttons } = require('../bot/helpers/buttons');
 const { products } = require('../bot/helpers/products');
 
-// app.use(express.json());
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use(express.text({ type: '*/*' }));
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
@@ -44,15 +44,15 @@ app.get('/cloudpayments/fail', (req, res) => {
 });
 
 // Обработчик вебхука check
-app.post('/cloudpayments/check', (req, res) => {
+app.post('/cloudpayments/check', app.use(express.text({ type: '*/*' })), (req, res) => {
   const receivedHmac = req.headers['content-hmac'] || req.headers['x-content-hmac'];
-  const params = new URLSearchParams(req.body);
-  const originalString = params.toString();
-  const calculatedHmac = calculateHMAC(originalString);
+  const calculatedHmac = calculateHMAC(req.body);
   console.log('headers', req.headers);
 
   if (receivedHmac === calculatedHmac) {
     console.log('HMAC is verified. Request is from CloudPayments.');
+    const data = getData(req);
+    console.log(data);
     res.status(200).send({ code: 0 });
   } else {
     console.log('Invalid HMAC. Possible tampering detected.');
@@ -61,15 +61,17 @@ app.post('/cloudpayments/check', (req, res) => {
 });
 
 // Обработчик вебхука pay
-app.post('/cloudpayments/pay', async (req, res) => {
+app.post('/cloudpayments/pay', app.use(express.text({ type: '*/*' })), async (req, res) => {
   const receivedHmac = req.headers['content-hmac'] || req.headers['x-content-hmac'];
-  const calculatedHmac = calculateHMAC(req);
+  const calculatedHmac = calculateHMAC(req.body);
+  console.log('headers', req.headers);
 
   if (receivedHmac === calculatedHmac) {
     console.log('HMAC is verified. Request is from CloudPayments.');
-    console.log('pay', req.body);
-    const { Data, Amount, SubscriptionId } = req.body;
+    const data = getData(req);
+    console.log(data);
     res.status(200).send({ code: 0 });
+    const { Data, Amount, SubscriptionId } = req.body;
   } else {
     console.log('Invalid HMAC. Possible tampering detected.');
     res.status(401).send('Unauthorized');
@@ -103,14 +105,16 @@ app.post('/cloudpayments/pay', async (req, res) => {
 });
 
 // Обработчик вебхука recurrent
-app.post('/cloudpayments/recurrent', async (req, res) => {
+app.post('/cloudpayments/recurrent', app.use(express.text({ type: '*/*' })), async (req, res) => {
   const receivedHmac = req.headers['content-hmac'] || req.headers['x-content-hmac'];
-  const calculatedHmac = calculateHMAC(req);
+  const calculatedHmac = calculateHMAC(req.body);
+  console.log('headers', req.headers);
 
   if (receivedHmac === calculatedHmac) {
     console.log('HMAC is verified. Request is from CloudPayments.');
-    console.log('recurrent', req.body);
-    const { Id, Amount, Status, FailedTransactionsNumber, NextTransactionDate } = req.body;
+    const data = getData(req);
+    console.log(data);
+    const { Id, Amount, Status, FailedTransactionsNumber, NextTransactionDate } = data;
     let message, options;
 
     try {
