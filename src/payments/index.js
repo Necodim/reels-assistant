@@ -10,6 +10,7 @@ const { getUserByUsername, getUserById, getUserByChatId, getLeastFrequentExpert 
 const bot = require('../bot/bot');
 const buttons = require('../bot/helpers/buttons');
 const products = require('../bot/helpers/products');
+const { sendAnswerOutside } = require('../bot/send');
 
 app.use(express.text({ type: '*/*' }))
 app.use(express.static('public'));
@@ -90,6 +91,7 @@ app.post('/cloudpayments/pay', async (req, res) => {
 
         const messageExpert = 'У вас новый подопечный. Скоро он начнёт присылать свои видео на оценку, а я буду уведомлять вас об этом 😉'
         await bot.sendMessage(expert.chatId, messageExpert);
+        await sendSubscriberOutside(expert._id, user.username);
         res.status(200).send({ code: 0 });
       } else {
         throw Error('Нет данных от CloudPayments')

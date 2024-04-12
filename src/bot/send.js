@@ -20,6 +20,20 @@ const sendVideoToBot = async (chatId, videoId, options = {caption: ''}) => {
   }
 };
 
+const sendSubscriberOutside = async (expertId, username, btns = {}) => {
+  try {
+    const user = await getUserById(expertId);
+
+    const message = `У @${user.username} новый #подписчик: @${username}`;
+
+    const topicId = user.groupTopicId ? user.groupTopicId : 1;
+    const options = {...btns, message_thread_id: topicId};
+    await bot.sendMessage(group.id, message, options);
+  } catch (error) {
+    console.error('Не удалось отправить идею в группу:', error);
+  }
+}
+
 const sendIdeaOutside = async (ideaId, btns = {}) => {
   try {
     const idea = await getIdeaById(ideaId);
@@ -116,6 +130,7 @@ const reopenForumTopic = async (topicId) => {
 module.exports = {
   sendVideoToBot,
   sendIdeaOutside,
+  sendSubscriberOutside,
   sendAnswerOutside,
   createForumTopic,
   editForumTopic,
