@@ -75,6 +75,7 @@ const cancel = {
 
 const purchase = {
   user: (subscriptions = []) => {
+    console.log(subscriptions);
     let buttons = [
       [{ text: '🔑 Доступ к боту', callback_data: 'prchs:0' }]
     ];
