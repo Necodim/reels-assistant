@@ -77,7 +77,7 @@ app.post('/cloudpayments/pay', async (req, res) => {
           end: nextMonth(),
         }
         await addSubscription(subscriptionDetails);
-        const message = 'Вы успешно оформили подписку. Теперь вам доступен новый функционал.'
+        const message = '✅ Вы успешно оформили подписку. Теперь вам доступен новый функционал.'
         const options = buttons.goHome;
         await bot.sendMessage(user.chatId, message, options);
         res.status(200).send({ code: 0 });

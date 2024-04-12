@@ -142,9 +142,9 @@ const subscription = async (callbackQuery) => {
     let message
     if (subscriptions.length) {
       if (subscriptions.length > 0) {
-        const date = formatDate(subscriptions[0].end, 'd MMMM, HH:mm');
         message = 'У вас больше одной подписки:';
         subscriptions.forEach((subscription, i) => {
+          const date = formatDate(subscription.end, 'd MMMM, HH:mm');
           message = `${message}
 ${(i+1)}. ${subscription.name} (дата продления: ${date})`;
         });
