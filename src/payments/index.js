@@ -61,9 +61,10 @@ app.post('/cloudpayments/pay', async (req, res) => {
   const calculatedHmac = calculateHMAC(req.body);
 
   if (receivedHmac === calculatedHmac) {
-    const data = getData(req);
-    const { Data, Amount, SubscriptionId } = data;
     try {
+      const data = getData(req);
+      console.log('data', data);
+      const { Data, Amount, SubscriptionId } = data;
       if (!!Data && !!Amount && !!SubscriptionId) {
         const chatId = JSON.parse(Data).telegram;
         console.log('chatId', chatId);
