@@ -11,8 +11,7 @@ const bot = require('../bot/bot');
 const { buttons } = require('../bot/helpers/buttons');
 const { products } = require('../bot/helpers/products');
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.text({ type: '*/*' }))
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
@@ -44,7 +43,7 @@ app.get('/cloudpayments/fail', (req, res) => {
 });
 
 // Обработчик вебхука check
-app.post('/cloudpayments/check', app.use(express.text({ type: '*/*' })), (req, res) => {
+app.post('/cloudpayments/check', (req, res) => {
   const receivedHmac = req.headers['content-hmac'] || req.headers['x-content-hmac'];
   const calculatedHmac = calculateHMAC(req.body);
   console.log('headers', req.headers);
@@ -61,7 +60,7 @@ app.post('/cloudpayments/check', app.use(express.text({ type: '*/*' })), (req, r
 });
 
 // Обработчик вебхука pay
-app.post('/cloudpayments/pay', app.use(express.text({ type: '*/*' })), async (req, res) => {
+app.post('/cloudpayments/pay', async (req, res) => {
   const receivedHmac = req.headers['content-hmac'] || req.headers['x-content-hmac'];
   const calculatedHmac = calculateHMAC(req.body);
   console.log('headers', req.headers);
@@ -105,7 +104,7 @@ app.post('/cloudpayments/pay', app.use(express.text({ type: '*/*' })), async (re
 });
 
 // Обработчик вебхука recurrent
-app.post('/cloudpayments/recurrent', app.use(express.text({ type: '*/*' })), async (req, res) => {
+app.post('/cloudpayments/recurrent', async (req, res) => {
   const receivedHmac = req.headers['content-hmac'] || req.headers['x-content-hmac'];
   const calculatedHmac = calculateHMAC(req.body);
   console.log('headers', req.headers);
