@@ -45,7 +45,7 @@ const pay = (data, tg) => {
            customerReceipt: receipt
           }
         },
-        // telegram: data.user.id
+        telegram: data.user.id
       },
       // configuration: {
       //     common: {

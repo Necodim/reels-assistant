@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+const calculateHMAC = require('./hmacCalculator');
 const { formatDate, nextMonth } = require('../helpers/dateHelper');
 const { addSubscription, updateSubscriptionByCloudPaymentsId, getSubscriptionByCloudPaymentsId, removeSubscription } = require('../db/service/subscriptionService');
 const { getUserByUsername, getUserById, getUserByChatId } = require('../db/service/userService');
@@ -41,15 +42,32 @@ app.get('/cloudpayments/fail', (req, res) => {
 
 // Обработчик вебхука check
 app.post('/cloudpayments/check', (req, res) => {
-  console.log('check', req.body);
-  res.status(200).send({ code: 0 });
+  const receivedHmac = req.headers['content-hmac'] || req.headers['x-content-hmac'];
+  const calculatedHmac = calculateHMAC(req.body);
+
+  if (receivedHmac === calculatedHmac) {
+    console.log('HMAC is verified. Request is from CloudPayments.');
+    res.status(200).send({ code: 0 });
+  } else {
+    console.log('Invalid HMAC. Possible tampering detected.');
+    res.status(401).send('Unauthorized');
+  }
 });
 
 // Обработчик вебхука pay
 app.post('/cloudpayments/pay', async (req, res) => {
-  console.log('pay', req.body);
-  const { Data, Amount, SubscriptionId } = req.body;
-  res.status(200).send({ code: 0 });
+  const receivedHmac = req.headers['content-hmac'] || req.headers['x-content-hmac'];
+  const calculatedHmac = calculateHMAC(req.body);
+
+  if (receivedHmac === calculatedHmac) {
+    console.log('HMAC is verified. Request is from CloudPayments.');
+    console.log('pay', req.body);
+    const { Data, Amount, SubscriptionId } = req.body;
+    res.status(200).send({ code: 0 });
+  } else {
+    console.log('Invalid HMAC. Possible tampering detected.');
+    res.status(401).send('Unauthorized');
+  }
 
   // try {
   //   if (!!Data && !!Amount && !!SubscriptionId) {
@@ -80,47 +98,56 @@ app.post('/cloudpayments/pay', async (req, res) => {
 
 // Обработчик вебхука recurrent
 app.post('/cloudpayments/recurrent', async (req, res) => {
-  console.log('recurrent', req.body);
-  const { Id, Amount, Status, FailedTransactionsNumber, NextTransactionDate } = req.body;
-  let message, options;
+  const receivedHmac = req.headers['content-hmac'] || req.headers['x-content-hmac'];
+  const calculatedHmac = calculateHMAC(req.body);
 
-  try {
-    if (!!Id && !!Amount && !!Status) {
-      if (Status !== 'Active') {
-        const subscription = getSubscriptionByCloudPaymentsId(Id);
-        const user = getUserById(subscription.userId);
-        const amount = parseInt(Amount, 10);
-  
-        switch (Status) {
-          case 'PastDue':
-            message = `Подписка просрочена. Нам не удалось списать ежемесячный платёж. Для платежа требуется ${amount}₽. `;
-            message += FailedTransactionsNumber < 2 ? 'Пополните баланс, мы попробуем списать ежемесячный платёж чуть позже.' : 'Проверьте баланс. После следующей попытки подписка отменится.';
-            options = buttons.goHome;
-            await bot.sendMessage(user.chatId, message, options);
-            break;
-          default:
-            message = 'Подписка отменена. Вы можете оформить подписку заново, нажав кнопку ниже 👇';
-            options = buttons.purchase.user;
-            await removeSubscription(user.id, subscription.id);
-            await bot.sendMessage(user.chatId, message, options);
-            break;
+  if (receivedHmac === calculatedHmac) {
+    console.log('HMAC is verified. Request is from CloudPayments.');
+    console.log('recurrent', req.body);
+    const { Id, Amount, Status, FailedTransactionsNumber, NextTransactionDate } = req.body;
+    let message, options;
+
+    try {
+      if (!!Id && !!Amount && !!Status) {
+        if (Status !== 'Active') {
+          const subscription = getSubscriptionByCloudPaymentsId(Id);
+          const user = getUserById(subscription.userId);
+          const amount = parseInt(Amount, 10);
+
+          switch (Status) {
+            case 'PastDue':
+              message = `Подписка просрочена. Нам не удалось списать ежемесячный платёж. Для платежа требуется ${amount}₽. `;
+              message += FailedTransactionsNumber < 2 ? 'Пополните баланс, мы попробуем списать ежемесячный платёж чуть позже.' : 'Проверьте баланс. После следующей попытки подписка отменится.';
+              options = buttons.goHome;
+              await bot.sendMessage(user.chatId, message, options);
+              break;
+            default:
+              message = 'Подписка отменена. Вы можете оформить подписку заново, нажав кнопку ниже 👇';
+              options = buttons.purchase.user;
+              await removeSubscription(user.id, subscription.id);
+              await bot.sendMessage(user.chatId, message, options);
+              break;
+          }
+        } else {
+          const subscription = await updateSubscriptionByCloudPaymentsId(Id, { end: NextTransactionDate });
+          const date = formatDate(subscription.end, 'd MMMM, HH:mm');
+          const user = getUserById(subscription.userId);
+
+          message = `Подписка успешно продлена. Дата следующего списания: ${date}`
+          options = buttons.goHome;
+          await bot.sendMessage(user.chatId, message, options);
         }
+        res.status(200).send({ code: 0 });
       } else {
-        const subscription = await updateSubscriptionByCloudPaymentsId(Id, { end: NextTransactionDate });
-        const date = formatDate(subscription.end, 'd MMMM, HH:mm');
-        const user = getUserById(subscription.userId);
-  
-        message = `Подписка успешно продлена. Дата следующего списания: ${date}`
-        options = buttons.goHome;
-        await bot.sendMessage(user.chatId, message, options);
+        throw Error('Нет данных от CloudPayments')
       }
-      res.status(200).send({ code: 0 });
-    } else {
-      throw Error('Нет данных от CloudPayments')
+    } catch (error) {
+      console.error('Ошибка при отмене подписки', error);
+      res.status(500).send({ code: 13 });
     }
-  } catch (error) {
-    console.error('Ошибка при отмене подписки', error);
-    res.status(500).send({ code: 13 });
+  } else {
+    console.log('Invalid HMAC. Possible tampering detected.');
+    res.status(401).send('Unauthorized');
   }
 });
 
