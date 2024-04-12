@@ -60,7 +60,7 @@ const forwardExpertAwaiting = async (msg) => {
         const topicId = user.groupTopicId;
         const topic = !!topicId ? await editForumTopic(topicId, topicName) : await createForumTopic(topicName);
 
-        const fwdUser = await upsertUser(msg, { isExpert: true, topicId: topic.message_thread_id });
+        const fwdUser = await upsertUser(msg, { isExpert: true, groupTopicId: topic.message_thread_id });
         const name = !!fwdUser.username ? `@${fwdUser.username}` : !!fwdUser.firstName ? fwdUser.firstName : `с ID ${fwdUser.chatId}`;
         message = `Пользователь ${name} стал экспертом!`
         await bot.sendMessage(fwdUser.chatId, 'Роль изменена с пользователя на эксперта 🥳', buttons.mainMenu('expert'));

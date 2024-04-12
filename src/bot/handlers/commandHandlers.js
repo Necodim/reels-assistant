@@ -15,7 +15,7 @@ const start = async (msg) => {
       const topicName = user.username ? user.username : user.firstName + ` ${user.lastName}`;
       const topicId = user.groupTopicId;
       const topic = !!topicId ? await editForumTopic(topicId, topicName) : await createForumTopic(topicName);
-      await upsertUser(msg, { topicId: topic.message_thread_id });
+      await upsertUser(msg, { groupTopicId: topic.message_thread_id });
 
       message = 'Вы можете опубликовывать идеи и оценивать ролики подопечных. Управление функционалом бота происходит через кнопки под сообщениями.'
       if (!user.about) {
@@ -99,7 +99,7 @@ const snezone = async (msg) => {
         const topicId = user.groupTopicId;
         const topic = !!topicId ? await editForumTopic(topicId, topicName) : await createForumTopic(topicName);
 
-        await upsertUser(msg, { isExpert: true, topicId: topic.message_thread_id });
+        await upsertUser(msg, { isExpert: true, groupTopicId: topic.message_thread_id });
       }
       await updateUserState(chatId, '');
       await bot.sendMessage(chatId, message, options);
