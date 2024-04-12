@@ -120,7 +120,6 @@ const purchase = async (callbackQuery) => {
   const pNumber = parseInt(callbackQuery.data.split(':')[1], 10);
   const product = products.products[pNumber];
   const link = product.link;
-  console.log(link);
   const message = `<b>Продукт:</b> ${product.name}
 
 Нажмите на кнопку, чтобы перейти на страницу оплаты. После успешной оплаты возвращайтесь обратно, я сообщу, когда подписка будет оформлена.`

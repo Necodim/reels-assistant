@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+const corsMiddleware = require('./corsMiddleware');
 const calculateHMAC = require('./hmacCalculator');
 const { formatDate, nextMonth } = require('../helpers/dateHelper');
 const { addSubscription, updateSubscriptionByCloudPaymentsId, getSubscriptionByCloudPaymentsId, removeSubscription } = require('../db/service/subscriptionService');
@@ -41,9 +42,9 @@ app.get('/cloudpayments/fail', (req, res) => {
 });
 
 // Обработчик вебхука check
-app.post('/cloudpayments/check', (req, res) => {
+app.post('/cloudpayments/check', corsMiddleware, (req, res) => {
   const receivedHmac = req.headers['content-hmac'] || req.headers['x-content-hmac'];
-  const calculatedHmac = calculateHMAC(req.body);
+  const calculatedHmac = calculateHMAC(req);
 
   if (receivedHmac === calculatedHmac) {
     console.log('HMAC is verified. Request is from CloudPayments.');
@@ -55,9 +56,9 @@ app.post('/cloudpayments/check', (req, res) => {
 });
 
 // Обработчик вебхука pay
-app.post('/cloudpayments/pay', async (req, res) => {
+app.post('/cloudpayments/pay', corsMiddleware, async (req, res) => {
   const receivedHmac = req.headers['content-hmac'] || req.headers['x-content-hmac'];
-  const calculatedHmac = calculateHMAC(req.body);
+  const calculatedHmac = calculateHMAC(req);
 
   if (receivedHmac === calculatedHmac) {
     console.log('HMAC is verified. Request is from CloudPayments.');
@@ -97,9 +98,9 @@ app.post('/cloudpayments/pay', async (req, res) => {
 });
 
 // Обработчик вебхука recurrent
-app.post('/cloudpayments/recurrent', async (req, res) => {
+app.post('/cloudpayments/recurrent', corsMiddleware, async (req, res) => {
   const receivedHmac = req.headers['content-hmac'] || req.headers['x-content-hmac'];
-  const calculatedHmac = calculateHMAC(req.body);
+  const calculatedHmac = calculateHMAC(req);
 
   if (receivedHmac === calculatedHmac) {
     console.log('HMAC is verified. Request is from CloudPayments.');
