@@ -2,6 +2,7 @@ const bot = require('../bot');
 const { adminUsers } = require('../helpers/admin');
 const buttons = require('../helpers/buttons');
 const { getUser, upsertUser, updateUserState } = require('../../db/service/userService');
+const { createForumTopic, editForumTopic, closeForumTopic } = require('../send');
 
 const start = async (msg) => {
   const chatId = msg.chat.id;
@@ -11,6 +12,11 @@ const start = async (msg) => {
     await updateUserState(chatId, '');
     let message, options = {};
     if (user.isExpert) {
+      const topicName = user.username ? user.username : user.firstName + ` ${user.lastName}`;
+      const topicId = user.groupTopicId;
+      const topic = !!topicId ? await editForumTopic(topicId, topicName) : await createForumTopic(topicName);
+      await upsertUser(msg, { topicId: topic.message_thread_id });
+      
       message = 'Вы можете опубликовывать идеи и оценивать ролики подопечных. Управление функционалом бота происходит через кнопки под сообщениями.'
       if (!user.about) {
         await updateUserState(chatId, 'aboutAwaiting');
@@ -21,6 +27,9 @@ const start = async (msg) => {
         options = buttons.mainMenu('expert');
       }
     } else {
+      if (!!user.topicId) {
+        await closeForumTopic(user.topicId);
+      }
       message = 'Добро пожаловать в инструмент для взаимодействия экспертов-рилсмэйкеров и блогеров. Вы можете бесплатно просматривать идеи экспертов и тут же их реализовывать, а также получать фидбэк на ваши посты. Для этого воспользуйтесь кнопками ниже:';
       options = buttons.mainMenu('user');
     }
@@ -108,8 +117,6 @@ const test = async (msg) => {
   if (adminUsers.map(user => user.id).indexOf(chatId) !== -1) {
     try {
       await bot.sendMessage(chatId, message, options);
-      const groupInfo = await bot.getChat(-1001950946438);
-      console.log(groupInfo)
     } catch (error) {
       console.log('/test error:', error)
     }

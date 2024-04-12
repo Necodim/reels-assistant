@@ -30,9 +30,11 @@ const sendIdeaOutside = async (ideaId, btns = {}) => {
 Сложность: ${idea.difficulty}
 ${idea.hashtag}
 
-Автор: @${user.username}`
+Автор: @${user.username}
+#идея`
 
-    const options = {...btns, caption, message_thread_id: group.ideas};
+    const topicId = user.topicId ? user.topicId : group.ideas;
+    const options = {...btns, caption, message_thread_id: topicId};
     await sendVideoToBot(group.id, idea.videoId, options);
   } catch (error) {
     console.error('Не удалось отправить идею в группу:', error);
@@ -48,12 +50,54 @@ const sendAnswerOutside = async (videoId) => {
 <blockquote>${video.caption}</blockquote>
 
 Ответ от @${user.username}:
-<blockquote>${video.evaluation}</blockquote>`;
+<blockquote>${video.evaluation}</blockquote>
+#оценка`;
 
-    const options = {caption: caption, message_thread_id: group.answers, parse_mode: 'HTML'};
+    const topicId = user.topicId ? user.topicId : group.answers;
+    const options = {caption: caption, message_thread_id: topicId, parse_mode: 'HTML'};
     await sendVideoToBot(group.id, video.videoId, options);
   } catch (error) {
     console.error('Не удалось отправить оценку эксперта в группу:', error);
+  }
+}
+
+const createForumTopic = async (name) => {
+  try {
+    const topic = await bot.createForumTopic(group.id, name);
+    return topic;
+  } catch (error) {
+    console.error('Не удалось создать ветку в группе:', error);
+  }
+}
+
+const editForumTopic = async (topicId, name) => {
+  const options = {
+    name: name
+  }
+
+  try {
+    const topic = await bot.editForumTopic(group.id, topicId, options);
+    return topic;
+  } catch (error) {
+    console.error('Не удалось изменить ветку в группе:', error);
+  }
+}
+
+const closeForumTopic = async (topicId) => {
+  try {
+    const topic = await bot.closeForumTopic(group.id, topicId);
+    return topic;
+  } catch (error) {
+    console.error('Не удалось закрыть ветку в группе:', error);
+  }
+}
+
+const reopenForumTopic = async (topicId) => {
+  try {
+    const topic = await bot.reopenForumTopic(group.id, topicId);
+    return topic;
+  } catch (error) {
+    console.error('Не удалось открыть ветку в группе:', error);
   }
 }
 
@@ -61,4 +105,8 @@ module.exports = {
   sendVideoToBot,
   sendIdeaOutside,
   sendAnswerOutside,
+  createForumTopic,
+  editForumTopic,
+  closeForumTopic,
+  reopenForumTopic,
 }

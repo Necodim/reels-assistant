@@ -45,14 +45,22 @@ const forwardExpertAwaiting = async (msg) => {
   if (msg.forward_from && !msg.forward_from.is_bot) {
     try {
       let message;
-      const foundUser = await getUserByChatId(msg.forward_from.id);
-      if (foundUser && foundUser.isExpert) {
+      const user = await getUserByChatId(msg.forward_from.id);
+      if (user && user.isExpert) {
+        if (!!user.groupTopicId) {
+          await closeForumTopic(user.groupTopicId);
+        }
+
         const fwdUser = await upsertUser(msg, { isExpert: false });
         const name = !!fwdUser.username ? `@${fwdUser.username}` : !!fwdUser.firstName ? fwdUser.firstName : `с ID ${fwdUser.chatId}`;
         message = `Пользователь ${name} разжалован!`
         await bot.sendMessage(fwdUser.chatId, 'Роль изменена с эксперта на пользователя 🥲', buttons.mainMenu('user'));
       } else {
-        const fwdUser = await upsertUser(msg, { isExpert: true });
+        const topicName = user.username ? user.username : user.firstName + ` ${user.lastName}`;
+        const topicId = user.groupTopicId;
+        const topic = !!topicId ? await editForumTopic(topicId, topicName) : await createForumTopic(topicName);
+
+        const fwdUser = await upsertUser(msg, { isExpert: true, topicId: topic.message_thread_id });
         const name = !!fwdUser.username ? `@${fwdUser.username}` : !!fwdUser.firstName ? fwdUser.firstName : `с ID ${fwdUser.chatId}`;
         message = `Пользователь ${name} стал экспертом!`
         await bot.sendMessage(fwdUser.chatId, 'Роль изменена с пользователя на эксперта 🥳', buttons.mainMenu('expert'));
