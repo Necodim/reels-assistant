@@ -147,7 +147,7 @@ const aboutAwaiting = async (msg) => {
 
   try {
     await upsertUser(msg, { about: text });
-    await updateUserState('');
+    await updateUserState(chatId, '');
     await bot.sendMessage(chatId, message, options);
   } catch (error) {
     console.error('Не удалось записать информацию об эксперте:', error)
