@@ -81,7 +81,7 @@ const purchase = {
     let currentLine = [];
     subscriptions.forEach((subscription, index) => {
       console.log(subscription)
-      const id = subscription.id;
+      const id = subscription._id;
       console.log(id)
       let emoji;
       switch (index) {
@@ -97,7 +97,7 @@ const purchase = {
         case 9: emoji ='🔟'; break;
         default: emoji = index + 1; break;
       }
-      currentLine.push({ text: emoji, callback_data: `cnlsb:${subscription.id}` });
+      currentLine.push({ text: emoji, callback_data: `cnlsb:${subscription._id}` });
       if ((index + 1) % 5 === 0 || index === subscriptions.length - 1) {
         buttons.push(currentLine);
         currentLine = [];
