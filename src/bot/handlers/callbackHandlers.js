@@ -375,7 +375,7 @@ const aboutExpert = async (callbackQuery) => {
   const message = 'Пришлите текст о себе. Этот текст пользователь увидит, когда оформит подписку и станет вашим подопечным.';
 
   try {
-    await updateUserState('aboutAwaiting');
+    await updateUserState(chatId, 'aboutAwaiting');
     await bot.sendMessage(chatId, message);
   } catch (error) {
     handleError(error, callbackQuery);

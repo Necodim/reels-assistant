@@ -146,7 +146,6 @@ const aboutAwaiting = async (msg) => {
   const options = {...buttons.mainMenu('expert'), parse_mode: 'HTML'};
 
   try {
-    console.log(typeof chatId, chatId)
     await upsertUser(msg, { about: text });
     await updateUserState(chatId, '');
     await bot.sendMessage(chatId, message, options);

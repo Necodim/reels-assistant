@@ -13,7 +13,7 @@ const start = async (msg) => {
     if (user.isExpert) {
       message = 'Вы можете опубликовывать идеи и оценивать ролики подопечных. Управление функционалом бота происходит через кнопки под сообщениями.'
       if (!user.about) {
-        await updateUserState('aboutAwaiting');
+        await updateUserState(chatId, 'aboutAwaiting');
         message += `
 
 Но для начала расскажи о себе. Этот текст пользователь увидит, когда оформит подписку и станет вашим подопечным.`;
