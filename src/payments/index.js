@@ -8,8 +8,8 @@ const { formatDate, nextMonth } = require('../helpers/dateHelper');
 const { addSubscription, updateSubscriptionByCloudPaymentsId, getSubscriptionByCloudPaymentsId, removeSubscription } = require('../db/service/subscriptionService');
 const { getUserByUsername, getUserById, getUserByChatId } = require('../db/service/userService');
 const bot = require('../bot/bot');
-const { buttons } = require('../bot/helpers/buttons');
-const { products } = require('../bot/helpers/products');
+const buttons = require('../bot/helpers/buttons');
+const products = require('../bot/helpers/products');
 
 app.use(express.text({ type: '*/*' }))
 app.use(express.static('public'));
@@ -67,7 +67,7 @@ app.post('/cloudpayments/pay', async (req, res) => {
       if (!!Data && !!Amount && !!SubscriptionId) {
         const chatId = JSON.parse(Data).CloudPayments.telegram;
         const productPrice = parseInt(Amount, 10);
-        const productName = products.find(product => product.price === productPrice).name;
+        const productName = products.products.find(product => product.price === productPrice).name;
         const user = await getUserByChatId(chatId);
         const subscriptionDetails = {
           userId: user.id,
