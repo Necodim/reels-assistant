@@ -16,7 +16,7 @@ const start = async (msg) => {
       const topicId = user.groupTopicId;
       const topic = !!topicId ? await editForumTopic(topicId, topicName) : await createForumTopic(topicName);
       await upsertUser(msg, { topicId: topic.message_thread_id });
-      
+
       message = 'Вы можете опубликовывать идеи и оценивать ролики подопечных. Управление функционалом бота происходит через кнопки под сообщениями.'
       if (!user.about) {
         await updateUserState(chatId, 'aboutAwaiting');
@@ -90,9 +90,16 @@ const snezone = async (msg) => {
       const user = await getUser(msg);
       const message = `Ваша роль изменена. Теперь вы ${user.isExpert ? 'обычный пользователь' : 'эксперт'}!`;
       if (user && user.isExpert) {
+        if (!!user.groupTopicId) {
+          await closeForumTopic(user.groupTopicId);
+        }
         await upsertUser(msg, { isExpert: false });
       } else {
-        await upsertUser(msg, { isExpert: true });
+        const topicName = user.username ? user.username : user.firstName + ` ${user.lastName}`;
+        const topicId = user.groupTopicId;
+        const topic = !!topicId ? await editForumTopic(topicId, topicName) : await createForumTopic(topicName);
+
+        await upsertUser(msg, { isExpert: true, topicId: topic.message_thread_id });
       }
       await updateUserState(chatId, '');
       await bot.sendMessage(chatId, message, options);
