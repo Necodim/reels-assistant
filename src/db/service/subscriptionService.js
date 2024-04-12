@@ -56,14 +56,18 @@ const getUserSubscriptions = async (userId) => {
 
 const addSubscription = async (data) => {
   try {
+    if (typeof data !== 'object' || Array.isArray(data)) {
+      throw new TypeError('Ожидается объект с данными подписки');
+    }
     const subscription = new Subscription(data);
     await subscription.save();
-
-    await User.findByIdAndUpdate(subscription.userId, { $push: { subscriptions: subscription._id } });
-
-    console.log(`Подписка ${subscription.name} добавлена пользователю ${userId}`);
+    if (data.userId) {
+      await User.findByIdAndUpdate(data.userId, { $push: { subscriptions: subscription._id } });
+    }
+    console.log(`Подписка ${subscription.name} добавлена пользователю ${data.userId}`);
   } catch (error) {
     console.error('Ошибка при добавлении подписки:', error);
+    throw error;
   }
 };
 
