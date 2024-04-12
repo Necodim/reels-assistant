@@ -1,7 +1,7 @@
 const bot = require('../bot');
 const buttons = require('../helpers/buttons');
 const { getUserByChatId, getUsers, upsertUser, updateUserState } = require('../../db/service/userService');
-const { createVideo, updateVideoById } = require('../../db/service/videoService');
+const { createVideo, updateVideoById, getUnratedVides } = require('../../db/service/videoService');
 const { createIdea } = require('../../db/service/ideaService');
 const { difficulty, hashtag } = require('./callbackHandlers');
 
@@ -138,17 +138,25 @@ const evaluateAwaiting = async (msg, state) => {
 const aboutAwaiting = async (msg) => {
   const chatId = msg.chat.id;
   const text = msg.text;
-  const message = `Отлично, вот ваша информация «Обо мне»:
+  const message1 = `Отлично, вот ваша информация «Обо мне»:
 <blockquote>${text}</blockquote>
-Изменить её можно в соответствующем разделе ⚙️ Настройках.
+Изменить её можно в соответствующем разделе в ⚙️ Настройках.`
+const options = {...buttons.mainMenu('expert'), parse_mode: 'HTML'};
 
-А теперь можете начать генерить идеи. Как только у вас появится подписчик, я сообщу об этом! Также я сообщу, если подписчик пришлёт вам ролик на оценку.`
-  const options = {...buttons.mainMenu('expert'), parse_mode: 'HTML'};
-
-  try {
-    await upsertUser(msg, { about: text });
-    await updateUserState(chatId, '');
-    await bot.sendMessage(chatId, message, options);
+try {
+  const user = await upsertUser(msg, { about: text });
+  await updateUserState(chatId, '');
+  await bot.sendMessage(chatId, message1);
+  await bot.sendChatAction(chatId, 'typing');
+  const videos = getUnratedVides(user.id);
+  let message2 = 'А теперь можете начать генерить идеи. Как только у вас появится новый подписчик, я сообщу об этом!'
+  if (videos.length) {
+    message2 += ` Кстати, у вас есть неоценённые ролики (${videos.length} шт.) 👏`;
+  } else {
+    message2 += ' Если подписчик пришлёт вам ролик на оценку, я также обязательно пришлю вам уведомление 🫡';
+  }
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  await bot.sendMessage(chatId, message2, options);
   } catch (error) {
     console.error('Не удалось записать информацию об эксперте:', error)
   }

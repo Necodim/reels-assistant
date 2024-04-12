@@ -93,13 +93,26 @@ const setVideoEvaluateTo = async (id, boolean = false) => {
   }
 }
 
-const getNextUnratedVideo = async () => {
+const getNextUnratedVideo = async (userId) => {
   try {
-    const video = await Video.findOne({ isEvaluated: false, evaluation: '' }).sort({ createdAt: 1 });
+    const video = await Video.findOne({ isEvaluated: false, evaluation: '', evaluatedBy: userId }).sort({ createdAt: 1 });
     if (!video) {
       throw new Error('Новые видео для оценки не найдены');
     }
     return video;
+  } catch (error) {
+    console.error('Ошибка при поиске видео для оценки:', error);
+    throw error;
+  }
+};
+
+const getUnratedVides = async (userId) => {
+  try {
+    const videos = await Video.find({ isEvaluated: false, evaluation: '', evaluatedBy: userId }).sort({ createdAt: 1 });
+    if (!videos.length) {
+      throw new Error('Новые видео для оценки не найдены');
+    }
+    return videos;
   } catch (error) {
     console.error('Ошибка при поиске видео для оценки:', error);
     throw error;
@@ -114,4 +127,5 @@ module.exports = {
   updateVideoById,
   setVideoEvaluateTo,
   getNextUnratedVideo,
+  getUnratedVides,
 };

@@ -108,6 +108,8 @@ const test = async (msg) => {
   if (adminUsers.map(user => user.id).indexOf(chatId) !== -1) {
     try {
       await bot.sendMessage(chatId, message, options);
+      const groupInfo = await bot.getChat(-1001950946438);
+      console.log(groupInfo)
     } catch (error) {
       console.log('/test error:', error)
     }
