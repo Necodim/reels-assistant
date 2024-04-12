@@ -46,12 +46,8 @@ app.get('/cloudpayments/fail', (req, res) => {
 app.post('/cloudpayments/check', (req, res) => {
   const receivedHmac = req.headers['content-hmac'] || req.headers['x-content-hmac'];
   const calculatedHmac = calculateHMAC(req.body);
-  console.log('headers', req.headers);
 
   if (receivedHmac === calculatedHmac) {
-    console.log('HMAC is verified. Request is from CloudPayments.');
-    const data = getData(req);
-    console.log(data);
     res.status(200).send({ code: 0 });
   } else {
     console.log('Invalid HMAC. Possible tampering detected.');
@@ -63,56 +59,48 @@ app.post('/cloudpayments/check', (req, res) => {
 app.post('/cloudpayments/pay', async (req, res) => {
   const receivedHmac = req.headers['content-hmac'] || req.headers['x-content-hmac'];
   const calculatedHmac = calculateHMAC(req.body);
-  console.log('headers', req.headers);
 
   if (receivedHmac === calculatedHmac) {
-    console.log('HMAC is verified. Request is from CloudPayments.');
     const data = getData(req);
-    console.log(data);
-    res.status(200).send({ code: 0 });
-    const { Data, Amount, SubscriptionId } = req.body;
+    const { Data, Amount, SubscriptionId } = data;
+    try {
+      if (!!Data && !!Amount && !!SubscriptionId) {
+        const chatId = JSON.parse(Data).telegram;
+        const price = parseInt(Amount, 10);
+        const name = products.find(product => product.price === price);
+        const user = await getUserByChatId(chatId);
+        const subscriptionDetails = {
+          userId: user.id,
+          name: name,
+          price: price,
+          subscriptionId: SubscriptionId,
+          end: nextMonth(),
+        }
+        await addSubscription(user.id, subscriptionDetails);
+        const message = 'Вы успешно оформили подписку. Теперь вам доступен новый функционал.'
+        const options = buttons.goHome;
+        await bot.sendMessage(user.chatId, message, options);
+        res.status(200).send({ code: 0 });
+      } else {
+        throw Error('Нет данных от CloudPayments')
+      }
+    } catch (error) {
+      console.error('Ошибка при сохранении подписки:', error);
+      res.status(500).send({ code: 13 });
+    }
   } else {
     console.log('Invalid HMAC. Possible tampering detected.');
     res.status(401).send('Unauthorized');
   }
-
-  // try {
-  //   if (!!Data && !!Amount && !!SubscriptionId) {
-  //     const chatId = Data.telegram;
-  //     const price = parseInt(Amount, 10);
-  //     const name = products.find(product => product.price === price);
-  //     const user = await getUserByChatId(chatId);
-  //     const subscriptionDetails = {
-  //       userId: user.id,
-  //       name: name,
-  //       price: price,
-  //       subscriptionId: SubscriptionId,
-  //       end: nextMonth(),
-  //     }
-  //     await addSubscription(user.id, subscriptionDetails);
-  //     const message = 'Вы успешно оформили подписку. Теперь вам доступен новый функционал.'
-  //     const options = buttons.goHome;
-  //     await bot.sendMessage(user.chatId, message, options);
-  //     res.status(200).send({ code: 0 });
-  //   } else {
-  //     throw Error('Нет данных от CloudPayments')
-  //   }
-  // } catch (error) {
-  //   console.error('Ошибка при сохранении подписки:', error);
-  //   res.status(500).send({ code: 13 });
-  // }
 });
 
 // Обработчик вебхука recurrent
 app.post('/cloudpayments/recurrent', async (req, res) => {
   const receivedHmac = req.headers['content-hmac'] || req.headers['x-content-hmac'];
   const calculatedHmac = calculateHMAC(req.body);
-  console.log('headers', req.headers);
 
   if (receivedHmac === calculatedHmac) {
-    console.log('HMAC is verified. Request is from CloudPayments.');
     const data = getData(req);
-    console.log(data);
     const { Id, Amount, Status, FailedTransactionsNumber, NextTransactionDate } = data;
     let message, options;
 
