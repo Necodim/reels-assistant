@@ -33,7 +33,7 @@ ${idea.hashtag}
 Автор: @${user.username}
 #идея`
 
-    const topicId = user.topicId ? user.topicId : group.ideas;
+    const topicId = user.groupTopicId ? user.groupTopicId : group.ideas;
     const options = {...btns, caption, message_thread_id: topicId};
     await sendVideoToBot(group.id, idea.videoId, options);
   } catch (error) {
@@ -53,7 +53,7 @@ const sendAnswerOutside = async (videoId) => {
 <blockquote>${video.evaluation}</blockquote>
 #оценка`;
 
-    const topicId = user.topicId ? user.topicId : group.answers;
+    const topicId = user.groupTopicId ? user.groupTopicId : group.answers;
     const options = {caption: caption, message_thread_id: topicId, parse_mode: 'HTML'};
     await sendVideoToBot(group.id, video.videoId, options);
   } catch (error) {

@@ -27,8 +27,8 @@ const start = async (msg) => {
         options = buttons.mainMenu('expert');
       }
     } else {
-      if (!!user.topicId) {
-        await closeForumTopic(user.topicId);
+      if (!!user.groupTopicId) {
+        await closeForumTopic(user.groupTopicId);
       }
       message = 'Добро пожаловать в инструмент для взаимодействия экспертов-рилсмэйкеров и блогеров. Вы можете бесплатно просматривать идеи экспертов и тут же их реализовывать, а также получать фидбэк на ваши посты. Для этого воспользуйтесь кнопками ниже:';
       options = buttons.mainMenu('user');
