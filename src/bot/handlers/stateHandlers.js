@@ -149,12 +149,13 @@ const aboutAwaiting = async (msg) => {
   const message1 = `Отлично, вот ваша информация «Обо мне»:
 <blockquote>${text}</blockquote>
 Изменить её можно в соответствующем разделе в ⚙️ Настройках.`
-const options = {...buttons.mainMenu('expert'), parse_mode: 'HTML'};
+const options1 = {parse_mode: 'HTML'};
+const options2 = {...buttons.mainMenu('expert')};
 
 try {
   const user = await upsertUser(msg, { about: text });
   await updateUserState(chatId, '');
-  await bot.sendMessage(chatId, message1);
+  await bot.sendMessage(chatId, message1, options1);
   await bot.sendChatAction(chatId, 'typing');
   const videos = getUnratedVides(user.id);
   let message2 = 'А теперь можете начать генерить идеи. Как только у вас появится новый подписчик, я сообщу об этом!'
@@ -164,7 +165,7 @@ try {
     message2 += ' Если подписчик пришлёт вам ролик на оценку, я также обязательно пришлю вам уведомление 🫡';
   }
   await new Promise(resolve => setTimeout(resolve, 1000));
-  await bot.sendMessage(chatId, message2, options);
+  await bot.sendMessage(chatId, message2, options2);
   } catch (error) {
     console.error('Не удалось записать информацию об эксперте:', error)
   }
