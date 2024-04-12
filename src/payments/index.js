@@ -85,11 +85,11 @@ app.post('/cloudpayments/pay', async (req, res) => {
 
 Информация о вашем эксперте:
 <blockquote>${expert.about}</blockquote>`
-        const options = {...buttons.home(), parse_mode: 'HTML'};
-        await bot.sendMessage(user.chatId, messageUser, options);
+        const optionsUser = {...buttons.home(), parse_mode: 'HTML'};
+        await bot.sendMessage(user.chatId, messageUser, optionsUser);
 
         const messageExpert = 'У вас новый подопечный. Скоро он начнёт присылать свои видео на оценку, а я буду уведомлять вас об этом 😉'
-        await bot.sendMessage(expert.chatId, messageExpert, options);
+        await bot.sendMessage(expert.chatId, messageExpert);
         res.status(200).send({ code: 0 });
       } else {
         throw Error('Нет данных от CloudPayments')
