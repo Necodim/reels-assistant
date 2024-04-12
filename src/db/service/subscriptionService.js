@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Subscription = require('../models/subscriptionModel');
 const User = require('../models/userModel');
 
-const getSubscription = async (id) => {
+const getSubscriptionById = async (id) => {
   try {
     const subscription = Subscription.findById(id);
     return subscription;
@@ -149,7 +149,7 @@ const removeSubscription = async (userId, subscriptionId) => {
 };
 
 module.exports = {
-  getSubscription,
+  getSubscriptionById,
   getSubscriptionByCloudPaymentsId,
   getUserSubscription,
   getUserSubscriptions,

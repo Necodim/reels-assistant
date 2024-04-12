@@ -9,7 +9,7 @@ const { checkDailyLimit, fetchIdeaForUser } = require('../../db/service/userIdea
 const { createFavoriteIdea } = require('../../db/service/favoriteIdeaService');
 const { getVideoById, updateVideoById, setVideoEvaluateTo, getNextUnratedVideo } = require('../../db/service/videoService');
 const message = require('../events/message');
-const { getUserSubscriptions, getSubscription } = require('../../db/service/subscriptionService');
+const { getUserSubscriptions, getSubscriptionById } = require('../../db/service/subscriptionService');
 const { formatDate } = require('../../helpers/dateHelper');
 const { subscriptionsCancel } = require('../../payments/cloudpaymentAPI');
 
@@ -190,7 +190,7 @@ const cancelSubscription = async (callbackQuery) => {
   console.log(callbackQuery.data);
   
   try {
-    const subscription = getSubscription(subscriptionId);
+    const subscription = getSubscriptionById(subscriptionId);
     const response = await subscriptionsCancel(subscription.subscriptionId);
     console.log(response)
     if (response.Success) {
