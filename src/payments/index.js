@@ -58,7 +58,9 @@ app.get('/cloudpayments/fail', (req, res) => {
 app.post('/cloudpayments/check', (req, res) => {
   const receivedHmac = req.headers['content-hmac'] || req.headers['x-content-hmac'];
   console.log('raw', req.rawBody)
-  const calculatedHmac = calculateHMAC(req.rawBody);
+  const params = new URLSearchParams(req.body);
+  const originalString = params.toString();
+  const calculatedHmac = calculateHMAC(originalString);
   console.log('headers', req.headers);
 
   if (receivedHmac === calculatedHmac) {
