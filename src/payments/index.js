@@ -66,10 +66,10 @@ app.post('/cloudpayments/pay', async (req, res) => {
       console.log('data', data);
       const { Data, Amount, SubscriptionId } = data;
       if (!!Data && !!Amount && !!SubscriptionId) {
-        const chatId = JSON.parse(Data).telegram;
+        const chatId = JSON.parse(Data).CloudPayments.telegram;
         console.log('chatId', chatId);
         const productPrice = parseInt(Amount, 10);
-        const productName = products.find(product => product.productPrice === productPrice);
+        const productName = products.find(product => product.price === productPrice).name;
         console.log('productName', productName);
         const user = await getUserByChatId(chatId);
         console.log('user', user);
