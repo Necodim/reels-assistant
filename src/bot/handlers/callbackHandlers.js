@@ -171,6 +171,7 @@ const cancelSubscription = async (callbackQuery) => {
   try {
     const subscription = getSubscription(subscriptionId);
     const response = await subscriptionsCancel(subscription.subscriptionId);
+    console.log(response)
     if (response.Success) {
       const date = formatDate(subscription.end, 'd MMMM, HH:mm');
       const message = `Вы успешно отменили подписку ${subscription.name}. Она будет действовать до ${date}`;

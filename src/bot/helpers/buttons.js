@@ -80,9 +80,6 @@ const purchase = {
     ];
     let currentLine = [];
     subscriptions.forEach((subscription, index) => {
-      console.log(subscription)
-      const id = subscription._id;
-      console.log(id)
       let emoji;
       switch (index) {
         case 0: emoji ='1️⃣'; break;
