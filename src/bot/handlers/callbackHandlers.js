@@ -140,7 +140,6 @@ const subscription = async (callbackQuery) => {
   try {
     const user = await getUser(callbackQuery);
     const subscriptions = await getUserSubscriptions(user.id);
-    console.log(subscriptions);
     let message
     if (subscriptions.length > 0) {
       message = 'У вас больше одной подписки:';

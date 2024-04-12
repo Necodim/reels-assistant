@@ -75,12 +75,14 @@ const cancel = {
 
 const purchase = {
   user: (subscriptions = []) => {
-    console.log(subscriptions);
     let buttons = [
       [{ text: '🔑 Доступ к боту', callback_data: 'prchs:0' }]
     ];
     let currentLine = [];
     subscriptions.forEach((subscription, index) => {
+      console.log(subscription)
+      const id = subscription.id;
+      console.log(id)
       let emoji;
       switch (index) {
         case 0: emoji ='1️⃣'; break;
