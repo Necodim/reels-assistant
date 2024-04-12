@@ -57,6 +57,7 @@ app.get('/cloudpayments/fail', (req, res) => {
 // Обработчик вебхука check
 app.post('/cloudpayments/check', (req, res) => {
   const receivedHmac = req.headers['content-hmac'] || req.headers['x-content-hmac'];
+  console.log('raw', req.rawBody)
   const calculatedHmac = calculateHMAC(req.rawBody);
   console.log('headers', req.headers);
 
