@@ -58,7 +58,7 @@ const forwardExpertAwaiting = async (msg) => {
       } else {
         const topicName = user.username ? user.username : user.firstName + ` ${user.lastName}`;
         const topicId = user.groupTopicId;
-        const topic = !!topicId ? await editForumTopic(topicId, topicName) : await createForumTopic(topicName);
+        const topic = !!topicId ? await reopenForumTopic(topicId, topicName) : await createForumTopic(topicName);
 
         const fwdUser = await upsertUser(msg, { isExpert: true, groupTopicId: topic.message_thread_id });
         const name = !!fwdUser.username ? `@${fwdUser.username}` : !!fwdUser.firstName ? fwdUser.firstName : `с ID ${fwdUser.chatId}`;

@@ -2,7 +2,7 @@ const bot = require('../bot');
 const { adminUsers } = require('../helpers/admin');
 const buttons = require('../helpers/buttons');
 const { getUser, upsertUser, updateUserState } = require('../../db/service/userService');
-const { createForumTopic, editForumTopic, closeForumTopic } = require('../send');
+const { createForumTopic, reopenForumTopic, closeForumTopic } = require('../send');
 
 const start = async (msg) => {
   const chatId = msg.chat.id;
@@ -14,7 +14,7 @@ const start = async (msg) => {
     if (user.isExpert) {
       const topicName = user.username ? user.username : user.firstName + ` ${user.lastName}`;
       const topicId = user.groupTopicId;
-      const topic = !!topicId ? await editForumTopic(topicId, topicName) : await createForumTopic(topicName);
+      const topic = !!topicId ? await reopenForumTopic(topicId, topicName) : await createForumTopic(topicName);
       await upsertUser(msg, { groupTopicId: topic.message_thread_id });
 
       message = 'Вы можете опубликовывать идеи и оценивать ролики подопечных. Управление функционалом бота происходит через кнопки под сообщениями.'
@@ -97,7 +97,7 @@ const snezone = async (msg) => {
       } else {
         const topicName = user.username ? user.username : user.firstName + ` ${user.lastName}`;
         const topicId = user.groupTopicId;
-        const topic = !!topicId ? await editForumTopic(topicId, topicName) : await createForumTopic(topicName);
+        const topic = !!topicId ? await reopenForumTopic(topicId, topicName) : await createForumTopic(topicName);
 
         await upsertUser(msg, { isExpert: true, groupTopicId: topic.message_thread_id });
       }
