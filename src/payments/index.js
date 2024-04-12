@@ -85,7 +85,7 @@ app.post('/cloudpayments/pay', async (req, res) => {
 
 Информация о вашем эксперте:
 <blockquote>${expert.about}</blockquote>`
-        const options = buttons.home();
+        const options = {...buttons.home(), parse_mode: 'HTML'};
         await bot.sendMessage(user.chatId, message, options);
         res.status(200).send({ code: 0 });
       } else {
