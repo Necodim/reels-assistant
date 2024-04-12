@@ -15,7 +15,9 @@ function calculateHMAC(req) {
   console.log('payload', typeof payload, payload)
   const hmac = crypto.createHmac('sha256', process.env.CLOUDPAYMENTS_API_KEY);
   hmac.update(payload, 'utf8');
-  return hmac.digest('base64');
+  const result = hmac.digest('base64');
+  console.log('result', result);
+  return result;
 }
 
 module.exports = calculateHMAC;
