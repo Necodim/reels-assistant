@@ -10,7 +10,7 @@ const bot = require('../bot/bot');
 const { buttons } = require('../bot/helpers/buttons');
 const { products } = require('../bot/helpers/products');
 
-app.use(express.json());
+// app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
 app.use(express.text({ type: 'text/plain' }));
 app.use(express.static('public'));
