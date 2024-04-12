@@ -5,7 +5,8 @@ const subscriptionSchema = new mongoose.Schema({
   name: String,
   price: Number,
   subscriptionId: String,
-  end: Date
+  end: Date,
+  status: String,
 }, {
   timestamps: true
 });

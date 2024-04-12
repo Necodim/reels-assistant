@@ -46,11 +46,11 @@ const getUserSubscriptions = async (userId) => {
       return userWithSubscriptions[0].subscriptionsInfo;
     } else {
       console.log('Пользователь не найден или у него нет подписок');
-      return null;
+      return [];
     }
   } catch (error) {
     console.error('Ошибка при получении информации о подписках пользователя:', error);
-    return null;
+    return [];
   }
 };
 

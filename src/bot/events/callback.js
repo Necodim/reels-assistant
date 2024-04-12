@@ -47,6 +47,9 @@ module.exports = async (callbackQuery) => {
     case 'cnlve':
       await callback.cancelVideoEvaluate(callbackQuery);
       break;
+    case 'cnlsb':
+      await callback.cancelSubscription(callbackQuery);
+      break;
     case 'evalt':
       switch (action) {
         case 'edit':
@@ -64,7 +67,7 @@ module.exports = async (callbackQuery) => {
     case 'chanl':
       switch (action) {
         case 'del':
-          await callback.channelMessageDelete(callbackQuery);
+          await callback.outsideMessageDelete(callbackQuery);
           break;
         default:
           console.log(`Неизвестный action (${action}) для callback_data_query: ${data}`);

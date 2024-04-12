@@ -9,8 +9,9 @@ const { checkDailyLimit, fetchIdeaForUser } = require('../../db/service/userIdea
 const { createFavoriteIdea } = require('../../db/service/favoriteIdeaService');
 const { getVideoById, updateVideoById, setVideoEvaluateTo, getNextUnratedVideo } = require('../../db/service/videoService');
 const message = require('../events/message');
-const { getUserSubscriptions } = require('../../db/service/subscriptionService');
+const { getUserSubscriptions, getSubscription } = require('../../db/service/subscriptionService');
 const { formatDate } = require('../../helpers/dateHelper');
+const { subscriptionsCancel } = require('../../payments/cloudpaymentAPI');
 
 const handleError = (error, callbackQuery) => {
   if (error.message === 'Новые идеи не найдены') {
@@ -66,7 +67,7 @@ const getIdea = async (callbackQuery) => {
     if (!canFetch) {
       const message = `5 бесплатных идей для рилс на сегодня закончились, завтра будут новые!
 ${products.text}`;
-      const options = buttons.purchase.user;
+      const options = buttons.purchase.user();
       await bot.sendMessage(chatId, message, options);
     } else {
       const idea = await fetchIdeaForUser(user.id);
@@ -140,26 +141,44 @@ const subscription = async (callbackQuery) => {
     const user = await getUser(callbackQuery);
     const subscriptions = await getUserSubscriptions(user.id);
     let message
-    if (subscriptions.length) {
-      if (subscriptions.length > 0) {
-        message = 'У вас больше одной подписки:';
-        subscriptions.forEach((subscription, i) => {
-          const date = formatDate(subscription.end, 'd MMMM, HH:mm');
-          message = `${message}
+    if (subscriptions.length > 0) {
+      message = 'У вас больше одной подписки:';
+      subscriptions.forEach((subscription, i) => {
+        const date = formatDate(subscription.end, 'd MMMM, HH:mm');
+        message = `${message}
 ${(i+1)}. ${subscription.name} (дата продления: ${date})`;
-        });
-      } else {
-        const date = formatDate(subscriptions[0].end, 'd MMMM, HH:mm');
-        message = `У вас уже есть подписка. Дата продления: ${date}`;
-      }
+      });
+      message += `
+
+Если хотите оформить ещё одну подписку, выберите её в списке ниже, если хотите отказаться от подписки, нажмите соответствующее подписке число:`
     } else {
-      message = `У вас нет подписки. В подписке за 990₽/месяц вам доступно:
+      message = `У вас нет подписок. В подписке за 990₽/месяц вы получите:
 ${products.text}`;
     }
-    const options = buttons.purchase.user;
+    const options = buttons.purchase.user(subscriptions);
     await bot.sendMessage(chatId, message, options);
   } catch (error) {
     console.error('Ошибка при отправке пользователю callbackQuery subscription:', error);
+  }
+}
+
+const cancelSubscription = async (callbackQuery) => {
+  const chatId = callbackQuery.from.id;
+  const subscriptionId = callbackQuery.data.split(':')[1];
+  const options = buttons.goHome;
+  
+  try {
+    const subscription = getSubscription(subscriptionId);
+    const response = await subscriptionsCancel(subscription.subscriptionId);
+    if (response.Success) {
+      const date = formatDate(subscription.end, 'd MMMM, HH:mm');
+      const message = `Вы успешно отменили подписку ${subscription.name}. Она будет действовать до ${date}`;
+      await bot.sendMessage(chatId, message, options);
+    } else {
+      throw Error('CloudPayments не смог отменить подписку');
+    }
+  } catch (error) {
+    console.error('Ошибка при отмене подписки:', error);
   }
 }
 
@@ -323,7 +342,7 @@ const toPush = async (callbackQuery) => {
 
 }
 
-const channelMessageDelete = async (callbackQuery) => {
+const outsideMessageDelete = async (callbackQuery) => {
   const chatId = callbackQuery.message.chat.id;
   const ideaId = callbackQuery.data.split(':')[2];
   
@@ -361,20 +380,27 @@ module.exports = {
   home,
   settings,
   sendVideo,
+
   getIdea,
   favorite,
   sendMeVideo,
+
   purchase,
   subscription,
+  cancelSubscription,
+
   createIdea,
   difficulty,
   hashtag,
+
   getVideo,
   cancelVideoEvaluate,
   editEvaluateMessage,
   sendEvaluateMessage,
+
   toPush,
-  channelMessageDelete,
+
+  outsideMessageDelete,
   support,
   test,
 };

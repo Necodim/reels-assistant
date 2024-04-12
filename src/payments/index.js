@@ -5,7 +5,7 @@ const getData = require('./getData');
 const corsMiddleware = require('./corsMiddleware');
 const calculateHMAC = require('./hmacCalculator');
 const { formatDate, nextMonth } = require('../helpers/dateHelper');
-const { addSubscription, updateSubscriptionByCloudPaymentsId, getSubscriptionByCloudPaymentsId, removeSubscription } = require('../db/service/subscriptionService');
+const { addSubscription, updateSubscriptionByCloudPaymentsId, getSubscriptionByCloudPaymentsId, removeSubscription, getUserSubscriptions } = require('../db/service/subscriptionService');
 const { getUserByUsername, getUserById, getUserByChatId } = require('../db/service/userService');
 const bot = require('../bot/bot');
 const buttons = require('../bot/helpers/buttons');
@@ -75,6 +75,7 @@ app.post('/cloudpayments/pay', async (req, res) => {
           price: productPrice,
           subscriptionId: SubscriptionId,
           end: nextMonth(),
+          status: 'Active',
         }
         await addSubscription(subscriptionDetails);
         const message = '✅ Вы успешно оформили подписку. Теперь вам доступен новый функционал.'
@@ -109,6 +110,7 @@ app.post('/cloudpayments/recurrent', async (req, res) => {
         if (Status !== 'Active') {
           const subscription = getSubscriptionByCloudPaymentsId(Id);
           const user = getUserById(subscription.userId);
+          const subscriptions = getUserSubscriptions(subscription.userId);
           const amount = parseInt(Amount, 10);
 
           switch (Status) {
@@ -120,13 +122,13 @@ app.post('/cloudpayments/recurrent', async (req, res) => {
               break;
             default:
               message = 'Подписка отменена. Вы можете оформить подписку заново, нажав кнопку ниже 👇';
-              options = buttons.purchase.user;
+              options = buttons.purchase.user(subscriptions);
               await removeSubscription(user.id, subscription.id);
               await bot.sendMessage(user.chatId, message, options);
               break;
           }
         } else {
-          const subscription = await updateSubscriptionByCloudPaymentsId(Id, { end: NextTransactionDate });
+          const subscription = await updateSubscriptionByCloudPaymentsId(Id, { end: NextTransactionDate, status: Status });
           const date = formatDate(subscription.end, 'd MMMM, HH:mm');
           const user = getUserById(subscription.userId);
 

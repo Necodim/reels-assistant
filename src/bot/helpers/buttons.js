@@ -74,26 +74,42 @@ const cancel = {
 }
 
 const purchase = {
-  user: {
-    reply_markup: {
-      inline_keyboard: [
-        [{ text: '🔑 Доступ к боту', callback_data: 'prchs:0' }],
-        // [{ text: '💡 Библиотека идей', callback_data: 'prchs:1' }],
-        // [{ text: '🛟 Рилс-ассистент', callback_data: 'prchs:2' }],
-        // [{ text: '🎦 Рилс-аутсорс', callback_data: 'prchs:3' }],
-        [{ text: '🏠 Главное меню', callback_data: 'home' }],
-      ]
-    }
+  user: (subscriptions = []) => {
+    let buttons = [
+      [{ text: '🔑 Доступ к боту', callback_data: 'prchs:0' }]
+    ];
+    let currentLine = [];
+    subscriptions.forEach((subscription, index) => {
+      let emoji;
+      switch (index) {
+        case 0: emoji ='1️⃣'; break;
+        case 1: emoji ='2️⃣'; break;
+        case 2: emoji ='3️⃣'; break;
+        case 3: emoji ='4️⃣'; break;
+        case 4: emoji ='5️⃣'; break;
+        case 5: emoji ='6️⃣'; break;
+        case 6: emoji ='7️⃣'; break;
+        case 7: emoji ='8️⃣'; break;
+        case 8: emoji ='9️⃣'; break;
+        case 9: emoji ='🔟'; break;
+        default: emoji = index + 1; break;
+      }
+      currentLine.push({ text: emoji, callback_data: `cnlsb:${subscription.id}` });
+      if ((index + 1) % 5 === 0 || index === subscriptions.length - 1) {
+        buttons.push(currentLine);
+        currentLine = [];
+      }
+    });
+    buttons.push([{ text: '🏠 Главное меню', callback_data: 'home' }]);
+
+    return {reply_markup: {inline_keyboard: buttons}};
   },
   cloudpayments: (link) => {
-    return {
-      reply_markup: {
-        inline_keyboard: [
-          [{ text: '🔗 Оформить подписку', web_app: {url: link} }],
-          [{ text: '🏠 Главное меню', callback_data: 'home' }],
-        ]
-      }
-    }
+    const buttons = [
+      [{ text: '🔗 Оформить подписку', web_app: {url: link} }],
+      [{ text: '🏠 Главное меню', callback_data: 'home' }],
+    ];
+    return {reply_markup: {inline_keyboard: buttons}};
   }
 }
 
