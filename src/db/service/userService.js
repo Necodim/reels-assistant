@@ -92,7 +92,8 @@ const getLeastFrequentExpert = async () => {
     }
 
     const randomExpertNumber = Math.floor(Math.random() * (experts.length));
-    
+    console.log('Выбран случайный эксперт с минимальным количеством подписок:', experts[randomExpertNumber]);
+
     return experts[randomExpertNumber];
   } catch (error) {
     console.error('Ошибка при поиске наименее загруженных или случайных экспертов:', error);

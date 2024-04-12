@@ -71,8 +71,8 @@ app.post('/cloudpayments/pay', async (req, res) => {
         const user = await getUserByChatId(chatId);
         const expert = await getLeastFrequentExpert();
         const subscriptionDetails = {
-          userId: user.id,
-          expertId: expert.id,
+          userId: user._id,
+          expertId: expert._id,
           name: productName,
           price: productPrice,
           subscriptionId: SubscriptionId,
