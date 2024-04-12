@@ -15,17 +15,6 @@ app.use(express.urlencoded({ extended: true }));
 // app.use(express.text({ type: '*/*' }));
 app.use(express.static('public'));
 
-app.use((req, res, next) => {
-  let data = '';
-  req.on('data', chunk => {
-      data += chunk;
-  });
-  req.on('end', () => {
-      req.rawBody = data;
-      next();
-  });
-});
-
 app.get('/', (req, res) => {
   const amount = req.query.amount;
   const name = req.query.name;
@@ -57,7 +46,6 @@ app.get('/cloudpayments/fail', (req, res) => {
 // Обработчик вебхука check
 app.post('/cloudpayments/check', (req, res) => {
   const receivedHmac = req.headers['content-hmac'] || req.headers['x-content-hmac'];
-  console.log('raw', req.rawBody)
   const params = new URLSearchParams(req.body);
   const originalString = params.toString();
   const calculatedHmac = calculateHMAC(originalString);
