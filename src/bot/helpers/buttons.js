@@ -50,6 +50,7 @@ const home = (type = '', id = '') => {
       break;
     case 'cnlsb':
       buttonLine.push({ text: '❌ Отменить подписку', callback_data: type });
+      break;
     case 'getIdea':
       if (!!id) {
         buttonLine.push({ text: '💡 Ещё идея', callback_data: type }, { text: '⭐️ В избранное', callback_data: `favrt:${id}` });

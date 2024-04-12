@@ -9,7 +9,7 @@ const { checkDailyLimit, fetchIdeaForUser } = require('../../db/service/userIdea
 const { createFavoriteIdea } = require('../../db/service/favoriteIdeaService');
 const { getVideoById, updateVideoById, setVideoEvaluateTo, getNextUnratedVideo } = require('../../db/service/videoService');
 const message = require('../events/message');
-const { getUserSubscriptions, getSubscriptionById, getUserSubscription } = require('../../db/service/subscriptionService');
+const { getUserSubscriptions, getSubscriptionById, getUserSubscription, updateSubscription } = require('../../db/service/subscriptionService');
 const { formatDate } = require('../../helpers/dateHelper');
 const { subscriptionsCancel } = require('../../payments/cloudpaymentAPI');
 const emojiHelper = require('../../helpers/emojiHelper');
@@ -184,7 +184,7 @@ const getSubscription = async (callbackQuery) => {
     const message = `Название: ${subscription.name}
 Дата ${subscription.status === 'Active' ? 'следующего списания' : 'окончания срока действия'}: ${date}
 Информация о вашем эксперте:
-<blockquote>Будет_Тут</blockquote>
+<blockquote>${subscription.expertId.about}</blockquote>
 
 Для отмены подписки нажмите соответствующую кнопку или вернитесь в главное меню:`
     await bot.sendMessage(chatId, message, options);
@@ -203,10 +203,16 @@ const cancelSubscription = async (callbackQuery) => {
     const response = await subscriptionsCancel(subscription.subscriptionId);
     console.log(response)
     if (response.Success) {
+      const updatedSubscription = await updateSubscription(subscription._id, { status: response.Success });
+      
       const date = formatDate(subscription.end, 'd MMMM, HH:mm');
-      const message = `Вы успешно отменили подписку ${subscription.name}. Она будет действовать до ${date}`;
-      const options = buttons.home();
-      await bot.sendMessage(chatId, message, options);
+      const messageUser = `Вы успешно отменили подписку ${subscription.name}. Она будет действовать до ${date}`;
+      const optionsUser = buttons.home();
+      await bot.sendMessage(chatId, messageUser, optionsUser);
+
+      // const expert = await getUserById(updatedSubscription.expertId);
+      // const messageExpert = 'Один из ваших подопечных отменил подписку';
+      // await bot.sendMessage(expert.chatId, messageExpert);
     } else {
       const message = 'Произошла ошибка, попробуйте ещё раз. Если ошибка повторится, обратитесь в поддержку.';
       const options = buttons.home('support');
