@@ -81,12 +81,15 @@ app.post('/cloudpayments/pay', async (req, res) => {
         }
         await addSubscription(subscriptionDetails);
         
-        const message = `✅ Вы успешно оформили подписку. Теперь вам доступен новый функционал.
+        const messageUser = `✅ Вы успешно оформили подписку. Теперь вам доступен новый функционал.
 
 Информация о вашем эксперте:
 <blockquote>${expert.about}</blockquote>`
         const options = {...buttons.home(), parse_mode: 'HTML'};
-        await bot.sendMessage(user.chatId, message, options);
+        await bot.sendMessage(user.chatId, messageUser, options);
+
+        const messageExpert = 'У вас новый подопечный. Скоро он начнёт присылать свои видео на оценку, а я буду уведомлять вас об этом 😉'
+        await bot.sendMessage(expert.chatId, messageExpert, options);
         res.status(200).send({ code: 0 });
       } else {
         throw Error('Нет данных от CloudPayments')
