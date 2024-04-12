@@ -5,27 +5,27 @@ const pay = (data, tg) => {
 
   const receipt = {
     Items: [
-         {
-            label: 'Подписка: ' + data.payment.name,
-            price: data.payment.amount,
-            quantity: 1.00,
-            amount: data.payment.amount,
-            vat: 20,
-            method: 0, // тег-1214 признак способа расчета - признак способа расчета
-            object: 0, // тег-1212 признак предмета расчета - признак предмета товара, работы, услуги, платежа, выплаты, иного предмета расчета
-        }
+      {
+        label: 'Подписка: ' + data.payment.name,
+        price: data.payment.amount,
+        quantity: 1.00,
+        amount: data.payment.amount,
+        vat: 20,
+        method: 0, // тег-1214 признак способа расчета - признак способа расчета
+        object: 0, // тег-1212 признак предмета расчета - признак предмета товара, работы, услуги, платежа, выплаты, иного предмета расчета
+      }
     ],
     taxationSystem: 0,
     phone: data.user.phone,
     isBso: false,
     amounts:
     {
-        electronic: data.payment.amount, // Сумма оплаты электронными деньгами
-        advancePayment: 0.00, // Сумма из предоплаты (зачетом аванса) (2 знака после точки)
-        credit: 0.00, // Сумма постоплатой(в кредит) (2 знака после точки)
-        provision: 0.00 // Сумма оплаты встречным предоставлением (сертификаты, др. мат.ценности) (2 знака после точки)
+      electronic: data.payment.amount, // Сумма оплаты электронными деньгами
+      advancePayment: 0.00, // Сумма из предоплаты (зачетом аванса) (2 знака после точки)
+      credit: 0.00, // Сумма постоплатой(в кредит) (2 знака после точки)
+      provision: 0.00 // Сумма оплаты встречным предоставлением (сертификаты, др. мат.ценности) (2 знака после точки)
     }
-};
+  };
 
   widget.pay('charge',
     {
@@ -36,17 +36,17 @@ const pay = (data, tg) => {
       accountId: String(data.user.id),
       skin: data.theme,
       autoClose: 3,
-      data: JSON.stringify({
+      data: {
         CloudPayments: {
+          telegram: data.user.id,
           CustomerReceipt: receipt,
           recurrent: {
-           interval: 'Month',
-           period: 1, 
-           customerReceipt: receipt
+            interval: 'Month',
+            period: 1,
+            customerReceipt: receipt
           }
-        },
-        telegram: data.user.id
-      }),
+        }
+      },
       // configuration: {
       //     common: {
       //         successRedirectUrl: 'https://api.reelsassistant.ru/cloudpayments/success',
@@ -75,13 +75,13 @@ const pay = (data, tg) => {
 const validateName = (name) => {
   const regex = /^[a-zA-Zа-яА-ЯёЁüÜöÖäÄß\s'-]+$/;
   if (!name) {
-      return { valid: false, message: 'Имя не может быть пустым.' };
+    return { valid: false, message: 'Имя не может быть пустым.' };
   }
   if (name.length > 50) {
-      return { valid: false, message: 'Имя не должно превышать 50 символов.' };
+    return { valid: false, message: 'Имя не должно превышать 50 символов.' };
   }
   if (!regex.test(name)) {
-      return { valid: false, message: 'Имя содержит недопустимые символы.' };
+    return { valid: false, message: 'Имя содержит недопустимые символы.' };
   }
   return { valid: true, message: 'Имя валидно.' };
 }
@@ -89,13 +89,13 @@ const validateName = (name) => {
 const validateSurname = (name) => {
   const regex = /^[a-zA-Zа-яА-ЯёЁüÜöÖäÄß\s'-]+$/;
   if (!name) {
-      return { valid: false, message: 'Фамилия не может быть пустой.' };
+    return { valid: false, message: 'Фамилия не может быть пустой.' };
   }
   if (name.length > 50) {
-      return { valid: false, message: 'Фамилия не должна превышать 50 символов.' };
+    return { valid: false, message: 'Фамилия не должна превышать 50 символов.' };
   }
   if (!regex.test(name)) {
-      return { valid: false, message: 'Фамилия содержит недопустимые символы.' };
+    return { valid: false, message: 'Фамилия содержит недопустимые символы.' };
   }
   return { valid: true, message: 'Фамилия валидна.' };
 }
@@ -103,16 +103,16 @@ const validateSurname = (name) => {
 const validatePhone = (phoneNumber) => {
   const regex = /^\+[1-9]\d{6,14}$/;
   if (!phoneNumber) {
-      return { valid: false, message: 'Номер телефона не может быть пустым.' };
+    return { valid: false, message: 'Номер телефона не может быть пустым.' };
   }
   if (phoneNumber.length < 8) {
-      return { valid: false, message: 'Номер телефона должен содержать хотя бы 8 символов, включая знак +.' };
+    return { valid: false, message: 'Номер телефона должен содержать хотя бы 8 символов, включая знак +.' };
   }
   if (phoneNumber.length > 16) {
-      return { valid: false, message: 'Номер телефона не должен превышать 16 символов, включая знак +.' };
+    return { valid: false, message: 'Номер телефона не должен превышать 16 символов, включая знак +.' };
   }
   if (!regex.test(phoneNumber)) {
-      return { valid: false, message: 'Номер телефона должен быть в международном формате, начиная с '+', за которым следуют от 7 до 15 цифр.' };
+    return { valid: false, message: 'Номер телефона должен быть в международном формате, начиная с ' + ', за которым следуют от 7 до 15 цифр.' };
   }
   return { valid: true, message: 'Номер телефона валиден.' };
 }
@@ -156,12 +156,33 @@ document.addEventListener('DOMContentLoaded', () => {
   tg.enableClosingConfirmation();
   document.getElementById('firstName').value = getUserData().firstName;
   document.getElementById('lastName').value = getUserData().lastName;
-  
+
   const form = document.getElementById('paymentForm');
   const inputFirstName = document.getElementById('firstName');
   const inputLastName = document.getElementById('lastName');
   const inputPhone = document.getElementById('phone');
   inputPhone.addEventListener('input', (e) => e.target.value = e.target.value.replace(/[^\d+]/g, ''));
+
+  document.addEventListener('click', function (event) {
+    const inputs = document.querySelectorAll('.form-wrapper input');
+    const labels = document.querySelectorAll('.form-wrapper label');
+    let isClickedInside = false;
+    inputs.forEach(input => {
+      if (input.contains(event.target)) {
+        isClickedInside = true;
+      }
+    });
+    labels.forEach(label => {
+      if (label.contains(event.target)) {
+        isClickedInside = true;
+      }
+    });
+    if (!isClickedInside) {
+      inputs.forEach(input => {
+        input.blur();
+      });
+    }
+  });
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
