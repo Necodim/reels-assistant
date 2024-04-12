@@ -9,7 +9,7 @@ const { checkDailyLimit, fetchIdeaForUser } = require('../../db/service/userIdea
 const { createFavoriteIdea } = require('../../db/service/favoriteIdeaService');
 const { getVideoById, updateVideoById, setVideoEvaluateTo, getNextUnratedVideo } = require('../../db/service/videoService');
 const message = require('../events/message');
-const { getUserSubscriptions, getSubscriptionById } = require('../../db/service/subscriptionService');
+const { getUserSubscriptions, getSubscriptionById, getUserSubscription } = require('../../db/service/subscriptionService');
 const { formatDate } = require('../../helpers/dateHelper');
 const { subscriptionsCancel } = require('../../payments/cloudpaymentAPI');
 
@@ -144,13 +144,12 @@ const createSubscription = async (callbackQuery) => {
     if (subscriptions.length > 0) {
       message = 'У вас больше одной подписки:';
       subscriptions.forEach((subscription, i) => {
-        const date = formatDate(subscription.end, 'd MMMM, HH:mm');
         message += `
-${(i+1)}. ${subscription.name} (дата продления: ${date})`;
+${(i+1)}. ${subscription.name}`;
       });
       message += `
 
-Если хотите оформить ещё одну подписку, выберите её в списке ниже. Для просмотра информации и управления конкретной подпиской, нажмите соответствующее ей число:`
+Если хотите оформить ещё одну подписку, выберите её название в списке ниже. Для просмотра информации и управления конкретной подпиской, нажмите соответствующее ей число:`
     } else {
       message = `У вас нет подписок. В подписке за 990₽/месяц вы получите:
 ${products.text}`;
