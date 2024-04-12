@@ -30,7 +30,7 @@ const sendSubscriberOutside = async (expertId, username, btns = {}) => {
     const options = {...btns, message_thread_id: topicId};
     await bot.sendMessage(group.id, message, options);
   } catch (error) {
-    console.error('Не удалось отправить идею в группу:', error);
+    console.error('Не удалось отправить инфорамацию о подписчике эксперта в группу:', error);
   }
 }
 

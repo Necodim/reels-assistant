@@ -10,7 +10,7 @@ const { getUserByUsername, getUserById, getUserByChatId, getLeastFrequentExpert 
 const bot = require('../bot/bot');
 const buttons = require('../bot/helpers/buttons');
 const products = require('../bot/helpers/products');
-const { sendAnswerOutside } = require('../bot/send');
+const { sendAnswerOutside, sendSubscriberOutside } = require('../bot/send');
 
 app.use(express.text({ type: '*/*' }))
 app.use(express.static('public'));
