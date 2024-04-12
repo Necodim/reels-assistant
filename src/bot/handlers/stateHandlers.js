@@ -50,12 +50,12 @@ const forwardExpertAwaiting = async (msg) => {
         const fwdUser = await upsertUser(msg, { isExpert: false });
         const name = !!fwdUser.username ? `@${fwdUser.username}` : !!fwdUser.firstName ? fwdUser.firstName : `с ID ${fwdUser.chatId}`;
         message = `Пользователь ${name} разжалован!`
-        await bot.sendMessage(fwdUser.chatId, 'Роль изменена с эксперта на пользователя 🥲', buttons.mainMenu.user);
+        await bot.sendMessage(fwdUser.chatId, 'Роль изменена с эксперта на пользователя 🥲', buttons.mainMenu('user'));
       } else {
         const fwdUser = await upsertUser(msg, { isExpert: true });
         const name = !!fwdUser.username ? `@${fwdUser.username}` : !!fwdUser.firstName ? fwdUser.firstName : `с ID ${fwdUser.chatId}`;
         message = `Пользователь ${name} стал экспертом!`
-        await bot.sendMessage(fwdUser.chatId, 'Роль изменена с пользователя на эксперта 🥳', buttons.mainMenu.expert);
+        await bot.sendMessage(fwdUser.chatId, 'Роль изменена с пользователя на эксперта 🥳', buttons.mainMenu('expert'));
       }
       const options = buttons.goHome;
       await updateUserState(chatId, '');

@@ -30,7 +30,7 @@ const home = async (callbackQuery) => {
   try {
     const user = await getUser(callbackQuery);
 
-    const options = user.isExpert ? buttons.mainMenu.expert : buttons.mainMenu.user;
+    const options = user.isExpert ? buttons.mainMenu('expert') : buttons.mainMenu('user');
     await bot.sendMessage(chatId, message, options);
   } catch (error) {
     handleError(error, callbackQuery);
@@ -165,7 +165,6 @@ ${products.text}`;
 const cancelSubscription = async (callbackQuery) => {
   const chatId = callbackQuery.from.id;
   const subscriptionId = callbackQuery.data.split(':')[1];
-  const options = buttons.goHome;
   console.log(callbackQuery.data);
   
   try {
@@ -175,8 +174,12 @@ const cancelSubscription = async (callbackQuery) => {
     if (response.Success) {
       const date = formatDate(subscription.end, 'd MMMM, HH:mm');
       const message = `Вы успешно отменили подписку ${subscription.name}. Она будет действовать до ${date}`;
+      const options = buttons.goHome;
       await bot.sendMessage(chatId, message, options);
     } else {
+      const message = 'Произошла ошибка, попробуйте ещё раз. Если ошибка повторится, обратитесь в поддержку.';
+      const options = buttons.supportOrGoHome;
+      await bot.sendMessage(chatId, message, options);
       throw Error('CloudPayments не смог отменить подписку');
     }
   } catch (error) {

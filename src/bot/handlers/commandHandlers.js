@@ -12,10 +12,10 @@ const start = async (msg) => {
     let message, options;
     if (user.isExpert) {
       message = 'Вы можете опубликовывать идеи, оценивать ролики и отправлять пуши подопечным, чтобы они снимали видео, и не прокрастинировали. Для этого воспользуйтесь кнопками ниже:';
-      options = buttons.mainMenu.expert
+      options = buttons.mainMenu('expert')
     } else {
       message = 'Добро пожаловать в инструмент для взаимодействия экспертов-рилсмэйкеров и блогеров. Вы можете бесплатно просматривать идеи экспертов и тут же их реализовывать, а также получать фидбэк на ваши посты. Для этого воспользуйтесь кнопками ниже:';
-      options = buttons.mainMenu.user;
+      options = buttons.mainMenu('user');
     }
     await bot.sendMessage(chatId, message, options);
   } catch (error) {
@@ -30,7 +30,7 @@ const home = async (msg) => {
   try {
     const user = await getUser(msg);
     await updateUserState(chatId, '');
-    const options = user.isExpert ? buttons.mainMenu.expert : buttons.mainMenu.user;
+    const options = user.isExpert ? buttons.mainMenu('expert') : buttons.mainMenu('user');
     await bot.sendMessage(chatId, message, options);
   } catch (error) {
     console.error('Ошибка при отправке ответа на команду /home:', error);
