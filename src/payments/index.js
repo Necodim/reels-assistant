@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+const bodyParser = require('body-parser');
 const corsMiddleware = require('./corsMiddleware');
 const calculateHMAC = require('./hmacCalculator');
 const { formatDate, nextMonth } = require('../helpers/dateHelper');
@@ -12,7 +13,8 @@ const { products } = require('../bot/helpers/products');
 
 // app.use(express.json());
 // app.use(express.urlencoded({ extended: true }));
-app.use(express.text({ type: 'text/plain' }));
+// app.use(express.text({ type: 'text/plain' }));
+app.use(bodyParser.text({ type: '*/*' }));
 app.use(express.static('public'));
 
 app.get('/', (req, res) => {
