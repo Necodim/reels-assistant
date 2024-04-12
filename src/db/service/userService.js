@@ -57,30 +57,45 @@ const getUsers = async (params) => {
 
 const getLeastFrequentExpert = async () => {
   try {
-    const expertFrequency = await Subscription.aggregate([
+    // Поиск минимального количества подписок у экспертов
+    const minCountResult = await Subscription.aggregate([
       { $match: { expertId: { $exists: true } } },
       { $group: { _id: "$expertId", count: { $sum: 1 } } },
       { $sort: { count: 1 } },
       { $limit: 1 }
     ]);
 
-    if (expertFrequency.length === 0) {
-      console.error('Нет экспертов в подписках');
-      return null;
+    let experts;
+    if (minCountResult.length > 0) {
+      const minCount = minCountResult[0].count;
+      // Найти всех экспертов с этим минимальным количеством подписок
+      experts = await Subscription.aggregate([
+        { $match: { expertId: { $exists: true } } },
+        { $group: { _id: "$expertId", count: { $sum: 1 } } },
+        { $match: { count: minCount } }
+      ]);
     }
 
-    const randomExpertNumber = Math.floor(Math.random() * (expertFrequency.length));
-    const leastFrequentExpertId = expertFrequency[randomExpertNumber]._id;
-    const expert = await User.findOne({ _id: leastFrequentExpertId, isExpert: true });
-
-    if (!expert) {
-      console.error('Эксперт не найден');
-      return null;
+    if (!experts || experts.length === 0) {
+      // Если эксперты с минимальным количеством подписок не найдены, выбрать случайного эксперта
+      const randomExpert = await User.aggregate([
+        { $match: { isExpert: true } },
+        { $sample: { size: 1 } }
+      ]);
+      if (randomExpert.length > 0) {
+        console.log('Выбран случайный эксперт:', randomExpert[0]);
+        return randomExpert[0];
+      } else {
+        console.log('Эксперты не найдены в базе данных.');
+        return null;
+      }
     }
 
-    return expert;
+    const randomExpertNumber = Math.floor(Math.random() * (experts.length));
+    
+    return experts[randomExpertNumber];
   } catch (error) {
-    console.error('Ошибка при поиске наименее загруженного эксперта:', error);
+    console.error('Ошибка при поиске наименее загруженных или случайных экспертов:', error);
     throw error;
   }
 }
