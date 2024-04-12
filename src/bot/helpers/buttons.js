@@ -1,3 +1,5 @@
+const emojiHelper = require("../../helpers/emojiHelper");
+
 const replyMarkup = (btns) => {
   return {
     reply_markup: {
@@ -85,20 +87,7 @@ const purchase = {
     ];
     let currentLine = [];
     subscriptions.forEach((subscription, index) => {
-      let emoji;
-      switch (index) {
-        case 0: emoji = '1️⃣'; break;
-        case 1: emoji = '2️⃣'; break;
-        case 2: emoji = '3️⃣'; break;
-        case 3: emoji = '4️⃣'; break;
-        case 4: emoji = '5️⃣'; break;
-        case 5: emoji = '6️⃣'; break;
-        case 6: emoji = '7️⃣'; break;
-        case 7: emoji = '8️⃣'; break;
-        case 8: emoji = '9️⃣'; break;
-        case 9: emoji = '🔟'; break;
-        default: emoji = index + 1; break;
-      }
+      const emoji = emojiHelper.number(index);
       currentLine.push({ text: emoji, callback_data: `getsb:${subscription._id}` });
       if ((index + 1) % 5 === 0 || index === subscriptions.length - 1) {
         buttons.push(currentLine);

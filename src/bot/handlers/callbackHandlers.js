@@ -12,6 +12,7 @@ const message = require('../events/message');
 const { getUserSubscriptions, getSubscriptionById, getUserSubscription } = require('../../db/service/subscriptionService');
 const { formatDate } = require('../../helpers/dateHelper');
 const { subscriptionsCancel } = require('../../payments/cloudpaymentAPI');
+const emojiHelper = require('../../helpers/emojiHelper');
 
 const handleError = (error, callbackQuery) => {
   if (error.message === 'Новые идеи не найдены') {
@@ -142,11 +143,20 @@ const createSubscription = async (callbackQuery) => {
     const subscriptions = await getUserSubscriptions(user.id);
     let message;
     if (subscriptions.length > 0) {
-      message = 'У вас больше одной подписки:';
-      subscriptions.forEach((subscription, i) => {
-        message += `
-${(i+1)}. ${subscription.name}`;
-      });
+      if (subscriptions.length > 1) {
+        message = 'У вас больше одной подписки:';
+        subscriptions.forEach((subscription, i) => {
+          const emoji = emojiHelper.number(i);
+          message += `
+${i > 9 ? `${i+1}.` : emoji} ${subscription.name}`;
+        });
+      } else {
+        message = 'У вас одна подписка:';
+        subscriptions.forEach((subscription, i) => {
+          message += `
+1️⃣ ${subscription.name}`;
+        });
+      }
       message += `
 
 Если хотите оформить ещё одну подписку, выберите её название в списке ниже. Для просмотра информации и управления конкретной подпиской, нажмите соответствующее ей число:`
@@ -167,7 +177,7 @@ const getSubscription = async (callbackQuery) => {
   
   try {
     const user = await getUser(callbackQuery);
-    const subscription = getUserSubscription(user.id, subscriptionId);
+    const subscription = await getUserSubscription(user.id, subscriptionId);
     const options = {...buttons.home(`cnlsb:${subscription.id}`), parse_mode: 'HTML'};
     console.log(subscription);
     const date = formatDate(subscription.end, 'd MMMM, HH:mm');
