@@ -42,7 +42,7 @@ app.get('/cloudpayments/fail', (req, res) => {
 });
 
 // Обработчик вебхука check
-app.post('/cloudpayments/check', corsMiddleware, (req, res) => {
+app.post('/cloudpayments/check', (req, res) => {
   const receivedHmac = req.headers['content-hmac'] || req.headers['x-content-hmac'];
   const calculatedHmac = calculateHMAC(req);
 
@@ -56,7 +56,7 @@ app.post('/cloudpayments/check', corsMiddleware, (req, res) => {
 });
 
 // Обработчик вебхука pay
-app.post('/cloudpayments/pay', corsMiddleware, async (req, res) => {
+app.post('/cloudpayments/pay', async (req, res) => {
   const receivedHmac = req.headers['content-hmac'] || req.headers['x-content-hmac'];
   const calculatedHmac = calculateHMAC(req);
 
@@ -98,7 +98,7 @@ app.post('/cloudpayments/pay', corsMiddleware, async (req, res) => {
 });
 
 // Обработчик вебхука recurrent
-app.post('/cloudpayments/recurrent', corsMiddleware, async (req, res) => {
+app.post('/cloudpayments/recurrent', async (req, res) => {
   const receivedHmac = req.headers['content-hmac'] || req.headers['x-content-hmac'];
   const calculatedHmac = calculateHMAC(req);
 
