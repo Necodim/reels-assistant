@@ -20,13 +20,11 @@ const sendVideoToBot = async (chatId, videoId, options = {caption: ''}) => {
   }
 };
 
-const sendSubscriberOutside = async (expertId, username, btns = {}) => {
+const sendSubscriberOutside = async (expert, username, btns = {}) => {
   try {
-    const user = await getUserById(expertId);
+    const message = `У @${expert.username} новый #подписчик: @${username}`;
 
-    const message = `У @${user.username} новый #подписчик: @${username}`;
-
-    const topicId = user.groupTopicId ? user.groupTopicId : 1;
+    const topicId = expert.groupTopicId ? expert.groupTopicId : 1;
     const options = {...btns, message_thread_id: topicId};
     await bot.sendMessage(group.id, message, options);
   } catch (error) {

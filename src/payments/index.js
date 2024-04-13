@@ -71,6 +71,7 @@ app.post('/cloudpayments/pay', async (req, res) => {
         const productName = products.products.find(product => product.price === productPrice).name;
         const user = await getUserByChatId(chatId);
         const expert = await getLeastFrequentExpert();
+        console.log(expert);
         const subscriptionDetails = {
           userId: user._id,
           expertId: expert._id,
@@ -87,11 +88,13 @@ app.post('/cloudpayments/pay', async (req, res) => {
 Информация о вашем эксперте:
 <blockquote>${expert.about}</blockquote>`
         const optionsUser = {...buttons.home(), parse_mode: 'HTML'};
+        console.log('userChatId', user.chatId);
         await bot.sendMessage(user.chatId, messageUser, optionsUser);
 
         const messageExpert = 'У вас новый подопечный. Скоро он начнёт присылать свои видео на оценку, а я буду уведомлять вас об этом 😉'
+        console.log('expertChatId', expert.chatId);
         await bot.sendMessage(expert.chatId, messageExpert);
-        await sendSubscriberOutside(expert._id, user.username);
+        await sendSubscriberOutside(expert, user.username);
         res.status(200).send({ code: 0 });
       } else {
         throw Error('Нет данных от CloudPayments')
