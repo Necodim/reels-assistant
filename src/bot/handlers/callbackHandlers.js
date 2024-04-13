@@ -192,10 +192,9 @@ const getSubscription = async (callbackQuery) => {
     const date = formatDate(subscription.end, 'd MMMM, HH:mm');
     const message = `Название: ${subscription.name}
 Дата ${subscription.status === 'Active' ? 'следующего списания' : 'окончания срока действия'}: ${date}
-Информация о вашем эксперте:
-<blockquote>${subscription.expertId.about}</blockquote>
 
-Для отмены подписки нажмите соответствующую кнопку или вернитесь в главное меню:`
+Информация о вашем эксперте:
+<blockquote>${subscription.expertId.about}</blockquote>`
     await bot.sendMessage(chatId, message, options);
   } catch (error) {
     console.error('Ошибка при отправке пользователю callbackQuery getSubscription:', error);

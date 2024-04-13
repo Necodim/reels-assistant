@@ -58,49 +58,37 @@ const getUsers = async (params) => {
 const getLeastFrequentExpert = async () => {
   try {
     // Поиск минимального количества подписок у экспертов
-    const minCountResult = await Subscription.aggregate([
+    const experts = await Subscription.aggregate([
       { $match: { expertId: { $exists: true } } },
       { $group: { _id: "$expertId", count: { $sum: 1 } } },
-      { $sort: { count: 1 } },
-      { $limit: 1 }
+      { $sort: { count: 1 } }
     ]);
 
-    let experts;
-    if (minCountResult.length > 0) {
-      const minCount = minCountResult[0].count;
-      // Найти всех экспертов с этим минимальным количеством подписок
-      experts = await Subscription.aggregate([
-        { $match: { expertId: { $exists: true } } },
-        { $group: { _id: "$expertId", count: { $sum: 1 } } },
-        { $match: { count: minCount } }
-      ]);
-    }
+    if (experts.length > 0) {
+      const minCount = experts[0].count;
+      const leastBusyExperts = experts.filter(expert => expert.count === minCount);
 
-    if (!experts || experts.length === 0) {
-      // Если эксперты с минимальным количеством подписок не найдены, выбрать случайного эксперта
-      const randomExpert = await User.aggregate([
-        { $match: { isExpert: true } },
-        { $sample: { size: 1 } }
-      ]);
-      if (randomExpert.length > 0) {
-        console.log('Выбран случайный эксперт:', randomExpert[0]);
-        return randomExpert[0];
-      } else {
-        console.log('Эксперты не найдены в базе данных.');
-        return null;
+      // Выбор случайного эксперта из тех, у кого минимальное количество подписок
+      const randomIndex = Math.floor(Math.random() * leastBusyExperts.length);
+      const randomExpertId = leastBusyExperts[randomIndex]._id;
+
+      // Получение полной информации о выбранном эксперте
+      const expertDetails = await User.findById(randomExpertId);
+      if (expertDetails) {
+        console.log('Выбран случайный эксперт с минимальным количеством подписок:', expertDetails);
+        return expertDetails;
       }
     }
 
-    const randomExpertNumber = Math.floor(Math.random() * (experts.length));
-    console.log('Выбран случайный эксперт с минимальным количеством подписок:', experts[randomExpertNumber]);
-
-    return experts[randomExpertNumber];
+    // Если не найдено экспертов с минимальным количеством подписок, выбрать случайного эксперта
+    const fallbackExpert = await User.findOne({ isExpert: true }).sort({ _id: -1 }).limit(1);
+    console.log('Выбран случайный эксперт:', fallbackExpert);
+    return fallbackExpert;
   } catch (error) {
     console.error('Ошибка при поиске наименее загруженных или случайных экспертов:', error);
     throw error;
   }
-}
-
+};
 
 const upsertUser = async (msg, params = {}) => {
   try {

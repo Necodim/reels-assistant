@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const UserIdea = require('../models/userIdeasModel');
 const Idea = require('../models/ideaModel');
+const Subscription = require('../models/subscriptionModel');
 const DAILY_IDEA_LIMIT = 5;
 
 const findNewIdeaForUser = async (userId) => {
@@ -47,13 +48,22 @@ const findNewIdeaForUser = async (userId) => {
 };
 
 const checkDailyLimit = async (userId) => {
-  const startOfDay = new Date();
-  startOfDay.setHours(0, 0, 0, 0);
-
-  const endOfDay = new Date();
-  endOfDay.setHours(23, 59, 59, 999);
-
   try {
+    const activeSubscription = await Subscription.findOne({
+      userId: mongoose.Types.ObjectId(userId),
+      status: 'Active'
+    });
+    
+    if (activeSubscription) {
+      return true;
+    }
+    
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+
     const ideasCountToday = await UserIdea.countDocuments({
       userId,
       sentAt: {
@@ -65,9 +75,9 @@ const checkDailyLimit = async (userId) => {
     return ideasCountToday < DAILY_IDEA_LIMIT;
   } catch (error) {
     console.error('Ошибка при проверке дневного лимита пользователя:', error);
+    throw error;
   }
 };
-
 
 const saveSentIdeaInfo = async (userId, ideaId) => {
   try {
