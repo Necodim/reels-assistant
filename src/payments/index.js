@@ -24,6 +24,7 @@ app.get('/', (req, res) => {
 
 app.get('/offer', (req, res) => {
   // res.redirect('/offer.html');
+  
   res.sendFile(path.join(__dirname, '..', '..', 'public', '/offer.html'));
 });
 
