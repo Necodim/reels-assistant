@@ -155,6 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
   tg.ready()
   tg.expand();
   tg.enableClosingConfirmation();
+  
   document.getElementById('firstName').value = getUserData().firstName;
   document.getElementById('lastName').value = getUserData().lastName;
 
