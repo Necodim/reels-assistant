@@ -13,7 +13,7 @@ const products = require('../bot/helpers/products');
 const { sendAnswerOutside, sendSubscriberOutside } = require('../bot/send');
 
 app.use(express.text({ type: '*/*' }))
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, '..', '..', 'public')));
 
 app.get('/', (req, res) => {
   const amount = req.query.amount;
@@ -23,7 +23,8 @@ app.get('/', (req, res) => {
 });
 
 app.get('/offer', (req, res) => {
-  res.redirect('/offer.html');
+  // res.redirect('/offer.html');
+  res.sendFile(path.join(__dirname, '..', '..', 'public', '/offer.html'));
 });
 
 app.get('/cloudpayments', (req, res) => {
