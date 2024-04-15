@@ -13,7 +13,7 @@ const products = require('../bot/helpers/products');
 const { sendAnswerOutside, sendSubscriberOutside } = require('../bot/send');
 
 app.use(express.text({ type: '*/*' }))
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // app.get('/', (req, res) => {
 //   const amount = req.query.amount;
