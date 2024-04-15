@@ -12,6 +12,10 @@ p {
   color: var(--tg-theme-hint-color, #777777);
 }
 
+a {
+  color: var(--tg-theme-link-color, #6963de);
+}
+
 .form-wrapper,
 .offer-container {
   width: calc(100% - 16px * 2);
