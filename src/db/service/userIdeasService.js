@@ -48,9 +48,11 @@ const findNewIdeaForUser = async (userId) => {
 };
 
 const checkDailyLimit = async (userId) => {
+  const userIdObj = new mongoose.Types.ObjectId(userId);
+
   try {
     const activeSubscription = await Subscription.findOne({
-      userId: mongoose.Types.ObjectId(userId),
+      userId: userIdObj,
       status: 'Active'
     });
     

@@ -12,13 +12,15 @@ p {
   color: var(--tg-theme-hint-color, #777777);
 }
 
-.form-wrapper {
+.form-wrapper,
+.offer-container {
   width: calc(100% - 16px * 2);
   /* height: auto; */
   padding: 16px;
 }
 
-.form-wrapper form {
+.form-wrapper form,
+.offer-wrapper {
   padding: 16px;
   background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
   border-radius: 16px;
@@ -55,3 +57,49 @@ button {
   padding: 12px 16px;
   margin-top: 20px;
 }
+
+.offer-heading {
+  text-align: center;
+}
+
+.offer-info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.offer-body {
+  line-height: 1.4;
+}
+
+.offer-body ol {
+  counter-reset: item;
+  list-style-type: none;
+  padding-inline-start: 0 !important;
+}
+
+.offer-body ol > li {
+  margin-bottom: var(--xs);
+}
+
+.offer-body ol > li:before {
+  counter-increment: item;
+  content: counters(item, ".") ". ";
+}
+
+.offer-body ol > li > ol {
+  margin-top: 12px;
+  margin-bottom: 20px;
+}
+
+.offer-body ol[start="0"] { counter-reset: item 0; }
+.offer-body ol[start="1"] { counter-reset: item 0; }
+.offer-body ol[start="2"] { counter-reset: item 1; }
+.offer-body ol[start="3"] { counter-reset: item 2; }
+.offer-body ol[start="4"] { counter-reset: item 3; }
+.offer-body ol[start="5"] { counter-reset: item 4; }
+.offer-body ol[start="6"] { counter-reset: item 5; }
+.offer-body ol[start="7"] { counter-reset: item 6; }
+.offer-body ol[start="8"] { counter-reset: item 7; }
+.offer-body ol[start="9"] { counter-reset: item 8; }
+.offer-body ol[start="10"] { counter-reset: item 9; }
+.offer-body ol[start="11"] { counter-reset: item 10; }
