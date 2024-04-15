@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/offer', (req, res) => {
-  res.sendFile(path.join(__dirname, '/offer.html'));
+  res.redirect('/offer.html');
 });
 
 app.get('/cloudpayments', (req, res) => {
