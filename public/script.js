@@ -120,24 +120,12 @@ const validatePhone = (input) => {
   return { valid: true, message: 'Номер телефона валиден.' };
 }
 
-const validateCheckbox = (input) => {
-  console.log(input)
-  console.log(input.checked)
-  if (!input.checked) {
-    return { valid: false, message: 'Для оформления подписки необходимо дать своё согласие.' };
-  } else {
-    return { valid: true, message: 'Поле заполнено.' };
-  }
-}
-
 document.addEventListener('DOMContentLoaded', () => {
   const tg = window.Telegram.WebApp;
   const form = document.getElementById('paymentForm');
   const inputFirstName = document.getElementById('firstName');
   const inputLastName = document.getElementById('lastName');
   const inputPhone = document.getElementById('phone');
-  const checkboxOffer = document.getElementById('agreement-offer');
-  const checkboxSubscription = document.getElementById('agreement-subscription');
 
   const setPaymentData = () => {
     const data = getPaymentData();
@@ -210,7 +198,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
-    console.log(event);
 
     var checkboxes = form.querySelectorAll('input[type="checkbox"]');
     for (var i = 0; i < checkboxes.length; i++) {

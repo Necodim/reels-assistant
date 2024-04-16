@@ -59,8 +59,13 @@ a {
 }
 
 .checkbox-label input[type="checkbox"] {
-  visibility: hidden;
+  /* visibility: hidden; */
   position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 0;
+  left: 0;
+  opacity: 0;
 }
 
 .checkbox-label .checkbox-box {
