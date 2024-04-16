@@ -4,7 +4,6 @@ const { getIdeaById } = require('../db/service/ideaService');
 const { getUserById } = require('../db/service/userService');
 const { getVideoById } = require('../db/service/videoService');
 
-const channelId = -1002102561296;
 const group = {
   id: -1001950946438,
   ideas: 2,
@@ -24,7 +23,7 @@ const sendSubscriberOutside = async (expert, username, btns = {}) => {
   try {
     const message = `У @${expert.username} новый #подписчик: @${username}`;
 
-    const topicId = expert.groupTopicId ? expert.groupTopicId : 1;
+    const topicId = !!expert.groupTopicId ? expert.groupTopicId : 1;
     const options = {...btns, message_thread_id: topicId};
     await bot.sendMessage(group.id, message, options);
   } catch (error) {
@@ -45,7 +44,7 @@ ${idea.hashtag}
 Автор: @${user.username}
 #идея`
 
-    const topicId = user.groupTopicId ? user.groupTopicId : group.ideas;
+    const topicId = !!user.groupTopicId ? user.groupTopicId : group.ideas;
     const options = {...btns, caption, message_thread_id: topicId};
     await sendVideoToBot(group.id, idea.videoId, options);
   } catch (error) {
@@ -65,7 +64,7 @@ const sendAnswerOutside = async (videoId) => {
 <blockquote>${video.evaluation}</blockquote>
 #оценка`;
 
-    const topicId = user.groupTopicId ? user.groupTopicId : group.answers;
+    const topicId = !!user.groupTopicId ? user.groupTopicId : group.answers;
     const options = {caption: caption, message_thread_id: topicId, parse_mode: 'HTML'};
     await sendVideoToBot(group.id, video.videoId, options);
   } catch (error) {
