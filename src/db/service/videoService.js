@@ -1,5 +1,7 @@
+const mongoose = require('mongoose');
 const Video = require('../models/videoModel');
 const User = require('../models/userModel');
+const Subscription = require('../models/subscriptionModel');
 
 const getVideo = async (videoId) => {
   try {
@@ -26,7 +28,7 @@ const createVideo = async (msg) => {
     let user = await User.findOne({ chatId: msg.chat.id });
     if (user) {
       const newVideo = new Video({
-        userId: user.id,
+        userId: user._id,
         chatId: msg.chat.id,
         videoId: msg.video.file_id,
         caption: msg.caption || ''
@@ -106,15 +108,69 @@ const getNextUnratedVideo = async (userId) => {
   }
 };
 
-const getUnratedVides = async (userId) => {
+const findUnreviewedVideosByExpert = async (expertId) => {
+  const currentDate = new Date();
+
   try {
-    const videos = await Video.find({ isEvaluated: false, evaluation: '', evaluatedBy: userId }).sort({ createdAt: 1 });
-    if (!videos.length) {
-      throw new Error('Новые видео для оценки не найдены');
-    }
-    return videos;
+    const expertObjectId = new mongoose.Types.ObjectId(expertId);
+    const videos = await Video.find({ isEvaluated: false }).select('userId').lean();
+    const userIds = videos.map(video => video.userId);
+
+    const subscriptions = await Subscription.aggregate([
+      {
+        $match: {
+          expertId: expertObjectId,
+          userId: { $in: userIds },
+          $or: [
+            { status: 'Active' },
+            { end: { $gte: currentDate } }
+          ]
+        }
+      },
+      {
+        $group: {
+          _id: "$userId"
+        }
+      }
+    ]);
+
+    return subscriptions.map(sub => sub._id.toString());
   } catch (error) {
-    console.error('Ошибка при поиске видео для оценки:', error);
+    console.error(`Ошибка при поиске пользователей с подпиской к эксперту ${expertId} и неоценёнными видео:`, error);
+    throw error;
+  }
+};
+
+const findUnreviewedVideoExperts = async () => {
+  const currentDate = new Date();
+
+  try {
+    const videos = await Video.find({ isEvaluated: false }).select('userId').lean();
+    const userIds = videos.map(video => video.userId);
+
+    const subscriptions = await Subscription.aggregate([
+      {
+        $match: {
+          userId: { $in: userIds },
+          $or: [
+            { status: 'Active' },
+            { end: { $gte: currentDate } }
+          ]
+        }
+      },
+      {
+        $group: {
+          _id: "$expertId",
+          users: { $push: "$userId" }
+        }
+      }
+    ]);
+
+    return subscriptions.map(sub => {
+      return { expertId: sub._id, users: sub.users };
+    });
+  } catch (error) {
+    console.error('Ошибка при поиске экспертов и пользователей с подпиской к ним для неоценённых видео:', error);
     throw error;
   }
 };
@@ -127,5 +183,6 @@ module.exports = {
   updateVideoById,
   setVideoEvaluateTo,
   getNextUnratedVideo,
-  getUnratedVides,
+  findUnreviewedVideosByExpert,
+  findUnreviewedVideoExperts,
 };

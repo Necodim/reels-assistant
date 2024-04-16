@@ -8,6 +8,13 @@ cron.schedule('0 12 * * *', () => {
   timezone: 'Europe/Moscow'
 });
 
+cron.schedule('0 12 * * *', () => {
+  reminders.sendEvaluateIdeaReminder();
+}, {
+  scheduled: true,
+  timezone: 'Europe/Moscow'
+});
+
 cron.schedule('0 14 * * *', () => {
   reminders.sendEverydayReminder();
 }, {

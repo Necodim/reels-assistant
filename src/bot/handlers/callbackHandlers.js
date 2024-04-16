@@ -74,19 +74,19 @@ const getIdea = async (callbackQuery) => {
 
   try {
     const user = await getUser(callbackQuery);
-    const canFetch = await checkDailyLimit(user.id);
+    const canFetch = await checkDailyLimit(user._id);
     if (!canFetch) {
       const message = `5 бесплатных идей для рилс на сегодня закончились, завтра будут новые!
 ${products.text}`;
       const options = buttons.purchase.user();
       await bot.sendMessage(chatId, message, options);
     } else {
-      const idea = await fetchIdeaForUser(user.id);
+      const idea = await fetchIdeaForUser(user._id);
       const caption = `${idea.caption}
 
 Сложность: ${idea.difficulty}
 ${idea.hashtag}`
-      // const options = {...buttons.home('getYetIdea')(idea.id), caption}; // для добавления идеи в избранное
+      // const options = {...buttons.home('getYetIdea', idea._id), caption}; // для добавления идеи в избранное
       const options = {...buttons.home('getYetIdea'), caption};
       await sendVideoToBot(chatId, idea.videoId, options);
     }
@@ -105,7 +105,7 @@ const favorite = async (callbackQuery) => {
       throw new Error('Пользователь не найден');
     }
     
-    await createFavoriteIdea(user.id, ideaId);
+    await createFavoriteIdea(user._id, ideaId);
     await bot.answerCallbackQuery(callbackQuery.id, { text: 'Идея добавлена в избранное' });
   } catch (error) {
     console.error('Ошибка при добавлении идеи в избранное:', error);
@@ -150,7 +150,7 @@ const createSubscription = async (callbackQuery) => {
   
   try {
     const user = await getUser(callbackQuery);
-    const subscriptions = await getUserSubscriptions(user.id);
+    const subscriptions = await getUserSubscriptions(user._id);
     let message;
     if (subscriptions.length > 0) {
       if (subscriptions.length > 1) {
@@ -187,8 +187,8 @@ const getSubscription = async (callbackQuery) => {
   
   try {
     const user = await getUser(callbackQuery);
-    const subscription = await getUserSubscription(user.id, subscriptionId);
-    const options = {...buttons.home(`cnlsb:${subscription.id}`), parse_mode: 'HTML'};
+    const subscription = await getUserSubscription(user._id, subscriptionId);
+    const options = {...buttons.home(`cnlsb:${subscription._id}`), parse_mode: 'HTML'};
     console.log(subscription);
     const date = formatDate(subscription.end, 'd MMMM, HH:mm');
     const message = `Название: ${subscription.name}
@@ -312,12 +312,12 @@ const getVideo = async (callbackQuery) => {
   
   try {
     const video = await getNextUnratedVideo();
-    await setVideoEvaluateTo(video.id, true);
+    await setVideoEvaluateTo(video._id, true);
     const videoOptions = {caption: video.caption};
     const videoMessage = await sendVideoToBot(chatId, video.videoId, videoOptions);
-    const options = {...buttons.cancel.videoEvaluate(video.id, videoMessage.message_id), parse_mode: 'HTML'};
+    const options = {...buttons.cancel.videoEvaluate(video._id, videoMessage.message_id), parse_mode: 'HTML'};
     await bot.sendMessage(chatId, message, options);
-    await updateUserState(chatId, `evaluateAwaiting:${video.id}`);
+    await updateUserState(chatId, `evaluateAwaiting:${video._id}`);
   } catch (error) {
     handleError(error, callbackQuery);
   }
@@ -347,7 +347,7 @@ const editEvaluateMessage = async (callbackQuery) => {
     const updateData = {
       isEvaluated: true,
       evaluation: '',
-      evaluatedBy: user.id
+      evaluatedBy: user._id
     }
     await updateVideoById(videoId, updateData);
     await bot.sendMessage(chatId, message);

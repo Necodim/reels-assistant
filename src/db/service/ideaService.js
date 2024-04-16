@@ -26,7 +26,7 @@ const createIdea = async (msg) => {
     let user = await User.findOne({ chatId: msg.chat.id });
     if (user) {
       const newVideo = new Idea({
-        userId: user.id,
+        userId: user._id,
         chatId: msg.chat.id,
         videoId: msg.video.file_id,
         caption: msg.caption || ''

@@ -1,7 +1,7 @@
 const bot = require('../bot');
 const buttons = require('../helpers/buttons');
 const { getUserByChatId, getUsers, upsertUser, updateUserState } = require('../../db/service/userService');
-const { createVideo, updateVideoById, getUnratedVides } = require('../../db/service/videoService');
+const { createVideo, updateVideoById, findUnreviewedVideosByExpert } = require('../../db/service/videoService');
 const { createIdea } = require('../../db/service/ideaService');
 const { difficulty, hashtag } = require('./callbackHandlers');
 const { createForumTopic, reopenForumTopic, closeForumTopic } = require('../send');
@@ -91,7 +91,7 @@ const ideaAwaiting = async (msg) => {
     } else if (msg.video && msg.caption) {
       const idea = await createIdea(msg);
 
-      const options = buttons.difficulty(idea.id);
+      const options = buttons.difficulty(idea._id);
 
       await updateUserState(chatId, 'difficultyAwaiting');
       await bot.sendMessage(chatId, message, options);
@@ -134,7 +134,7 @@ const evaluateAwaiting = async (msg, state) => {
     const updateData = {
       isEvaluated: true,
       evaluation: text,
-      evaluatedBy: user.id
+      evaluatedBy: user._id
     }
     await updateVideoById(videoId, updateData);
     await updateUserState(chatId, '');
@@ -158,7 +158,7 @@ try {
   await updateUserState(chatId, '');
   await bot.sendMessage(chatId, message1, options1);
   await bot.sendChatAction(chatId, 'typing');
-  const videos = getUnratedVides(user.id);
+  const videos = findUnreviewedVideosByExpert(user._id);
   let message2 = 'А теперь можете начать генерить идеи. Как только у вас появится новый подписчик, я сообщу об этом!'
   if (videos.length) {
     message2 += ` Кстати, у вас есть неоценённые ролики (${videos.length} шт.) 👏`;

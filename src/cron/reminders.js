@@ -5,6 +5,7 @@ const { getUsersForVideoReminder, getUsers } = require("../db/service/userServic
 const { getRandomElement } = require("../helpers/getRandom");
 const userMessages = require("./messages/user");
 const expertMessages = require("./messages/expert");
+const { findUnreviewedVideoExperts } = require("../db/service/videoService");
 
 const sendIdeaReminder = async () => {
   const options = {...buttons.home('createIdea'), parse_mode: 'HTML'};
@@ -26,7 +27,7 @@ const sendEvaluateIdeaReminder = async () => {
   const options = {...buttons.home('evaluateVideo'), parse_mode: 'HTML'};
   
   try {
-    const users = await findExpertsWithNoRecentIdeas();
+    const users = await findUnreviewedVideoExperts();
     if (users.length > 0) {
       users.forEach(async (user) => {
         const message = getRandomElement(expertMessages.evaluateVideo);;

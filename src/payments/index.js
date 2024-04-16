@@ -140,7 +140,7 @@ app.post('/cloudpayments/recurrent', async (req, res) => {
             default:
               message = 'Подписка отменена. Вы можете оформить подписку заново, нажав кнопку ниже 👇';
               options = buttons.purchase.user(subscriptions);
-              await removeSubscription(user.id, subscription.id);
+              await removeSubscription(user._id, subscription._id);
               await bot.sendMessage(user.chatId, message, options);
               break;
           }

@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const UserIdea = require('../models/userIdeasModel');
 const Idea = require('../models/ideaModel');
 const Subscription = require('../models/subscriptionModel');
+
 const DAILY_IDEA_LIMIT = 5;
 
 const findNewIdeaForUser = async (userId) => {
