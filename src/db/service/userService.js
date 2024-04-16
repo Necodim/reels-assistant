@@ -57,23 +57,29 @@ const getUsers = async (params) => {
 
 const getLeastFrequentExpert = async () => {
   try {
-    const currentDate = new Date();
-    const experts = await Subscription.aggregate([
+    const allExperts = await User.aggregate([
+      { $match: { isExpert: true } },
       {
-        $match: {
-          $or: [
-            { status: 'Active' },
-            { end: { $gte: currentDate } }
-          ]
+        $lookup: {
+          from: "subscriptions",
+          localField: "_id",
+          foreignField: "expertId",
+          as: "subscriptions"
         }
       },
-      { $group: { _id: "$expertId", count: { $sum: 1 } } },
-      { $sort: { count: 1 } }
+      {
+        $project: {
+          _id: 1,
+          subscriptions: 1,
+          subscriptionCount: { $size: "$subscriptions" }
+        }
+      },
+      { $sort: { subscriptionCount: 1 } }
     ]);
 
-    if (experts.length > 0) {
-      const minCount = experts[0].count;
-      const leastBusyExperts = experts.filter(expert => expert.count === minCount);
+    if (allExperts.length > 0) {
+      const minCount = allExperts[0].subscriptionCount;
+      const leastBusyExperts = allExperts.filter(expert => expert.subscriptionCount === minCount);
       const randomIndex = Math.floor(Math.random() * leastBusyExperts.length);
       const randomExpertId = leastBusyExperts[randomIndex]._id;
       const expertDetails = await User.findById(randomExpertId);
@@ -85,12 +91,11 @@ const getLeastFrequentExpert = async () => {
 
     const fallbackExpert = await User.findOne({ isExpert: true }).sort({ _id: -1 }).limit(1);
     console.log('Выбран случайный эксперт:', fallbackExpert);
-    return fallbackExpert;
   } catch (error) {
-    console.error('Ошибка при поиске наименее загруженных или случайных экспертов:', error);
+    console.error('Ошибка при поиске наименее загруженных экспертов:', error);
     throw error;
   }
-};
+}
 
 const upsertUser = async (msg, params = {}) => {
   try {
