@@ -49,6 +49,64 @@ a {
   padding: 12px 16px;
 }
 
+.checkbox-label {
+  display: flex;
+  gap: 16px;
+}
+
+/* Стилизация всей метки и области вокруг чекбокса */
+.checkbox-label {
+  position: relative;
+  padding-left: 35px;
+  cursor: pointer;
+  display: inline-block;
+  line-height: 20px;
+  user-select: none;
+}
+
+/* Скрываем стандартный чекбокс */
+.checkbox-label input[type="checkbox"] {
+  visibility: hidden;
+  position: absolute;
+}
+
+/* Создаем кастомный чекбокс */
+.checkbox-label .checkbox-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: var(--tg-theme-bg-color, #ffffff);
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+/* Стиль для чекбокса, когда он активирован (checked) */
+.checkbox-label input:checked ~ .checkbox-box {
+  background: linear-gradient(45deg, #6963de, #e64373);
+}
+
+/* Добавляем галочку (когда чекбокс выбран) */
+.checkbox-label input:checked ~ .checkbox-box:after {
+  content: "";
+  position: absolute;
+  display: block;
+}
+
+/* Стиль галочки */
+.checkbox-label .checkbox-box:after {
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-radius: 2px;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+
+
 button {
   width: 100%;
   font-size: 16px;
@@ -60,6 +118,7 @@ button {
   border-radius: 8px;
   padding: 12px 16px;
   margin-top: 20px;
+  cursor: pointer;
 }
 
 .offer-heading {

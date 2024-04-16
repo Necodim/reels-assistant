@@ -8,6 +8,9 @@ const start = async (msg) => {
   const chatId = msg.chat.id;
   
   try {
+    const disclaimerMessage = '<i>В данном боте вы можете встретить упоминания или понятия, связанные с компанией Meta. Компания Meta Platforms Inc. признана экстремистской организацией и запрещена в Российской Федерации. Принадлежащие ей соцсети Facebook и Instagram также запрещены.</i>'
+    await bot.sendMessage(chatId, disclaimerMessage, { parse_mode: 'HTML' });
+
     const user = await upsertUser(msg);
     await updateUserState(chatId, '');
     let message, options = {};

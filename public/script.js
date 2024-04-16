@@ -117,13 +117,21 @@ const validatePhone = (phoneNumber) => {
   return { valid: true, message: 'Номер телефона валиден.' };
 }
 
+const validateCheckbox = (cb) => {
+  if (!cb.checked) {
+    return { valid: false, message: 'Для оформления подписки необходимо дать своё согласие.' };
+  } else {
+    return { valid: true, message: 'Поле заполнено.' };
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const tg = window.Telegram.WebApp;
 
   const setPaymentData = () => {
     const data = getPaymentData();
-    document.getElementById('payment-amount').innerHTML = data.amount;
-    document.getElementById('payment-name').innerHTML = data.name;
+    document.querySelectorAll('[name="payment-amount"]').forEach(el => el.innerHTML = data.amount);
+    document.querySelectorAll('[name="payment-name"]').forEach(el => el.innerHTML = data.name);
   }
 
   const getPaymentData = () => {
@@ -155,7 +163,8 @@ document.addEventListener('DOMContentLoaded', () => {
   tg.ready()
   tg.expand();
   tg.enableClosingConfirmation();
-  
+  tg.BackButton.hide();
+
   document.getElementById('firstName').value = getUserData().firstName;
   document.getElementById('lastName').value = getUserData().lastName;
 
@@ -163,6 +172,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputFirstName = document.getElementById('firstName');
   const inputLastName = document.getElementById('lastName');
   const inputPhone = document.getElementById('phone');
+  const checkboxOffer = document.getElementById('agreement-offer');
+  const checkboxSubscription = document.getElementById('agreement-subscription');
   inputPhone.addEventListener('input', (e) => e.target.value = e.target.value.replace(/[^\d+]/g, ''));
 
   document.addEventListener('click', function (event) {
@@ -201,6 +212,10 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (!validatePhone(inputPhone.value).valid) {
       tg.showAlert(validatePhone(inputPhone.value).message, () => inputPhone.focus());
       return false;
+    } else if (!validateCheckbox(checkboxOffer).value) {
+      tg.showAlert(validatePhone(checkboxOffer).message, () => checkboxOffer.parentNode.focus());
+    } else if (!validateCheckbox(checkboxSubscription).value) {
+      tg.showAlert(validatePhone(checkboxSubscription).message, () => checkboxSubscription.parentNode.focus());
     }
 
     const data = {

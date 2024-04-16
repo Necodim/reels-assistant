@@ -12,8 +12,8 @@
   <div class="form-wrapper">
     <h1>Подписка</h1>
     <div>
-      <div><span>Название: </span><span id="payment-name"></span></div>
-      <div><span>Сумма: </span><span id="payment-amount"></span></div>
+      <div><span>Название: </span><span name="payment-name"></span></div>
+      <div><span>Сумма: </span><span name="payment-amount"></span></div>
     </div>
     <p>Заполните форму для перехода к оплате</p>
     <form id="paymentForm">
@@ -28,6 +28,20 @@
       <div class="input-block">
         <label for="phone">Номер телефона:</label>
         <input type="tel" id="phone" name="phone" pattern="^\+[1-9]\d{6,14}$" placeholder="+79991234567" autocomplete="tel" required>
+      </div>
+      <div class="input-block">
+        <label class="checkbox-label">
+          <input type="checkbox" id="agreement-offer" name="agreement-offer" required />
+          <span class="checkbox-box"></span>
+          <span class="checkbox-text">Подтверждаю, что ознакомлен с&nbsp;<a href="/offer">офертой</a> и&nbsp;даю согласие на&nbsp;обработку персональных данных</span>
+        </label>
+      </div>
+      <div class="input-block">
+        <label class="checkbox-label">
+          <input type="checkbox" id="agreement-subscription" name="agreement-subscription" required />
+          <span class="checkbox-box"></span>
+          <span class="checkbox-text">Согласен со&nbsp;стоимостью подписки в&nbsp;<span name="payment-amount"></span>₽ и&nbsp;периодичностью списаний в&nbsp;1&nbsp;месяц</span>
+        </label>
       </div>
       <button type="submit">Перейти к оплате</button>
     </form>
