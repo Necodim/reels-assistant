@@ -409,7 +409,7 @@ const settingsExpert = async (callbackQuery) => {
   const options = buttons.home('about');
 
   try {
-    const user = getUser(callbackQuery);
+    const user = await getUser(callbackQuery);
     const subscribers = await getExpertSubscriberCount(user._id);
     const message = `На данный момент у вас ${subscribers.unique} ${getPlural(subscribers.unique, 'подопечный', 'подопечных', 'подопечных')}. Так же в этом разделе вы можете настроить информацию о себе.`;
     await bot.sendMessage(chatId, message, options);
