@@ -8,7 +8,7 @@ cron.schedule('0 12 * * *', () => {
   timezone: 'Europe/Moscow'
 });
 
-cron.schedule('0 12 * * *', () => {
+cron.schedule('0 13 * * *', () => {
   reminders.sendEvaluateIdeaReminder();
 }, {
   scheduled: true,
