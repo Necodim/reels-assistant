@@ -132,6 +132,12 @@ const validateCheckbox = (input) => {
 
 document.addEventListener('DOMContentLoaded', () => {
   const tg = window.Telegram.WebApp;
+  const form = document.getElementById('paymentForm');
+  const inputFirstName = document.getElementById('firstName');
+  const inputLastName = document.getElementById('lastName');
+  const inputPhone = document.getElementById('phone');
+  const checkboxOffer = document.getElementById('agreement-offer');
+  const checkboxSubscription = document.getElementById('agreement-subscription');
 
   const setPaymentData = () => {
     const data = getPaymentData();
@@ -170,17 +176,17 @@ document.addEventListener('DOMContentLoaded', () => {
   tg.enableClosingConfirmation();
   tg.BackButton.hide();
 
-  document.getElementById('firstName').value = getUserData().firstName;
-  document.getElementById('lastName').value = getUserData().lastName;
+  inputFirstName.value = getUserData().firstName;
+  inputLastName.value = getUserData().lastName;
 
-  const form = document.getElementById('paymentForm');
-  const inputFirstName = document.getElementById('firstName');
-  const inputLastName = document.getElementById('lastName');
-  const inputPhone = document.getElementById('phone');
-  const checkboxOffer = document.getElementById('agreement-offer');
-  const checkboxSubscription = document.getElementById('agreement-subscription');
 
   inputPhone.addEventListener('input', (e) => e.target.value = e.target.value.replace(/[^\d+]/g, ''));
+  document.querySelectorAll('[type="checkbox"]').forEach(checkbox => {
+    checkbox.addEventListener('input', (e) => {
+      const customCb = e.target.parentNode.querySelector('.checkbox-box');
+      customCb.setAttribute('aria-checked', e.target.checked);
+    });
+  });
 
   document.addEventListener('click', function (event) {
     const inputs = document.querySelectorAll('.form-wrapper input');
