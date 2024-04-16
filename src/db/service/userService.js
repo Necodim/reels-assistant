@@ -1,5 +1,8 @@
 const User = require('../models/userModel');
+const Video = require('../models/videoModel');
 const Subscription = require('../models/subscriptionModel');
+const Idea = require('../models/ideaModel');
+const UserIdea = require('../models/userIdeasModel');
 
 const getUser = async (msg) => {
   const chatId = msg.from.id;
@@ -54,6 +57,33 @@ const getUsers = async (params) => {
     throw error;
   }
 }
+
+const getUsersForVideoReminder = async () => {
+  const threeDaysAgo = new Date();
+  threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+
+  const users = await User.find({ isExpert: false });
+  for (const user of users) {
+    const currentDate = new Date();
+    const activeSubscription = await Subscription.findOne({
+      userId: user._id,
+      $or: [
+        { status: 'Active' },
+        { end: { $gte: currentDate } }
+      ]
+    });
+
+    const result = new Array();
+    if (activeSubscription) {
+      const lastVideo = await Video.findOne({ userId: user._id }).sort({ createdAt: -1 });
+      if (!lastVideo || lastVideo.createdAt < threeDaysAgo) {
+        result.push(user);
+      }
+    }
+
+    return result;
+  }
+};
 
 const getLeastFrequentExpert = async () => {
   try {
@@ -152,6 +182,7 @@ module.exports = {
   getUserByChatId,
   getUserByUsername,
   getUsers,
+  getUsersForVideoReminder,
   getLeastFrequentExpert,
   upsertUser,
   updateUserState,

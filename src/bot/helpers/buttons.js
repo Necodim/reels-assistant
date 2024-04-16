@@ -51,16 +51,25 @@ const home = (type = '', id = '') => {
     case 'cnlsb':
       buttonLine.push({ text: '❌ Отменить подписку', callback_data: type });
       break;
-    case 'getIdea':
-      if (!!id) {
-        buttonLine.push({ text: '💡 Ещё идея', callback_data: type }, { text: '⭐️ В избранное', callback_data: `favrt:${id}` });
-      } else {
-        buttonLine.push({ text: '💡 Ещё идея', callback_data: type });
-      }
-      break;
     case 'createIdea':
       buttonLine.push({ text: '💡 Опубликовать ещё одну', callback_data: type });
       break;
+    case 'getAnotherIdea':
+      if (!!id) {
+        buttonLine.push({ text: '💡 Ещё идея', callback_data: 'getIdea' }, { text: '⭐️ В избранное', callback_data: `favrt:${id}` });
+      } else {
+        buttonLine.push({ text: '💡 Ещё идея', callback_data: 'getIdea' });
+      }
+      break;
+    case 'getIdea':
+      if (!!id) {
+        buttonLine.push({ text: '💡 Получить идею', callback_data: type }, { text: '⭐️ В избранное', callback_data: `favrt:${id}` });
+      } else {
+        buttonLine.push({ text: '💡 Получить идею', callback_data: type });
+      }
+      break;
+    case 'sendVideo':
+      buttonLine.push({ text: '⏯️ Отправить ролик', callback_data: 'sendVideo' });
     case 'subscription':
       buttonLine.push({ text: '💳 Подписка', callback_data: 'subscription' });
       break;

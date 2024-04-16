@@ -86,8 +86,8 @@ ${products.text}`;
 
 Сложность: ${idea.difficulty}
 ${idea.hashtag}`
-      // const options = {...buttons.home('getIdea')(idea.id), caption}; // для добавления идеи в избранное
-      const options = {...buttons.home('getIdea'), caption};
+      // const options = {...buttons.home('getAnotherIdea')(idea.id), caption}; // для добавления идеи в избранное
+      const options = {...buttons.home('getAnotherIdea'), caption};
       await sendVideoToBot(chatId, idea.videoId, options);
     }
   } catch (error) {
