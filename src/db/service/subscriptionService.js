@@ -148,6 +148,39 @@ const removeSubscription = async (userId, subscriptionId) => {
   }
 };
 
+const getExpertSubscriberCount = async (expertId) => {
+  try {
+    const expertIdObj = new mongoose.Types.ObjectId(expertId);
+
+    const result = await Subscription.aggregate([
+      { $match: { expertId: expertIdObj } },
+      {
+        $group: {
+          _id: "$expertId",
+          uniqueSubscribers: { $addToSet: "$userId" },
+          totalSubscriptions: { $sum: 1 }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          unique: { $size: "$uniqueSubscribers" },
+          all: "$totalSubscriptions"
+        }
+      }
+    ]);
+
+    if (result.length > 0) {
+      return result[0];
+    } else {
+      return { unique: 0, all: 0 };
+    }
+  } catch (error) {
+    console.error('Ошибка при получении количества подписчиков:', error);
+    throw error;
+  }
+};
+
 module.exports = {
   getSubscriptionById,
   getSubscriptionByCloudPaymentsId,
@@ -157,4 +190,5 @@ module.exports = {
   updateSubscription,
   updateSubscriptionByCloudPaymentsId,
   removeSubscription,
+  getExpertSubscriberCount,
 }

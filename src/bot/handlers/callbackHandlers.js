@@ -9,10 +9,11 @@ const { checkDailyLimit, fetchIdeaForUser } = require('../../db/service/userIdea
 const { createFavoriteIdea } = require('../../db/service/favoriteIdeaService');
 const { getVideoById, updateVideoById, setVideoEvaluateTo, getNextUnratedVideo } = require('../../db/service/videoService');
 const message = require('../events/message');
-const { getUserSubscriptions, getSubscriptionById, getUserSubscription, updateSubscription } = require('../../db/service/subscriptionService');
+const { getUserSubscriptions, getSubscriptionById, getUserSubscription, updateSubscription, getExpertSubscriberCount } = require('../../db/service/subscriptionService');
 const { formatDate } = require('../../helpers/dateHelper');
 const { subscriptionsCancel } = require('../../payments/cloudpaymentAPI');
 const emojiHelper = require('../../helpers/emojiHelper');
+const { getPlural } = require('../../helpers/getPlural');
 
 const handleError = (error, callbackQuery) => {
   if (error.message === 'Новые идеи не найдены') {
@@ -405,10 +406,12 @@ const settingsUser = async (callbackQuery) => {
 
 const settingsExpert = async (callbackQuery) => {
   const chatId = callbackQuery.message.chat.id;
-  const message = 'Здесь вы можете настроить информацию о себе.';
   const options = buttons.home('about');
 
   try {
+    const user = getUser(callbackQuery);
+    const subscribers = await getExpertSubscriberCount(user._id);
+    const message = `На данный момент у вас ${subscribers.unique} ${getPlural(subscribers.unique, 'подопечный', 'подопечных', 'подопечных')}. Так же в этом разделе вы можете настроить информацию о себе.`;
     await bot.sendMessage(chatId, message, options);
   } catch (error) {
     handleError(error, callbackQuery);
