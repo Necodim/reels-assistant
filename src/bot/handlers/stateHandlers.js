@@ -4,6 +4,7 @@ const { getUserByChatId, getUsers, upsertUser, updateUserState } = require('../.
 const { createVideo, updateVideoById, getUnratedVides } = require('../../db/service/videoService');
 const { createIdea } = require('../../db/service/ideaService');
 const { difficulty, hashtag } = require('./callbackHandlers');
+const { createForumTopic, reopenForumTopic, closeForumTopic } = require('../send');
 
 const videoAwaiting = async (msg) => {
   const chatId = msg.chat.id;
