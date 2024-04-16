@@ -121,6 +121,8 @@ const validatePhone = (input) => {
 }
 
 const validateCheckbox = (input) => {
+  console.log(input)
+  console.log(input.checked)
   if (!input.checked) {
     return { valid: false, message: 'Для оформления подписки необходимо дать своё согласие.' };
   } else {
@@ -204,22 +206,24 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', (event) => {
     event.preventDefault();
 
-    if (!validateName(inputFirstName.value).valid && !validateSurname(inputLastName.value).valid && !validatePhone(inputPhone.value).valid && !validateCheckbox(checkboxOffer).value && !validateCheckbox(checkboxSubscription).value) {
+    if (!validateName(inputFirstName).valid && !validateSurname(inputLastName).valid && !validatePhone(inputPhone).valid && !validateCheckbox(checkboxOffer).value && !validateCheckbox(checkboxSubscription).value) {
       tg.showAlert('Заполните все поля формы. Это необходимо для проведения платежа.');
       return false;
-    } else if (!validateName(inputFirstName.value).valid) {
-      tg.showAlert(validateName(inputFirstName.value).message, () => inputFirstName.focus());
+    } else if (!validateName(inputFirstName).valid) {
+      tg.showAlert(validateName(inputFirstName).message, () => inputFirstName.focus());
       return false;
-    } else if (!validateSurname(inputLastName.value).valid) {
+    } else if (!validateSurname(inputLastName).valid) {
       tg.showAlert(validateSurname(inputLastName.message), () => inputLastName.focus());
       return false;
-    } else if (!validatePhone(inputPhone.value).valid) {
-      tg.showAlert(validatePhone(inputPhone.value).message, () => inputPhone.focus());
+    } else if (!validatePhone(inputPhone).valid) {
+      tg.showAlert(validatePhone(inputPhone).message, () => inputPhone.focus());
       return false;
     } else if (!validateCheckbox(checkboxOffer).value) {
+      console.log(false)
       tg.showAlert(validateCheckbox(checkboxOffer).message);
       return false;
     } else if (!validateCheckbox(checkboxSubscription).value) {
+      console.log(false)
       tg.showAlert(validateCheckbox(checkboxSubscription).message);
       return false;
     }
