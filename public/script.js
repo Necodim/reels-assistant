@@ -159,7 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const getUserData = () => {
     const initData = new URLSearchParams(tg.initData);
     const user = JSON.parse(initData.get('user'));
-    console.log(user)
     const data = {
       id: user.id,
       firstName: user.first_name,
@@ -188,26 +187,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  document.addEventListener('click', function (event) {
-    const inputs = document.querySelectorAll('.form-wrapper input');
-    const labels = document.querySelectorAll('.form-wrapper label');
-    let isClickedInside = false;
-    inputs.forEach(input => {
-      if (input.contains(event.target)) {
-        isClickedInside = true;
-      }
-    });
-    labels.forEach(label => {
-      if (label.contains(event.target)) {
-        isClickedInside = true;
-      }
-    });
-    if (!isClickedInside) {
-      inputs.forEach(input => {
-        input.blur();
-      });
-    }
-  });
+  // document.addEventListener('click', function (event) {
+  //   const inputs = document.querySelectorAll('.form-wrapper input');
+  //   const labels = document.querySelectorAll('.form-wrapper label');
+  //   let isClickedInside = false;
+  //   inputs.forEach(input => {
+  //     if (input.contains(event.target)) {
+  //       isClickedInside = true;
+  //     }
+  //   });
+  //   labels.forEach(label => {
+  //     if (label.contains(event.target)) {
+  //       isClickedInside = true;
+  //     }
+  //   });
+  //   if (!isClickedInside) {
+  //     inputs.forEach(input => {
+  //       input.blur();
+  //     });
+  //   }
+  // });
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
