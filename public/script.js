@@ -72,7 +72,8 @@ const pay = (data, tg) => {
   )
 }
 
-const validateName = (name) => {
+const validateName = (input) => {
+  const name = input.value;
   const regex = /^[a-zA-Zа-яА-ЯёЁüÜöÖäÄß\s'-]+$/;
   if (!name) {
     return { valid: false, message: 'Имя не может быть пустым.' };
@@ -86,7 +87,8 @@ const validateName = (name) => {
   return { valid: true, message: 'Имя валидно.' };
 }
 
-const validateSurname = (name) => {
+const validateSurname = (input) => {
+  const name = input.value;
   const regex = /^[a-zA-Zа-яА-ЯёЁüÜöÖäÄß\s'-]+$/;
   if (!name) {
     return { valid: false, message: 'Фамилия не может быть пустой.' };
@@ -100,7 +102,8 @@ const validateSurname = (name) => {
   return { valid: true, message: 'Фамилия валидна.' };
 }
 
-const validatePhone = (phoneNumber) => {
+const validatePhone = (input) => {
+  const phoneNumber = input.value;
   const regex = /^\+[1-9]\d{6,14}$/;
   if (!phoneNumber) {
     return { valid: false, message: 'Номер телефона не может быть пустым.' };
@@ -117,8 +120,8 @@ const validatePhone = (phoneNumber) => {
   return { valid: true, message: 'Номер телефона валиден.' };
 }
 
-const validateCheckbox = (cb) => {
-  if (!cb.checked) {
+const validateCheckbox = (input) => {
+  if (!input.checked) {
     return { valid: false, message: 'Для оформления подписки необходимо дать своё согласие.' };
   } else {
     return { valid: true, message: 'Поле заполнено.' };
@@ -174,6 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputPhone = document.getElementById('phone');
   const checkboxOffer = document.getElementById('agreement-offer');
   const checkboxSubscription = document.getElementById('agreement-subscription');
+
   inputPhone.addEventListener('input', (e) => e.target.value = e.target.value.replace(/[^\d+]/g, ''));
 
   document.addEventListener('click', function (event) {
@@ -200,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', (event) => {
     event.preventDefault();
 
-    if (!validateName(inputFirstName.value).valid && !validateSurname(inputLastName.value).valid && !validatePhone(inputPhone.value).valid) {
+    if (!validateName(inputFirstName.value).valid && !validateSurname(inputLastName.value).valid && !validatePhone(inputPhone.value).valid && !validateCheckbox(checkboxOffer).value && !validateCheckbox(checkboxSubscription).value) {
       tg.showAlert('Заполните все поля формы. Это необходимо для проведения платежа.');
       return false;
     } else if (!validateName(inputFirstName.value).valid) {
@@ -213,9 +217,11 @@ document.addEventListener('DOMContentLoaded', () => {
       tg.showAlert(validatePhone(inputPhone.value).message, () => inputPhone.focus());
       return false;
     } else if (!validateCheckbox(checkboxOffer).value) {
-      tg.showAlert(validatePhone(checkboxOffer).message, () => checkboxOffer.parentNode.focus());
+      tg.showAlert(validateCheckbox(checkboxOffer).message);
+      return false;
     } else if (!validateCheckbox(checkboxSubscription).value) {
-      tg.showAlert(validatePhone(checkboxSubscription).message, () => checkboxSubscription.parentNode.focus());
+      tg.showAlert(validateCheckbox(checkboxSubscription).message);
+      return false;
     }
 
     const data = {

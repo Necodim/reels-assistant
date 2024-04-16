@@ -88,7 +88,7 @@ a {
   top: 2px;
   width: 5px;
   height: 10px;
-  border: solid var(--tg-theme-bg-color, #ffffff);
+  border: solid #ffffff;
   border-radius: 2px;
   border-width: 0 3px 3px 0;
   transform: rotate(45deg);
