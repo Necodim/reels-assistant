@@ -180,38 +180,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   inputPhone.addEventListener('input', (e) => e.target.value = e.target.value.replace(/[^\d+]/g, ''));
-  document.querySelectorAll('[type="checkbox"]').forEach(checkbox => {
+  document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
     checkbox.addEventListener('input', (e) => {
       const customCb = e.target.parentNode.querySelector('.checkbox-box');
       customCb.setAttribute('aria-checked', e.target.checked);
     });
   });
 
-  // document.addEventListener('click', function (event) {
-  //   const inputs = document.querySelectorAll('.form-wrapper input');
-  //   const labels = document.querySelectorAll('.form-wrapper label');
-  //   let isClickedInside = false;
-  //   inputs.forEach(input => {
-  //     if (input.contains(event.target)) {
-  //       isClickedInside = true;
-  //     }
-  //   });
-  //   labels.forEach(label => {
-  //     if (label.contains(event.target)) {
-  //       isClickedInside = true;
-  //     }
-  //   });
-  //   if (!isClickedInside) {
-  //     inputs.forEach(input => {
-  //       input.blur();
-  //     });
-  //   }
-  // });
+  document.addEventListener('click', function (event) {
+    const inputs = document.querySelectorAll('.form-wrapper input');
+    const labels = document.querySelectorAll('.form-wrapper label');
+    let isClickedInside = false;
+    inputs.forEach(input => {
+      if (input.contains(event.target)) {
+        isClickedInside = true;
+      }
+    });
+    labels.forEach(label => {
+      if (label.contains(event.target)) {
+        isClickedInside = true;
+      }
+    });
+    if (!isClickedInside) {
+      inputs.forEach(input => {
+        input.blur();
+      });
+    }
+  });
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
+    console.log(event);
 
-    if (!validateName(inputFirstName).valid && !validateSurname(inputLastName).valid && !validatePhone(inputPhone).valid && !validateCheckbox(checkboxOffer).value && !validateCheckbox(checkboxSubscription).value) {
+    var checkboxes = form.querySelectorAll('input[type="checkbox"]');
+    for (var i = 0; i < checkboxes.length; i++) {
+      if (checkboxes[i].required && !checkboxes[i].checked) {
+        event.preventDefault();
+        document.querySelector('.checkbox-box[tabindex="0"]').focus();
+        tg.showAlert('Для оформления подписки необходимо дать своё согласие.');
+        break;
+      }
+    }
+
+    if (!validateName(inputFirstName).valid && !validateSurname(inputLastName).valid && !validatePhone(inputPhone).valid) {
       tg.showAlert('Заполните все поля формы. Это необходимо для проведения платежа.');
       return false;
     } else if (!validateName(inputFirstName).valid) {
@@ -222,14 +233,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return false;
     } else if (!validatePhone(inputPhone).valid) {
       tg.showAlert(validatePhone(inputPhone).message, () => inputPhone.focus());
-      return false;
-    } else if (!validateCheckbox(checkboxOffer).value) {
-      console.log(false)
-      tg.showAlert(validateCheckbox(checkboxOffer).message);
-      return false;
-    } else if (!validateCheckbox(checkboxSubscription).value) {
-      console.log(false)
-      tg.showAlert(validateCheckbox(checkboxSubscription).message);
       return false;
     }
 
