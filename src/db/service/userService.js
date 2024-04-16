@@ -57,9 +57,16 @@ const getUsers = async (params) => {
 
 const getLeastFrequentExpert = async () => {
   try {
-    // Поиск минимального количества подписок у экспертов
+    const currentDate = new Date();
     const experts = await Subscription.aggregate([
-      { $match: { expertId: { $exists: true } } },
+      {
+        $match: {
+          $or: [
+            { status: 'Active' },
+            { end: { $gte: currentDate } }
+          ]
+        }
+      },
       { $group: { _id: "$expertId", count: { $sum: 1 } } },
       { $sort: { count: 1 } }
     ]);
@@ -67,12 +74,8 @@ const getLeastFrequentExpert = async () => {
     if (experts.length > 0) {
       const minCount = experts[0].count;
       const leastBusyExperts = experts.filter(expert => expert.count === minCount);
-
-      // Выбор случайного эксперта из тех, у кого минимальное количество подписок
       const randomIndex = Math.floor(Math.random() * leastBusyExperts.length);
       const randomExpertId = leastBusyExperts[randomIndex]._id;
-
-      // Получение полной информации о выбранном эксперте
       const expertDetails = await User.findById(randomExpertId);
       if (expertDetails) {
         console.log('Выбран случайный эксперт с минимальным количеством подписок:', expertDetails);
@@ -80,7 +83,6 @@ const getLeastFrequentExpert = async () => {
       }
     }
 
-    // Если не найдено экспертов с минимальным количеством подписок, выбрать случайного эксперта
     const fallbackExpert = await User.findOne({ isExpert: true }).sort({ _id: -1 }).limit(1);
     console.log('Выбран случайный эксперт:', fallbackExpert);
     return fallbackExpert;
