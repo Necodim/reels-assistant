@@ -1,7 +1,7 @@
 const cron = require('node-cron');
 const reminders = require('./reminders');
 
-cron.schedule('0 20 6 * *', () => {
+cron.schedule('10 20 * * *', () => {
   reminders.sendEverydayReminder();
   reminders.sendVideoReminder();
 }, {
