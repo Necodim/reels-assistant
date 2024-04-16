@@ -52,20 +52,26 @@ const home = (type = '', id = '') => {
       buttonLine.push({ text: '❌ Отменить подписку', callback_data: type });
       break;
     case 'createIdea':
-      buttonLine.push({ text: '💡 Опубликовать ещё одну', callback_data: type });
+      buttonLine.push({ text: '💡 Опубликовать идею', callback_data: type });
       break;
-    case 'getAnotherIdea':
-      if (!!id) {
-        buttonLine.push({ text: '💡 Ещё идея', callback_data: 'getIdea' }, { text: '⭐️ В избранное', callback_data: `favrt:${id}` });
-      } else {
-        buttonLine.push({ text: '💡 Ещё идея', callback_data: 'getIdea' });
-      }
+    case 'createYetIdea':
+      buttonLine.push({ text: '💡 Опубликовать ещё одну', callback_data: 'createIdea' });
+      break;
+    case 'evaluateVideo':
+      buttonLine.push({ text: '⭐️ Оценить ролик', callback_data: 'getVideo' });
       break;
     case 'getIdea':
       if (!!id) {
         buttonLine.push({ text: '💡 Получить идею', callback_data: type }, { text: '⭐️ В избранное', callback_data: `favrt:${id}` });
       } else {
         buttonLine.push({ text: '💡 Получить идею', callback_data: type });
+      }
+      break;
+    case 'getYetIdea':
+      if (!!id) {
+        buttonLine.push({ text: '💡 Ещё идея', callback_data: 'getIdea' }, { text: '⭐️ В избранное', callback_data: `favrt:${id}` });
+      } else {
+        buttonLine.push({ text: '💡 Ещё идея', callback_data: 'getIdea' });
       }
       break;
     case 'sendVideo':

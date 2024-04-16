@@ -92,6 +92,28 @@ const deleteIdeaById = async (id) => {
   }
 }
 
+const findExpertsWithNoRecentIdeas = async () => {
+  const expertsWithNoRecentIdeas = [];
+  const oneDayAgo = new Date();
+  oneDayAgo.setHours(oneDayAgo.getHours() - 24);
+
+  try {
+    const experts = await User.find({ isExpert: true });
+    for (const expert of experts) {
+      const recentIdea = await Idea.findOne({
+        userId: expert._id,
+        createdAt: { $gt: oneDayAgo }
+      });
+      if (!recentIdea) {
+        expertsWithNoRecentIdeas.push(expert);
+      }
+    }
+    return expertsWithNoRecentIdeas;
+  } catch (error) {
+    console.error('Error finding experts with no recent ideas:', error);
+    throw error;
+  }
+}
 
 module.exports = {
   getIdeaById,
@@ -100,4 +122,5 @@ module.exports = {
   updateIdea,
   updateIdeaById,
   deleteIdeaById,
+  findExpertsWithNoRecentIdeas,
 };

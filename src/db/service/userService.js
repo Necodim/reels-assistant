@@ -3,6 +3,7 @@ const Video = require('../models/videoModel');
 const Subscription = require('../models/subscriptionModel');
 const Idea = require('../models/ideaModel');
 const UserIdea = require('../models/userIdeasModel');
+const { adminUsers } = require('../../bot/helpers/admin');
 
 const getUser = async (msg) => {
   const chatId = msg.from.id;
@@ -107,7 +108,10 @@ const getLeastFrequentExpert = async () => {
       { $sort: { subscriptionCount: 1 } }
     ]);
 
-    if (allExperts.length > 0) {
+    const adminIds = adminUsers.map(user => user.id);
+    const filteredExperts = allExperts.filter(user => !adminIds.includes(user.chatId));
+
+    if (filteredExperts.length > 0) {
       const minCount = allExperts[0].subscriptionCount;
       const leastBusyExperts = allExperts.filter(expert => expert.subscriptionCount === minCount);
       const randomIndex = Math.floor(Math.random() * leastBusyExperts.length);

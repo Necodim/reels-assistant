@@ -86,8 +86,8 @@ ${products.text}`;
 
 Сложность: ${idea.difficulty}
 ${idea.hashtag}`
-      // const options = {...buttons.home('getAnotherIdea')(idea.id), caption}; // для добавления идеи в избранное
-      const options = {...buttons.home('getAnotherIdea'), caption};
+      // const options = {...buttons.home('getYetIdea')(idea.id), caption}; // для добавления идеи в избранное
+      const options = {...buttons.home('getYetIdea'), caption};
       await sendVideoToBot(chatId, idea.videoId, options);
     }
   } catch (error) {
@@ -274,7 +274,7 @@ const difficulty = async (callbackQuery) => {
 const hashtag = async (callbackQuery) => {
   const chatId = callbackQuery.from.id;
   const message = 'Супер. Идея добавлена.';
-  const options = buttons.home('createIdea');
+  const options = buttons.home('createYetIdea');
   const hNumber = callbackQuery.data.split(':')[1];
   const hashtag = findHashtagByNumber(hNumber);
   const videoId = callbackQuery.data.split(':')[2];
