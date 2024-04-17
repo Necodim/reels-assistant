@@ -55,7 +55,7 @@ const sendVideo = async (callbackQuery) => {
     const subscriptions = await getUserSubscriptions(user._id);
     if (subscriptions.length) {
       await updateUserState(chatId, 'videoAwaiting');
-      const message = 'Прикрепите ролик и напишите сопроводительное сообщение, если необходимо. Если передумали, вернитесь в главное меню:';
+      const message = 'Прикрепите ролик и напишите сопроводительное сообщение (запрос), если необходимо. Если передумали, вернитесь в главное меню:';
       const options = buttons.home();
       await bot.sendMessage(chatId, message, options);
     } else {
@@ -317,7 +317,7 @@ const getVideo = async (callbackQuery) => {
     const user = await getUser(callbackQuery);
     const video = await getNextUnratedVideo(user._id);
     await setVideoEvaluateTo(video._id, true);
-    
+
     const videoOptions = {caption: video.caption};
     const videoMessage = await sendVideoToBot(chatId, video.videoId, videoOptions);
     const options = {...buttons.cancel.videoEvaluate(video._id, videoMessage.message_id), parse_mode: 'HTML'};
