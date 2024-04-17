@@ -11,7 +11,7 @@ const videoAwaiting = async (msg) => {
   
   try {
     if (msg.video) {
-      if (msg.caption && msg.caption < 1 && msg.caption.length > 9) {
+      if (msg.caption.length === 0 || msg.caption.length > 9) {
         const video = await createVideo(msg);
         await updateUserState(chatId, '');
   
