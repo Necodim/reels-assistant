@@ -80,7 +80,11 @@ const home = (type = '', id = '') => {
       }
       break;
     case 'sendVideo':
-      buttonLine.push({ text: '⏯️ Отправить ролик', callback_data: 'sendVideo' });
+      buttonLine.push({ text: '⏯️ Отправить ролик', callback_data: type });
+      break;
+    case 'sendYetVideo':
+      buttonLine.push({ text: '⏯️ Отправить ещё ролик', callback_data: 'sendVideo' });
+      break;
     case 'subscription':
       buttonLine.push({ text: '💳 Подписка', callback_data: 'subscription' });
       break;

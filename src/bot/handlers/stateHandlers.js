@@ -1,6 +1,6 @@
 const bot = require('../bot');
 const buttons = require('../helpers/buttons');
-const { getUserByChatId, getUsers, upsertUser, updateUserState } = require('../../db/service/userService');
+const { getUserByChatId, getUsers, upsertUser, updateUserState, getUserById } = require('../../db/service/userService');
 const { createVideo, updateVideoById, findUnreviewedVideosByExpert } = require('../../db/service/videoService');
 const { createIdea } = require('../../db/service/ideaService');
 const { difficulty, hashtag } = require('./callbackHandlers');
@@ -11,27 +11,17 @@ const videoAwaiting = async (msg) => {
   
   try {
     if (msg.video) {
-      await createVideo(msg);
+      const video = await createVideo(msg);
       await updateUserState(chatId, '');
 
       const message = 'Спасибо, я отправил ваш ролик эксперту. Как только он ответит, я пришлю вам ответ.';
-      const options = buttons.home();
+      const options = buttons.home('sendYetVideo');
       await bot.sendMessage(chatId, message, options);
 
-      const experts = await getUsers({ isExpert: true });
-      if (experts.length) {
-        const expertMessage = 'Поступил новый ролик на оценку!';
-        const expertOptions = {
-          reply_markup: {
-            inline_keyboard: [
-              [{ text: '⭐️ Оценить ролик', callback_data: 'getVideo' }],
-            ]
-          }
-        }
-        for (const expert of experts) {
-          await bot.sendMessage(expert.chatId, expertMessage, expertOptions);
-        }
-      }
+      const expert = await getUserById(video.expertId);
+      const expertMessage = 'Поступил новый ролик на оценку!';
+      const expertOptions = buttons.home('evaluateVideo');
+      await bot.sendMessage(expert.chatId, expertMessage, expertOptions);
     } else {
       await bot.sendMessage(chatId, 'Пожалуйста, отправьте ролик.');
     }
