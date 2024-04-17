@@ -1,4 +1,5 @@
 const emojiHelper = require("../../helpers/emojiHelper");
+const { products } = require("./products");
 
 const replyMarkup = (btns) => {
   return {
@@ -6,6 +7,10 @@ const replyMarkup = (btns) => {
       inline_keyboard: btns
     }
   }
+}
+
+const getProductButton = (i) => {
+  return [{ text: `${products[i].emoji} ${products[i].name} (${products[i].price}₽)`, callback_data: 'prchs:0' }]
 }
 
 const homeButton = [{ text: '🏠 Главное меню', callback_data: 'home' }];
@@ -101,10 +106,21 @@ const cancel = {
 
 const purchase = {
   user: (subscriptions = []) => {
-    let buttons = [
-      [{ text: '🔑 Доступ к боту', callback_data: 'prchs:0' }]
-    ];
+    let buttons = [];
     let currentLine = [];
+    
+    if (subscriptions.length > 0) {
+      products.forEach((product, i) => {
+        if (i === 0) { // убрать условие, если будет больше подписок
+          const hasSubscription = subscriptions.some(subscription => subscription.name === product.name);
+          if (!hasSubscription) {
+            const productButton = getProductButton(i);
+            buttons.push(productButton);
+          }
+        }
+      });
+    }
+
     subscriptions.forEach((subscription, index) => {
       const emoji = emojiHelper.number(index);
       currentLine.push({ text: emoji, callback_data: `getsb:${subscription._id}` });

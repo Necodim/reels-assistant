@@ -132,7 +132,8 @@ const purchase = async (callbackQuery) => {
   const pNumber = parseInt(callbackQuery.data.split(':')[1], 10);
   const product = products.products[pNumber];
   const link = product.link;
-  const message = `<b>Продукт:</b> ${product.name}
+  const message = `<b>Название:</b> ${product.name}
+<b>Стоимость:</b> ${product.price}₽ в месяц
 
 Нажмите на кнопку, чтобы перейти на страницу оплаты. После успешной оплаты возвращайтесь обратно, я сообщу, когда подписка будет оформлена.`
   const options = {...buttons.purchase.cloudpayments(link), parse_mode: 'HTML' };
@@ -191,7 +192,9 @@ const getSubscription = async (callbackQuery) => {
     const options = {...buttons.home(`cnlsb:${subscription._id}`), parse_mode: 'HTML'};
     console.log(subscription);
     const date = formatDate(subscription.end, 'd MMMM, HH:mm');
-    const message = `Название: ${subscription.name}
+    const message = `<b>Название:</b> ${subscription.name}
+<b>Стоиость:</b> ${subscription.price}₽ в месяц
+
 Дата ${subscription.status === 'Active' ? 'следующего списания' : 'окончания срока действия'}: ${date}
 
 Информация о вашем эксперте:
