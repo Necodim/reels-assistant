@@ -51,7 +51,6 @@ const updateIdea = async (videoId, updateData) => {
     );
 
     if (updatedIdea) {
-      console.log('Идея обновлена успешно:', updatedIdea);
       return updatedIdea;
     } else {
       throw new Error('Идея не найдена');
@@ -71,7 +70,6 @@ const updateIdeaById = async (id, updateData) => {
     );
 
     if (updatedIdea) {
-      console.log('Идея обновлена успешно:', updatedIdea);
       return updatedIdea;
     } else {
       throw new Error('Идея не найдена');
