@@ -108,8 +108,8 @@ const purchase = {
   user: (subscriptions = []) => {
     let buttons = [];
     let currentLine = [];
-    
-    if (subscriptions.length > 0) {
+
+    // if (subscriptions.length > 0) {
       products.forEach((product, i) => {
         if (i === 0) { // убрать условие, если будет больше подписок
           const hasSubscription = subscriptions.some(subscription => subscription.name === product.name);
@@ -119,7 +119,7 @@ const purchase = {
           }
         }
       });
-    }
+    // }
 
     subscriptions.forEach((subscription, index) => {
       const emoji = emojiHelper.number(index);
