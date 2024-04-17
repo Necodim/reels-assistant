@@ -11,21 +11,17 @@ const videoAwaiting = async (msg) => {
   
   try {
     if (msg.video) {
-      if (msg.caption.length === 0 || msg.caption.length > 9) {
-        const video = await createVideo(msg);
-        await updateUserState(chatId, '');
-  
-        const message = 'Спасибо, я отправил ваш ролик эксперту. Как только он ответит, я пришлю вам ответ.';
-        const options = buttons.home('sendYetVideo');
-        await bot.sendMessage(chatId, message, options);
-  
-        const expert = await getUserById(video.expertId);
-        const expertMessage = 'Поступил новый ролик на оценку!';
-        const expertOptions = buttons.home('evaluateVideo');
-        await bot.sendMessage(expert.chatId, expertMessage, expertOptions);
-      } else {
-        await bot.sendMessage(chatId, 'Слишком короткий запрос.');
-      }
+      const video = await createVideo(msg);
+      await updateUserState(chatId, '');
+
+      const message = 'Спасибо, я отправил ваш ролик эксперту. Как только он ответит, я пришлю вам ответ.';
+      const options = buttons.home('sendYetVideo');
+      await bot.sendMessage(chatId, message, options);
+
+      const expert = await getUserById(video.expertId);
+      const expertMessage = 'Поступил новый ролик на оценку!';
+      const expertOptions = buttons.home('evaluateVideo');
+      await bot.sendMessage(expert.chatId, expertMessage, expertOptions);
     } else {
       await bot.sendMessage(chatId, 'Пожалуйста, отправьте ролик.');
     }
