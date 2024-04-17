@@ -120,7 +120,7 @@ const evaluateAwaiting = async (msg, state) => {
   }
 
   try {
-    const user = getUserByChatId(chatId);
+    const user = await getUserByChatId(chatId);
     const updateData = {
       isEvaluated: true,
       evaluation: text,
