@@ -25,18 +25,24 @@ const getVideoById = async (id) => {
 
 const createVideo = async (msg) => {
   try {
-    let user = await User.findOne({ chatId: msg.chat.id });
+    const user = await User.findOne({ chatId: msg.chat.id });
     if (user) {
-      const newVideo = new Video({
-        userId: user._id,
-        chatId: msg.chat.id,
-        videoId: msg.video.file_id,
-        caption: msg.caption || ''
-      });
-      await newVideo.save();
-      return newVideo;
+      const subscription = await Subscription.findOne({ userId: user._id });
+      if (!!subscription) {
+        const newVideo = new Video({
+          userId: user._id,
+          expertId: subscription.expertId,
+          chatId: msg.chat.id,
+          videoId: msg.video.file_id,
+          caption: msg.caption || ''
+        });
+        await newVideo.save();
+        return newVideo;
+      } else {
+        throw Error('При создании видео подписка пользователя не найдена');
+      }
     } else {
-      throw Error;
+      throw Error('При создании видео пользователь не найден');
     }
   } catch (error) {
     console.error('Ошибка при создании нового видео в БД:', error);
@@ -95,9 +101,9 @@ const setVideoEvaluateTo = async (id, boolean = false) => {
   }
 }
 
-const getNextUnratedVideo = async (userId) => {
+const getNextUnratedVideo = async (expertId) => {
   try {
-    const video = await Video.findOne({ isEvaluated: false, evaluation: '', evaluatedBy: userId }).sort({ createdAt: 1 });
+    const video = await Video.findOne({ expertId: expertId, isEvaluated: false, evaluation: '' }).sort({ createdAt: 1 });
     if (!video) {
       throw new Error('Новые видео для оценки не найдены');
     }

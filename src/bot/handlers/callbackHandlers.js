@@ -314,8 +314,10 @@ const getVideo = async (callbackQuery) => {
 ✅ оно автоматически уйдет получателю`;
   
   try {
-    const video = await getNextUnratedVideo();
+    const user = await getUser(callbackQuery);
+    const video = await getNextUnratedVideo(user._id);
     await setVideoEvaluateTo(video._id, true);
+    
     const videoOptions = {caption: video.caption};
     const videoMessage = await sendVideoToBot(chatId, video.videoId, videoOptions);
     const options = {...buttons.cancel.videoEvaluate(video._id, videoMessage.message_id), parse_mode: 'HTML'};

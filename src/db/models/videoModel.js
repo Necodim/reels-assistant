@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const videoSchema = new mongoose.Schema({
   userId: mongoose.Schema.Types.ObjectId,
+  expertId: mongoose.Schema.Types.ObjectId,
   chatId: Number,
   videoId: String,
   caption: String,
