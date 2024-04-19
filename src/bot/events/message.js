@@ -34,8 +34,8 @@ const checkUserState = async (msg) => {
       case 'awaitUsernameToSendMessage':
         await state.awaitUsernameToSendMessage(msg);
         break;
-      case 'awaitMessageToSendMessage':
-        await state.awaitMessageToSendMessage(msg);
+      case 'awaitMessageToUsername':
+        await state.awaitMessageToUsername(msg, user.state.split(':')[1]);
         break;
       default:
         await bot.sendMessage(chatId, `Неизвестный user.state (${user.state})`); // исправить на проде

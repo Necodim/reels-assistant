@@ -166,7 +166,7 @@ const awaitUsernameToSendMessage = async (msg) => {
   const chatId = msg.chat.id;
   const username = msg.text;
   const isUsername = /^@[a-zA-Z\d_]{5,32}$/gi.test(username);
-  const state = isUsername ? 'awaitMessageToSendMessage' : 'awaitUsernameToSendMessage';
+  const state = isUsername ? `awaitMessageToUsername:${username}` : 'awaitUsernameToSendMessage';
   const message = isUsername ? `Отлично! Я отправлю сообщение пользователю ${username}, с этим определились. Теперь пришлите мне сообщение, которое необходимо отправить. Это может быть как просто текст, так и видео с описание, изображение или что-то ещё.` : 'Пришлите, пожалуйста никнейм пользователя, которому хотите отправить сообщение, в виде: @username';
   const options = isUsername ? {reply_parameters: {message_id: msg.message_id}, reply_markup: {inline_keyboard: [buttons.homeButton], force_reply: true, input_field_placeholder: `Ваше сообщение пользователю ${username}`}} : buttons.home();
 
@@ -179,7 +179,7 @@ const awaitUsernameToSendMessage = async (msg) => {
   }
 }
 
-const awaitMessageToSendMessage = async (msg) => {
+const awaitMessageToUsername = async (msg, username) => {
   const chatId = msg.chat.id;
   console.log(msg)
   const message = 'Спасибо. Пока тестирую, ничего никуда не отправилось.'
@@ -203,5 +203,5 @@ module.exports = {
   evaluateAwaiting,
   aboutAwaiting,
   awaitUsernameToSendMessage,
-  awaitMessageToSendMessage,
+  awaitMessageToUsername,
 }
