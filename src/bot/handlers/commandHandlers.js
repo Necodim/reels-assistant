@@ -87,7 +87,7 @@ const expert = async (msg) => {
 const send = async (msg) => {
   const chatId = msg.chat.id;
   const message = 'Я могу отправить сообщение от своего имени пользователяю. Кому вы хотите отправить сообщение? Напишите его никнейм в виде: @snezone';
-  const options = {reply_markup: {inline_keyboard: [buttons.homeButton], ForceReply: {force_reply: true}}};
+  const options = {reply_markup: {inline_keyboard: [buttons.homeButton], force_reply: true}};
 
   if (adminUsers.map(user => user.id).indexOf(chatId) !== -1) {
     try {
