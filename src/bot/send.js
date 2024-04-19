@@ -35,7 +35,7 @@ const sendSubscriberOutside = async (expert, username, btns = {}) => {
 Всего подписчиков: ${uCount}
 Платных: ${sCount}
 `
-    const optionsGeneral = {message_thread_id: group.general, parse_mode: 'HTML'}
+    const optionsGeneral = {parse_mode: 'HTML'}
     await bot.sendMessage(group.id, messageGeneral, optionsGeneral);
   } catch (error) {
     console.error('Не удалось отправить инфорамацию о подписчике эксперта в группу:', error);
