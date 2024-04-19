@@ -171,6 +171,15 @@ const upsertUser = async (msg, params = {}) => {
   }
 }
 
+const getUsersCount = async () => {
+  try {
+    const count = await User.estimatedDocumentCount({ isExpert: false });
+    return count;
+  } catch (error) {
+    console.error('Ошибка при подсчёте количества подписок:', error);
+  }
+}
+
 const updateUserState = async (chatId, newState) => {
   try {
     await User.findOneAndUpdate({ chatId }, { $set: { state: newState } });
@@ -189,5 +198,6 @@ module.exports = {
   getUsersForVideoReminder,
   getLeastFrequentExpert,
   upsertUser,
+  getUsersCount,
   updateUserState,
 };

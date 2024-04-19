@@ -148,6 +148,15 @@ const removeSubscription = async (userId, subscriptionId) => {
   }
 };
 
+const getSubscriptionsCount = async () => {
+  try {
+    const count = await Subscription.estimatedDocumentCount();
+    return count;
+  } catch (error) {
+    console.error('Ошибка при подсчёте количества подписок:', error);
+  }
+};
+
 const getExpertSubscriberCount = async (expertId) => {
   try {
     const expertIdObj = new mongoose.Types.ObjectId(expertId);
@@ -190,5 +199,6 @@ module.exports = {
   updateSubscription,
   updateSubscriptionByCloudPaymentsId,
   removeSubscription,
+  getSubscriptionsCount,
   getExpertSubscriberCount,
 }

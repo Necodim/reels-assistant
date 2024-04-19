@@ -1,13 +1,16 @@
 const bot = require('./bot');
 const buttons = require('./helpers/buttons');
 const { getIdeaById } = require('../db/service/ideaService');
-const { getUserById } = require('../db/service/userService');
+const { getUserById, getUsersCount } = require('../db/service/userService');
 const { getVideoById } = require('../db/service/videoService');
+const { getSubscriptionsCount } = require('../db/service/subscriptionService');
 
 const group = {
   id: -1001950946438,
+  general: 1,
   ideas: 2,
   answers: 3,
+  subscriptions: 77,
 }
 
 const sendVideoToBot = async (chatId, videoId, options = {caption: ''}) => {
@@ -22,10 +25,18 @@ const sendVideoToBot = async (chatId, videoId, options = {caption: ''}) => {
 const sendSubscriberOutside = async (expert, username, btns = {}) => {
   try {
     const message = `У @${expert.username} новый #подписчик: @${username}`;
-
     const topicId = !!expert.groupTopicId ? expert.groupTopicId : 1;
     const options = {...btns, message_thread_id: topicId};
     await bot.sendMessage(group.id, message, options);
+
+    const uCount = await getUsersCount();
+    const sCount = await getSubscriptionsCount();
+    const messageGeneral = `<b>Новый заказ!</b>
+Всего подписчиков: ${uCount}
+Платных: ${sCount}
+`
+    const optionsGeneral = {message_thread_id: group.general, parse_mode: 'HTML'}
+    await bot.sendMessage(group.id, messageGeneral, optionsGeneral);
   } catch (error) {
     console.error('Не удалось отправить инфорамацию о подписчике эксперта в группу:', error);
   }
