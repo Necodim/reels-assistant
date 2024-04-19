@@ -108,8 +108,8 @@ const getLeastFrequentExpert = async () => {
       { $sort: { subscriptionCount: 1 } }
     ]);
 
-    const adminIds = adminUsers.map(user => user.id);
-    const filteredExperts = allExperts.filter(user => !adminIds.includes(user.chatId));
+    const adminIds = adminUsers.map(user => user._id);
+    const filteredExperts = allExperts.filter(user => !adminIds.includes(user._id));
 
     if (filteredExperts.length > 0) {
       const minCount = allExperts[0].subscriptionCount;
