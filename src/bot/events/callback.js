@@ -11,47 +11,20 @@ module.exports = async (callbackQuery) => {
   await updateUserState(chatId, '');
 
   switch (data) {
-    case 'home':
-      await callback.home(callbackQuery);
-      break;
-    case 'sendVideo':
-      await callback.sendVideo(callbackQuery);
-      break;
-    case 'getIdea':
-      await callback.getIdea(callbackQuery);
-      break;
-    case 'favrt':
-      await callback.favorite(callbackQuery);
-      break;
-    case 'getvd':
-      await callback.sendMeVideo(callbackQuery);
-      break;
-    case 'prchs':
-      await callback.purchase(callbackQuery);
-      break;
-    case 'subscription':
-      await callback.createSubscription(callbackQuery);
-      break;
-    case 'getsb':
-      await callback.getSubscription(callbackQuery);
+    case 'about':
+      await callback.aboutExpert(callbackQuery);
       break;
     case 'cnlsb':
       await callback.cancelSubscription(callbackQuery);
+      break;
+    case 'cnlve':
+      await callback.cancelVideoEvaluate(callbackQuery);
       break;
     case 'createIdea':
       await callback.createIdea(callbackQuery);
       break;
     case 'dfclt':
       await callback.difficulty(callbackQuery);
-      break;
-    case 'hshtg':
-      await callback.hashtag(callbackQuery);
-      break;
-    case 'getVideo':
-      await callback.getVideo(callbackQuery);
-      break;
-    case 'cnlve':
-      await callback.cancelVideoEvaluate(callbackQuery);
       break;
     case 'evalt':
       switch (action) {
@@ -67,6 +40,47 @@ module.exports = async (callbackQuery) => {
           break;
       }
       break;
+    case 'favrt':
+      await callback.favorite(callbackQuery);
+      break;
+    case 'getIdea':
+      await callback.getIdea(callbackQuery);
+      break;
+    case 'getsb':
+      await callback.getSubscription(callbackQuery);
+      break;
+    case 'getvd':
+      await callback.sendMeVideo(callbackQuery);
+      break;
+    case 'getVideo':
+      await callback.getVideo(callbackQuery);
+      break;
+    case 'home':
+      await callback.home(callbackQuery);
+      break;
+    case 'hshtg':
+      await callback.hashtag(callbackQuery);
+      break;
+    case 'outsd':
+      switch (action) {
+        case 'del':
+          await callback.outsideMessageDelete(callbackQuery);
+          break;
+        default:
+          console.log(`Неизвестный action (${action}) для callback_data_query: ${data}`);
+          await bot.sendMessage(chatId, `Неизвестный action (${action}) для callback_data_query: ${data}`);
+          break;
+      }
+      break;
+    case 'prchs':
+      await callback.purchase(callbackQuery);
+      break;
+    case 'send2':
+      await callback.sendTo(callbackQuery);
+      break;
+    case 'sendVideo':
+      await callback.sendVideo(callbackQuery);
+      break;
     case 'stngs':
       switch (action) {
         case 'user':
@@ -81,19 +95,8 @@ module.exports = async (callbackQuery) => {
           break;
       }
       break;
-    case 'about':
-      await callback.aboutExpert(callbackQuery);
-      break;
-    case 'outsd':
-      switch (action) {
-        case 'del':
-          await callback.outsideMessageDelete(callbackQuery);
-          break;
-        default:
-          console.log(`Неизвестный action (${action}) для callback_data_query: ${data}`);
-          await bot.sendMessage(chatId, `Неизвестный action (${action}) для callback_data_query: ${data}`);
-          break;
-      }
+    case 'subscription':
+      await callback.createSubscription(callbackQuery);
       break;
     case 'support':
       await callback.support(callbackQuery);

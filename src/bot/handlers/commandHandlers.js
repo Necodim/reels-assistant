@@ -84,6 +84,21 @@ const expert = async (msg) => {
   }
 };
 
+const send = async (msg) => {
+  const chatId = msg.chat.id;
+  const message = 'Я могу отправить сообщение от своего имени пользователяю. Кому вы хотите отправить сообщение? Напишите его никнейм в виде: @snezone';
+  const options = {reply_parameters: {message_id: msg.message_id}, reply_markup: {inline_keyboard: [buttons.homeButton], force_reply: true, input_field_placeholder: '@username'}};
+
+  if (adminUsers.map(user => user.id).indexOf(chatId) !== -1) {
+    try {
+      await updateUserState(chatId, 'awaitUsernameToSendMessage')
+      await bot.sendMessage(chatId, message, options);
+    } catch (error) {
+      console.log('/test error:', error)
+    }
+  }
+};
+
 const snezone = async (msg) => {
   const chatId = msg.chat.id;
   const options = buttons.home();
@@ -110,7 +125,7 @@ const snezone = async (msg) => {
       console.log('Не удалось сделать пользователя экспертом или разжаловать его:', error)
     }
   }
-}
+};
 
 const test = async (msg) => {
   const chatId = msg.chat.id;
@@ -131,13 +146,14 @@ const test = async (msg) => {
       console.log('/test error:', error)
     }
   }
-}
+};
 
 module.exports = {
   start,
   home,
   help,
   expert,
+  send,
   snezone,
   test,
 };

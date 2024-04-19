@@ -31,6 +31,12 @@ const checkUserState = async (msg) => {
       case 'aboutAwaiting':
         await state.aboutAwaiting(msg);
         break;
+      case 'awaitUsernameToSendMessage':
+        await state.awaitUsernameToSendMessage(msg);
+        break;
+      case 'awaitMessageToSendMessage':
+        await state.awaitMessageToSendMessage(msg);
+        break;
       default:
         await bot.sendMessage(chatId, `Неизвестный user.state (${user.state})`); // исправить на проде
         break;
@@ -54,6 +60,9 @@ const checkCommand = async (msg) => {
       break;
     case 'expert':
       await command.expert(msg);
+      break;
+    case 'send':
+      await command.send(msg);
       break;
     case 'snezone':
       await command.snezone(msg);

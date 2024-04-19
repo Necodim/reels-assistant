@@ -179,6 +179,7 @@ module.exports = {
   replyMarkup,
   mainMenu,
   home,
+  homeButton,
   cancel,
   purchase,
   difficulty,

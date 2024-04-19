@@ -3,7 +3,7 @@ const { sendVideoToBot, sendIdeaOutside, sendAnswerOutside } = require('../send'
 const buttons = require('../helpers/buttons');
 const products = require('../helpers/products');
 const { findHashtagByNumber } = require('../helpers/hashtags');
-const { getUser, updateUserState, getUserByChatId, getUserById } = require('../../db/service/userService');
+const { getUser, updateUserState, getUserByChatId, getUserById, getUserByUsername } = require('../../db/service/userService');
 const { getIdeaById, updateIdeaById, deleteIdeaById } = require('../../db/service/ideaService');
 const { checkDailyLimit, fetchIdeaForUser } = require('../../db/service/userIdeasService');
 const { createFavoriteIdea } = require('../../db/service/favoriteIdeaService');
@@ -435,6 +435,19 @@ const aboutExpert = async (callbackQuery) => {
   }
 }
 
+const sendTo = async (callbackQuery) => {
+  const chatId = callbackQuery.message.chat.id;
+  const username = callbackQuery.data.split(':')[1];
+  console.log(callbackQuery)
+
+  try {
+    const user = await getUserByUsername(username);
+    console.log(user)
+  } catch (error) {
+    handleError(error, callbackQuery);
+  }
+}
+
 const outsideMessageDelete = async (callbackQuery) => {
   const chatId = callbackQuery.message.chat.id;
   const ideaId = callbackQuery.data.split(':')[2];
@@ -497,6 +510,7 @@ module.exports = {
   settingsExpert,
   aboutExpert,
 
+  sendTo,
   outsideMessageDelete,
   support,
   test,

@@ -140,25 +140,57 @@ const aboutAwaiting = async (msg) => {
   const message1 = `Отлично, вот ваша информация «Обо мне»:
 <blockquote>${text}</blockquote>
 Изменить её можно в соответствующем разделе в ⚙️ Настройках.`
-const options1 = {parse_mode: 'HTML'};
-const options2 = {...buttons.mainMenu('expert')};
+  const options1 = {parse_mode: 'HTML'};
+  const options2 = {...buttons.mainMenu('expert')};
 
-try {
-  const user = await upsertUser(msg, { about: text });
-  await updateUserState(chatId, '');
-  await bot.sendMessage(chatId, message1, options1);
-  await bot.sendChatAction(chatId, 'typing');
-  const videos = findUnreviewedVideosByExpert(user._id);
-  let message2 = 'А теперь можете начать генерить идеи. Как только у вас появится новый подписчик, я сообщу об этом!'
-  if (videos.length) {
-    message2 += ` Кстати, у вас есть неоценённые ролики (${videos.length} шт.) 👏`;
-  } else {
-    message2 += ' Если подписчик пришлёт вам ролик на оценку, я также обязательно пришлю вам уведомление 🫡';
-  }
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  await bot.sendMessage(chatId, message2, options2);
+  try {
+    const user = await upsertUser(msg, { about: text });
+    await updateUserState(chatId, '');
+    await bot.sendMessage(chatId, message1, options1);
+    await bot.sendChatAction(chatId, 'typing');
+    const videos = findUnreviewedVideosByExpert(user._id);
+    let message2 = 'А теперь можете начать генерить идеи. Как только у вас появится новый подписчик, я сообщу об этом!'
+    if (videos.length) {
+      message2 += ` Кстати, у вас есть неоценённые ролики (${videos.length} шт.) 👏`;
+    } else {
+      message2 += ' Если подписчик пришлёт вам ролик на оценку, я также обязательно пришлю вам уведомление 🫡';
+    }
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    await bot.sendMessage(chatId, message2, options2);
   } catch (error) {
     console.error('Не удалось записать информацию об эксперте:', error)
+  }
+}
+
+const awaitUsernameToSendMessage = async (msg) => {
+  const chatId = msg.chat.id;
+  const username = msg.text;
+  const isUsername = /^@[a-zA-Z\d_]{5,32}$/gi.test(username);
+  const state = isUsername ? 'awaitMessageToSendMessage' : 'awaitUsernameToSendMessage';
+  const message = isUsername ? `Отлично! Я отправлю сообщение пользователю ${username}, с этим определились. Теперь пришлите мне сообщение, которое необходимо отправить. Это может быть как просто текст, так и видео с описание, изображение или что-то ещё.` : 'Пришлите, пожалуйста никнейм пользователя, которому хотите отправить сообщение, в виде: @username';
+  const options = isUsername ? {reply_parameters: {message_id: msg.message_id}, reply_markup: {inline_keyboard: [buttons.homeButton], force_reply: true, input_field_placeholder: `Ваше сообщение пользователю ${username}`}} : buttons.home();
+
+  try {
+    await updateUserState(chatId, state);
+    const botMessage = await bot.sendMessage(chatId, message, options);
+    console.log(botMessage)
+  } catch (error) {
+    console.error('Не удалось принять никнейм пользователя, которому будет отправлено сообщение:', error)
+  }
+}
+
+const awaitMessageToSendMessage = async (msg) => {
+  const chatId = msg.chat.id;
+  console.log(msg)
+  const message = 'Спасибо. Пока тестирую, ничего никуда не отправилось.'
+  const options = {reply_parameters: {message_id: msg.message_id}, reply_markup: {inline_keyboard: [[{ text: '✉️ Да, отправить', callback_data: `send2:${username}` }], buttons.homeButton], force_reply: false}};
+
+  try {
+    await updateUserState(chatId, '');
+    const botMessage = await bot.sendMessage(chatId, message, options);
+    console.log(botMessage)
+  } catch (error) {
+    console.error('Не удалось принять сообщение для пользователя:', error)
   }
 }
 
@@ -170,4 +202,6 @@ module.exports = {
   hashtagAwaiting,
   evaluateAwaiting,
   aboutAwaiting,
+  awaitUsernameToSendMessage,
+  awaitMessageToSendMessage,
 }

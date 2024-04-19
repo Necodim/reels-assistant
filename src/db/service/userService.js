@@ -38,10 +38,9 @@ const getUserByChatId = async (chatId) => {
 }
 
 const getUserByUsername = async (username) => {
-  const chatId = msg.from.id;
-
   try {
-    const user = await User.findOne({ username: username });
+    const regex = new RegExp(`^${username.replace('@', '')}$`, 'i');
+    const user = await User.findOne({ username: { $regex: regex } });
     return user;
   } catch (error) {
     console.error(`В функции getUser пользователь с username ${username} не найден:`, error);
