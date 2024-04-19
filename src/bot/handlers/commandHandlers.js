@@ -127,7 +127,7 @@ const test = async (msg) => {
   if (adminUsers.map(user => user.id).indexOf(chatId) !== -1) {
     try {
       await bot.sendMessage(chatId, message, options);
-      await bot.sendMessage(-1001950946438, '<b>test</b> message', {message_thread_id: 1, parse_mode: 'HTML'})
+      await bot.sendMessage(-1001950946438, '<b>test</b> message', {parse_mode: 'HTML'})
     } catch (error) {
       console.log('/test error:', error)
     }
