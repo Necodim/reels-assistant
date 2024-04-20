@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   textInputs.forEach(input => {
     input.addEventListener('focus', () => {
-      formWrapper.style.height = (pageHeight + 250) + 'px';
+      formWrapper.style.height = (pageHeight + 275) + 'px';
     });
     input.addEventListener('blur', () => {
       setTimeout(() => {
@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   inputPhone.addEventListener('input', (e) => {
-    let value = e.target.value.replace(/^\+[1-9]\d{6,14}$/, '');
+    let value = e.target.value.replace(/^\+[1-9]\d{6,14}$/g, '');
     if (value === '') {
       value = '';
     } else if (value.startsWith('8') || value.startsWith('7') && !value.startsWith('+7')) {
