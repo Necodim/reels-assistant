@@ -250,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.checkbox-box[tabindex="0"]').focus();
         const text = checkboxes[i].name === 'agreement-offer' ? 'Для оформления подписки необходимо подтвердить, что вы ознакомились с офертой и даёте своё согласие на обработку персональных данных.' : 'Для оформления подписки необходимо ознакомиться со стоиость подписки и периодичностью списания и дать своё согласие.';
         tg.showAlert(text);
-        break;
+        return false;
       }
     }
 
