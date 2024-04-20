@@ -238,9 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  submit.addEventListener('click', e => e.preventDefault());
-
-  form.addEventListener('submit', (event) => {
+  const submitForm = (event) => {
     event.preventDefault();
 
     for (var i = 0; i < checkboxes.length; i++) {
@@ -277,5 +275,15 @@ document.addEventListener('DOMContentLoaded', () => {
       theme: tg.colorScheme === 'dark' ? 'modern' : 'mini'
     }
     pay(data, tg);
+  }
+
+  submit.addEventListener('click', (e) => {
+    e.preventDefault();
+    submitForm(e);
+  });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    submitForm(e);
   });
 });
