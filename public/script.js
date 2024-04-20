@@ -123,9 +123,12 @@ const validatePhone = (input) => {
 document.addEventListener('DOMContentLoaded', () => {
   const tg = window.Telegram.WebApp;
   const form = document.getElementById('paymentForm');
+  const formWrapper = document.querySelector('.form-wrapper');
+  const textInputs = form.querySelectorAll('input[type="text"], input[type="tel"]');
   const inputFirstName = document.getElementById('firstName');
   const inputLastName = document.getElementById('lastName');
   const inputPhone = document.getElementById('phone');
+  const checkboxes = form.querySelectorAll('input[type="checkbox"]');
 
   const setPaymentData = () => {
     const data = getPaymentData();
@@ -165,29 +168,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let pageHeight = 0;
   const findHighestNode = (nodesList) => {
-      for (var i = nodesList.length - 1; i >= 0; i--) {
-          if (nodesList[i].scrollHeight && nodesList[i].clientHeight) {
-              var elHeight = Math.max(nodesList[i].scrollHeight, nodesList[i].clientHeight);
-              pageHeight = Math.max(elHeight, pageHeight);
-          }
-          if (nodesList[i].childNodes.length) findHighestNode(nodesList[i].childNodes);
+    for (var i = nodesList.length - 1; i >= 0; i--) {
+      if (nodesList[i].scrollHeight && nodesList[i].clientHeight) {
+        var elHeight = Math.max(nodesList[i].scrollHeight, nodesList[i].clientHeight);
+        pageHeight = Math.max(elHeight, pageHeight);
       }
+      if (nodesList[i].childNodes.length) findHighestNode(nodesList[i].childNodes);
+    }
   }
   findHighestNode(document.documentElement.childNodes);
 
   inputFirstName.value = getUserData().firstName;
   inputLastName.value = getUserData().lastName;
 
-  inputPhone.addEventListener('input', (e) => e.target.value = e.target.value.replace(/[^\d+]/g, ''));
-  inputPhone.addEventListener('focus', () => {
-    document.querySelector('.form-wrapper').style.height = (pageHeight + 400) + 'px';
-  });
-  inputPhone.addEventListener('blur', () => {
-    document.querySelector('.form-wrapper').style.height = '';
+  textInputs.forEach(input => {
+    input.addEventListener('focus', () => {
+      formWrapper.style.height = (pageHeight + 250) + 'px';
+    });
+    input.addEventListener('blur', () => {
+      formWrapper.scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => {
+        formWrapper.style.height = '';
+      }, 100);
+    });
   });
 
+  inputPhone.addEventListener('input', (e) => {
+    let value = e.target.value.replace(/[^\d+]/g, '');
+    if (value.startsWith('8') || value.startsWith('7') && !value.startsWith('+7')) {
+      value = '+7' + value.substring(1);
+    }
+    e.target.value = value;
+  });
 
-  document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+  checkboxes.forEach(checkbox => {
     checkbox.addEventListener('input', (e) => {
       const customCb = e.target.parentNode.querySelector('.checkbox-box');
       customCb.setAttribute('aria-checked', e.target.checked);
@@ -196,18 +210,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.addEventListener('click', function (event) {
     const inputs = document.querySelectorAll('.form-wrapper input');
-    const labels = document.querySelectorAll('.form-wrapper label');
+    // const labels = document.querySelectorAll('.form-wrapper label');
     let isClickedInside = false;
     inputs.forEach(input => {
       if (input.contains(event.target)) {
         isClickedInside = true;
       }
     });
-    labels.forEach(label => {
-      if (label.contains(event.target)) {
-        isClickedInside = true;
-      }
-    });
+    // labels.forEach(label => {
+    //   if (label.contains(event.target)) {
+    //     isClickedInside = true;
+    //   }
+    // });
     if (!isClickedInside) {
       inputs.forEach(input => {
         input.blur();
@@ -218,7 +232,6 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', (event) => {
     event.preventDefault();
 
-    var checkboxes = form.querySelectorAll('input[type="checkbox"]');
     for (var i = 0; i < checkboxes.length; i++) {
       if (checkboxes[i].required && !checkboxes[i].checked) {
         event.preventDefault();
