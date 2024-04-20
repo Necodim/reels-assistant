@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   inputPhone.addEventListener('input', (e) => {
-    let value = e.target.value.replace(/^\+[1-9]\d{6,14}$/g, '');
+    let value = e.target.value.replace(/[^\d+]/g, '');
     if (value === '') {
       value = '';
     } else if (value.startsWith('8') || value.startsWith('7') && !value.startsWith('+7')) {
