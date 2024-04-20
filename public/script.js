@@ -186,12 +186,14 @@ document.addEventListener('DOMContentLoaded', () => {
       formWrapper.style.height = (pageHeight + 250) + 'px';
     });
     input.addEventListener('blur', () => {
-      if (document.activeElement.tagName.toLocaleLowerCase() !== 'input') {
-        formWrapper.scrollIntoView({ behavior: 'smooth' });
-        setTimeout(() => {
-          formWrapper.style.height = '';
-        }, 100);
-      }
+      setTimeout(() => {
+        if (document.activeElement.tagName.toLocaleLowerCase() !== 'input') {
+          formWrapper.scrollIntoView({ behavior: 'smooth' });
+          setTimeout(() => {
+            formWrapper.style.height = '';
+          }, 100);
+        }
+      }, 100);
     });
   });
 
@@ -200,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (value.startsWith('8') || value.startsWith('7') && !value.startsWith('+7')) {
       value = '+7' + value.substring(1);
     } else if (!value.startsWith('+')) {
-      value = '+' + value.substring(1);
+      value = '+' + value;
     }
     e.target.value = value;
   });
