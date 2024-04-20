@@ -72,34 +72,23 @@ const pay = (data, tg) => {
   )
 }
 
-const validateName = (input) => {
+const validateName = (input, type) => {
   const name = input.value;
   const regex = /^[a-zA-Zа-яА-ЯёЁüÜöÖäÄß\s'-]+$/;
   if (!name) {
-    return { valid: false, message: 'Имя не может быть пустым.' };
+    const text = type === 'name' ? 'Имя не может быть пустым.' : 'Фамилия не может быть пустой.';
+    return { valid: false, message: text };
   }
   if (name.length > 50) {
-    return { valid: false, message: 'Имя не должно превышать 50 символов.' };
+    const text = type === 'name' ? 'Имя не должно превышать 50 символов.' : 'Фамилия не должна превышать 50 символов.';
+    return { valid: false, message: text };
   }
   if (!regex.test(name)) {
-    return { valid: false, message: 'Имя содержит недопустимые символы.' };
+    const text = type === 'name' ? 'Имя содержит недопустимые символы.' : 'Фамилия содержит недопустимые символы.';
+    return { valid: false, message: text };
   }
-  return { valid: true, message: 'Имя валидно.' };
-}
-
-const validateSurname = (input) => {
-  const name = input.value;
-  const regex = /^[a-zA-Zа-яА-ЯёЁüÜöÖäÄß\s'-]+$/;
-  if (!name) {
-    return { valid: false, message: 'Фамилия не может быть пустой.' };
-  }
-  if (name.length > 50) {
-    return { valid: false, message: 'Фамилия не должна превышать 50 символов.' };
-  }
-  if (!regex.test(name)) {
-    return { valid: false, message: 'Фамилия содержит недопустимые символы.' };
-  }
-  return { valid: true, message: 'Фамилия валидна.' };
+  const text = type === 'name' ? 'Имя валидно.' : 'Фамилия валидна.';
+  return { valid: true, message: text };
 }
 
 const validatePhone = (input) => {
@@ -250,14 +239,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    if (!validateName(inputFirstName).valid && !validateSurname(inputLastName).valid && !validatePhone(inputPhone).valid) {
+    if (!validateName(inputFirstName, 'name').valid && !validateName(inputLastName, 'surname').valid && !validatePhone(inputPhone).valid) {
       tg.showAlert('Заполните все поля формы. Это необходимо для проведения платежа.');
       return false;
-    } else if (!validateName(inputFirstName).valid) {
-      tg.showAlert(validateName(inputFirstName).message, () => inputFirstName.focus());
+    } else if (!validateName(inputFirstName, 'name').valid) {
+      tg.showAlert(validateName(inputFirstName, 'name').message, () => inputFirstName.focus());
       return false;
-    } else if (!validateSurname(inputLastName).valid) {
-      tg.showAlert(validateSurname(inputLastName.message), () => inputLastName.focus());
+    } else if (!validateName(inputLastName, 'surname').valid) {
+      tg.showAlert(validateName(inputLastName, 'surname').message, () => inputLastName.focus());
       return false;
     } else if (!validatePhone(inputPhone).valid) {
       tg.showAlert(validatePhone(inputPhone).message, () => inputPhone.focus());
