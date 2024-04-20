@@ -230,16 +230,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const submitForm = (event) => {
     event.preventDefault();
 
-    for (var i = 0; i < checkboxes.length; i++) {
-      if (checkboxes[i].required && !checkboxes[i].checked) {
-        event.preventDefault();
-        document.querySelector('.checkbox-box[tabindex="0"]').focus();
-        const text = checkboxes[i].name === 'agreement-offer' ? 'Для оформления подписки необходимо подтвердить, что вы ознакомились с офертой и даёте своё согласие на обработку персональных данных.' : 'Для оформления подписки необходимо ознакомиться со стоиость подписки и периодичностью списания и дать своё согласие.';
-        tg.showAlert(text);
-        break;
-      }
-    }
-
     if (!validateName(inputFirstName, 'name').valid && !validateName(inputLastName, 'surname').valid && !validatePhone(inputPhone).valid) {
       tg.showAlert('Заполните все поля формы. Это необходимо для проведения платежа.');
       return false;
@@ -252,6 +242,16 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (!validatePhone(inputPhone).valid) {
       tg.showAlert(validatePhone(inputPhone).message, () => inputPhone.focus());
       return false;
+    }
+
+    for (var i = 0; i < checkboxes.length; i++) {
+      if (checkboxes[i].required && !checkboxes[i].checked) {
+        event.preventDefault();
+        document.querySelector('.checkbox-box[tabindex="0"]').focus();
+        const text = checkboxes[i].name === 'agreement-offer' ? 'Для оформления подписки необходимо подтвердить, что вы ознакомились с офертой и даёте своё согласие на обработку персональных данных.' : 'Для оформления подписки необходимо ознакомиться со стоиость подписки и периодичностью списания и дать своё согласие.';
+        tg.showAlert(text);
+        break;
+      }
     }
 
     const data = {
