@@ -234,7 +234,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (checkboxes[i].required && !checkboxes[i].checked) {
         event.preventDefault();
         document.querySelector('.checkbox-box[tabindex="0"]').focus();
-        tg.showAlert('Для оформления подписки необходимо дать своё согласие.');
+        const text = checkboxes[i].name === 'agreement-offer' ? 'Для оформления подписки необходимо подтвердить, что вы ознакомились с офертой и даёте своё согласие на обработку персональных данных.' : 'Для оформления подписки необходимо ознакомиться со стоиость подписки и периодичностью списания и дать своё согласие.';
+        tg.showAlert(text);
         break;
       }
     }
