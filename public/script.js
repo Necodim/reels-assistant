@@ -163,11 +163,52 @@ document.addEventListener('DOMContentLoaded', () => {
   tg.enableClosingConfirmation();
   tg.BackButton.hide();
 
+  let pageHeight = 0;
+  const findHighestNode = (nodesList) => {
+      for (var i = nodesList.length - 1; i >= 0; i--) {
+          if (nodesList[i].scrollHeight && nodesList[i].clientHeight) {
+              var elHeight = Math.max(nodesList[i].scrollHeight, nodesList[i].clientHeight);
+              pageHeight = Math.max(elHeight, pageHeight);
+          }
+          if (nodesList[i].childNodes.length) findHighestNode(nodesList[i].childNodes);
+      }
+  }
+  findHighestNode(document.documentElement.childNodes);
+
+  let initialInnerHeight = window.innerHeight;
+
+  // Функция для определения высоты клавиатуры
+  const calculateKeyboardHeight = () => {
+    const currentInnerHeight = window.innerHeight;
+    const keyboardHeight = initialInnerHeight - currentInnerHeight;
+    return keyboardHeight;
+  }
+
+  // Отслеживание событий, которые могут вызвать появление клавиатуры
+  window.addEventListener('resize', () => {
+    calculateKeyboardHeight();
+  });
+
+  // Сброс исходной высоты при изменении ориентации устройства
+  window.addEventListener('orientationchange', () => {
+    initialInnerHeight = window.innerHeight;
+    setTimeout(calculateKeyboardHeight, 100); // Задержка нужна для получения точных размеров после изменения ориентации
+  });
+
   inputFirstName.value = getUserData().firstName;
   inputLastName.value = getUserData().lastName;
 
 
   inputPhone.addEventListener('input', (e) => e.target.value = e.target.value.replace(/[^\d+]/g, ''));
+  inputPhone.addEventListener('focus', () => {
+    const keyboardHeight = calculateKeyboardHeight();
+    document.body.style.height = pageHeight + keyboardHeight + 'px';
+  });
+  inputPhone.addEventListener('blur', () => {
+    document.body.style.height = '';
+  });
+
+
   document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
     checkbox.addEventListener('input', (e) => {
       const customCb = e.target.parentNode.querySelector('.checkbox-box');
