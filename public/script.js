@@ -186,10 +186,12 @@ document.addEventListener('DOMContentLoaded', () => {
       formWrapper.style.height = (pageHeight + 250) + 'px';
     });
     input.addEventListener('blur', () => {
-      formWrapper.scrollIntoView({ behavior: 'smooth' });
-      setTimeout(() => {
-        formWrapper.style.height = '';
-      }, 100);
+      if (document.activeElement.tagName.toLocaleLowerCase() !== 'input') {
+        formWrapper.scrollIntoView({ behavior: 'smooth' });
+        setTimeout(() => {
+          formWrapper.style.height = '';
+        }, 100);
+      }
     });
   });
 
@@ -197,6 +199,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let value = e.target.value.replace(/[^\d+]/g, '');
     if (value.startsWith('8') || value.startsWith('7') && !value.startsWith('+7')) {
       value = '+7' + value.substring(1);
+    } else if (!value.startsWith('+')) {
+      value = '+' + value.substring(1);
     }
     e.target.value = value;
   });
@@ -210,18 +214,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.addEventListener('click', function (event) {
     const inputs = document.querySelectorAll('.form-wrapper input');
-    // const labels = document.querySelectorAll('.form-wrapper label');
+    const labels = document.querySelectorAll('.form-wrapper label');
     let isClickedInside = false;
     inputs.forEach(input => {
       if (input.contains(event.target)) {
         isClickedInside = true;
       }
     });
-    // labels.forEach(label => {
-    //   if (label.contains(event.target)) {
-    //     isClickedInside = true;
-    //   }
-    // });
+    labels.forEach(label => {
+      if (label.contains(event.target)) {
+        isClickedInside = true;
+      }
+    });
     if (!isClickedInside) {
       inputs.forEach(input => {
         input.blur();
