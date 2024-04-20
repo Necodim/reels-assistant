@@ -1,10 +1,12 @@
 const adminUsers = [
   {
-    id: 82431798,
+    _id: '66144363ae03c21ef0fc6088',
+    chatId: 82431798,
     username: 'solowey'
   },
   {
-    id: 89141992,
+    _id: '66138a6064c6f5af849daeee',
+    chatId: 89141992,
     username: 'snezone'
   }
 ];

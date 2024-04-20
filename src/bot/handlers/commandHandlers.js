@@ -73,7 +73,7 @@ const expert = async (msg) => {
   try {
     await updateUserState(chatId, 'forwardExpertWaiting');
     let message;
-    if (adminUsers.map(user => user.id).indexOf(chatId) !== -1) {
+    if (adminUsers.map(user => user.chatId).indexOf(chatId) !== -1) {
       message = 'Перешлите мне любое сообщение пользователя, которого вы хотите сделать экспертом или разжаловать.';
     } else {
       message = 'Вам не доступен этот функционал.';
@@ -89,7 +89,7 @@ const send = async (msg) => {
   const message = 'Я могу отправить сообщение от своего имени пользователяю. Кому вы хотите отправить сообщение? Напишите его никнейм в виде: @snezone';
   const options = {reply_markup: {force_reply: true, input_field_placeholder: '@username'}};
 
-  if (adminUsers.map(user => user.id).indexOf(chatId) !== -1) {
+  if (adminUsers.map(user => user.chatId).indexOf(chatId) !== -1) {
     try {
       await updateUserState(chatId, 'awaitUsernameToSendMessage')
       await bot.sendMessage(chatId, message, options);
@@ -103,7 +103,7 @@ const snezone = async (msg) => {
   const chatId = msg.chat.id;
   const options = buttons.home();
 
-  if (adminUsers.map(user => user.id).indexOf(chatId) !== -1) {
+  if (adminUsers.map(user => user.chatId).indexOf(chatId) !== -1) {
     try {
       const user = await getUser(msg);
       const message = `Ваша роль изменена. Теперь вы ${user.isExpert ? 'обычный пользователь' : 'эксперт'}!`;
@@ -139,7 +139,7 @@ const test = async (msg) => {
     }
   };
 
-  if (adminUsers.map(user => user.id).indexOf(chatId) !== -1) {
+  if (adminUsers.map(user => user.chatId).indexOf(chatId) !== -1) {
     try {
       await bot.sendMessage(chatId, message, options);
     } catch (error) {
