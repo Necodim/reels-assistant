@@ -175,37 +175,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   findHighestNode(document.documentElement.childNodes);
 
-  let initialInnerHeight = window.innerHeight;
-
-  // Функция для определения высоты клавиатуры
-  const calculateKeyboardHeight = () => {
-    const currentInnerHeight = window.innerHeight;
-    const keyboardHeight = initialInnerHeight - currentInnerHeight;
-    return keyboardHeight;
-  }
-
-  // Отслеживание событий, которые могут вызвать появление клавиатуры
-  window.addEventListener('resize', () => {
-    calculateKeyboardHeight();
-  });
-
-  // Сброс исходной высоты при изменении ориентации устройства
-  window.addEventListener('orientationchange', () => {
-    initialInnerHeight = window.innerHeight;
-    setTimeout(calculateKeyboardHeight, 100); // Задержка нужна для получения точных размеров после изменения ориентации
-  });
-
   inputFirstName.value = getUserData().firstName;
   inputLastName.value = getUserData().lastName;
 
-
   inputPhone.addEventListener('input', (e) => e.target.value = e.target.value.replace(/[^\d+]/g, ''));
   inputPhone.addEventListener('focus', () => {
-    const keyboardHeight = calculateKeyboardHeight();
-    document.body.style.height = pageHeight + keyboardHeight + 'px';
+    document.querySelector('.form-wrapper').style.height = (pageHeight + 400) + 'px';
   });
   inputPhone.addEventListener('blur', () => {
-    document.body.style.height = '';
+    document.querySelector('.form-wrapper').style.height = '';
   });
 
 
