@@ -123,6 +123,7 @@ const validatePhone = (input) => {
 document.addEventListener('DOMContentLoaded', () => {
   const tg = window.Telegram.WebApp;
   const form = document.getElementById('paymentForm');
+  const submit = form.querySelector('[type="submit"]');
   const formWrapper = document.querySelector('.form-wrapper');
   const textInputs = form.querySelectorAll('input[type="text"], input[type="tel"]');
   const inputFirstName = document.getElementById('firstName');
@@ -198,8 +199,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   inputPhone.addEventListener('input', (e) => {
-    let value = e.target.value.replace(/[^\d+]/g, '');
-    if (value.startsWith('8') || value.startsWith('7') && !value.startsWith('+7')) {
+    let value = e.target.value.replace(/^\+[1-9]\d{6,14}$/, '');
+    if (value === '') {
+      value = '';
+    } else if (value.startsWith('8') || value.startsWith('7') && !value.startsWith('+7')) {
       value = '+7' + value.substring(1);
     } else if (!value.startsWith('+')) {
       value = '+' + value;
@@ -234,6 +237,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
   });
+
+  submit.addEventListener('click', e => e.preventDefault());
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
