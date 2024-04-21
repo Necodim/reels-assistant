@@ -182,7 +182,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (document.activeElement.tagName.toLocaleLowerCase() !== 'input') {
           container.scrollIntoView({ behavior: 'smooth', block: 'center' });
           setTimeout(() => {
-            container.style.height = '';
+            container.style.height = pageHeight + 'px';
+            setTimeout(() => {
+              container.style.height = '';
+            }, 100);
           }, 100);
         }
       }, 100);
