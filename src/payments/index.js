@@ -18,13 +18,13 @@ app.use(express.static(path.join(__dirname, '..', '..', 'public')));
 app.get('/', (req, res) => {
   const amount = req.query.amount;
   const name = req.query.name;
+  // const token = req.query.token;
+  // const params = `?amount=${encodeURIComponent(amount)}&name=${encodeURIComponent(name)}&token=${encodeURIComponent(token)}`;
   const params = `?amount=${encodeURIComponent(amount)}&name=${encodeURIComponent(name)}`;
   res.redirect(`/index.html${params}`);
 });
 
 app.get('/offer', (req, res) => {
-  // res.redirect('/offer.html');
-  
   res.sendFile(path.join(__dirname, '..', '..', 'public', '/offer.html'));
 });
 
@@ -32,6 +32,8 @@ app.get('/cloudpayments', (req, res) => {
   try {
     const amount = req.query.amount;
     const name = req.query.name;
+    // const token = req.query.token;
+    // const params = `?amount=${encodeURIComponent(amount)}&name=${encodeURIComponent(name)}&token=${encodeURIComponent(token)}`;
     const params = `?amount=${encodeURIComponent(amount)}&name=${encodeURIComponent(name)}`;
     res.redirect(`/index.html${params}`);
   } catch (error) {
@@ -39,14 +41,14 @@ app.get('/cloudpayments', (req, res) => {
   }
 });
 
-app.get('/cloudpayments/success', (req, res) => {
+app.get('/payment/success', (req, res) => {
   console.log('success', req.body);
-  res.status(200).sendFile(path.join(__dirname, 'success.html'));
+  res.sendFile(path.join(__dirname, '..', '..', 'public', 'payment', '/success.html'));
 });
 
-app.get('/cloudpayments/fail', (req, res) => {
+app.get('/payment/fail', (req, res) => {
   console.log('fail', req.body);
-  res.status(200).sendFile(path.join(__dirname, 'fail.html'));
+  res.sendFile(path.join(__dirname, '..', '..', 'public', 'payment', '/fail.html'));
 });
 
 // Обработчик вебхука check
@@ -70,6 +72,7 @@ app.post('/cloudpayments/pay', async (req, res) => {
   if (receivedHmac === calculatedHmac) {
     try {
       const data = getData(req);
+      // const { Data, Amount, SubscriptionId, Token } = data;
       const { Data, Amount, SubscriptionId } = data;
       if (!!Data && !!Amount && !!SubscriptionId) {
         const chatId = JSON.parse(Data).CloudPayments.telegram;
@@ -85,6 +88,7 @@ app.post('/cloudpayments/pay', async (req, res) => {
           subscriptionId: SubscriptionId,
           end: nextMonth(),
           status: 'Active',
+          // token: Token,
         }
         await addSubscription(subscriptionDetails);
         

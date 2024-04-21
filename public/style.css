@@ -16,30 +16,31 @@ a {
   color: var(--tg-theme-link-color, #6963de);
 }
 
-.form-wrapper,
+.container,
 .offer-container {
   width: calc(100% - 16px * 2);
   /* height: auto; */
   padding: 16px;
+  transition: height .1s linear;
 }
 
-.form-wrapper form,
+.container form,
 .offer-wrapper {
   padding: 16px;
   background-color: var(--tg-theme-secondary-bg-color, #f0f0f0);
   border-radius: 16px;
 }
 
-.form-wrapper .input-block:not(:first-child) {
+.container .input-block:not(:first-child) {
   margin-top: 16px;
 }
-.form-wrapper .input-block {
+.container .input-block {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.form-wrapper input:not([type="checkbox"]) {
+.container input:not([type="checkbox"]) {
   font-size: 16px;
   line-height: 16px;
   color: var(--tg-theme-text-color, #000000);

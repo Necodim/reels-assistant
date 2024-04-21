@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Успешный платёж</title>
+  <link href="../style.css" rel="stylesheet">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Отлично!</h1>
+    <h3>Ваш платёж прошёл успешно</h3>
+    <p>Мини-приложение закроется через <span id="seconds">5</span> сек., и вы снова попадёте в бота.</p>
+    <button type="button" id="button-close">Закрыть</button>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tg = window.Telegram.WebApp;
+      tg.ready()
+      tg.disableClosingConfirmation();
+      tg.BackButton.hide();
+
+      let num = 5;
+      const seconds = document.getElementById('seconds');
+      const interval = setTinterval(() => {
+        if (num >= 0) {
+          seconds.innerHTML = num;
+          num--;
+        } else {
+          clearInterval(interval);
+          tg.close();
+        }
+      });
+
+      const button = document.getElementById('button-close');
+      button.addEventListener('click', () => {
+        tg.close();
+      });
+    });
+  </script>
+</body>
+</html>

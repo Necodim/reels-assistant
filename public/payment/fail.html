@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ошибка при проведении платежа</title>
+  <link href="../style.css" rel="stylesheet">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Ошибка</h1>
+    <h3>Платёж не прошёл</h3>
+    <p>При проведении платежа произошла ошибка. Попробуйте оформить подписку заново. Если проблема сохранится, напишите <a href="https://t.me/snezone">в поддержку</a>.</p>
+    <button type="button" id="button-repeat">Попробовать снова</button>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const tg = window.Telegram.WebApp;
+      tg.ready()
+      tg.disableClosingConfirmation();
+      tg.BackButton.hide();
+
+      let num = 5;
+      const seconds = document.getElementById('seconds');
+      const interval = setTinterval(() => {
+        if (num >= 0) {
+          seconds.innerHTML = num;
+          num--;
+        } else {
+          clearInterval(interval);
+          tg.close();
+        }
+      });
+    });
+
+    const button = document.getElementById('button-repeat');
+      button.addEventListener('click', () => {
+        window.location.replace('/');
+      });
+  </script>
+</body>
+</html>

@@ -47,12 +47,12 @@ const pay = (data, tg) => {
           }
         }
       },
-      // configuration: {
-      //     common: {
-      //         successRedirectUrl: 'https://api.reelsassistant.ru/cloudpayments/success',
-      //         failRedirectUrl: 'https://api.reelsassistant.ru/cloudpayments/fail'
-      //     }
-      // },
+      configuration: {
+        common: {
+          successRedirectUrl: 'https://api.reelsassistant.ru/payment/success',
+          failRedirectUrl: 'https://api.reelsassistant.ru/payment/fail'
+        }
+      },
       payer: {
         firstName: data.user.firstName,
         lastName: data.user.lastName,
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const tg = window.Telegram.WebApp;
   const form = document.getElementById('paymentForm');
   const submit = form.querySelector('[type="submit"]');
-  const formWrapper = document.querySelector('.form-wrapper');
+  const container = document.querySelector('.container');
   const textInputs = form.querySelectorAll('input[type="text"], input[type="tel"]');
   const inputFirstName = document.getElementById('firstName');
   const inputLastName = document.getElementById('lastName');
@@ -130,9 +130,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const amount = urlParams.get('amount');
     const name = urlParams.get('name');
+    // const token = urlParams.get('token');
     const data = {
       amount: parseInt(amount, 10),
-      name: name
+      name: name,
+      // token: token
     }
     return data;
   }
@@ -173,14 +175,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   textInputs.forEach(input => {
     input.addEventListener('focus', () => {
-      formWrapper.style.height = (pageHeight + 275) + 'px';
+      container.style.height = (pageHeight + 275) + 'px';
     });
     input.addEventListener('blur', () => {
       setTimeout(() => {
         if (document.activeElement.tagName.toLocaleLowerCase() !== 'input') {
-          formWrapper.scrollIntoView({ behavior: 'smooth' });
+          container.scrollIntoView({ behavior: 'smooth', block: 'center' });
           setTimeout(() => {
-            formWrapper.style.height = '';
+            container.style.height = '';
           }, 100);
         }
       }, 100);
@@ -207,8 +209,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   document.addEventListener('click', function (event) {
-    const inputs = document.querySelectorAll('.form-wrapper input');
-    const labels = document.querySelectorAll('.form-wrapper label');
+    const inputs = document.querySelectorAll('.container input');
+    const labels = document.querySelectorAll('.container label');
     let isClickedInside = false;
     inputs.forEach(input => {
       if (input.contains(event.target)) {

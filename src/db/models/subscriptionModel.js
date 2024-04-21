@@ -8,6 +8,7 @@ const subscriptionSchema = new mongoose.Schema({
   subscriptionId: String,
   end: Date,
   status: String,
+  // token: String,
 }, {
   timestamps: true
 });
