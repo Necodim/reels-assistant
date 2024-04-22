@@ -60,10 +60,10 @@ const pay = (data, tg) => {
       }
     }, {
     onSuccess: function (options) {
-      tg.close();
+      window.location.replace('https://api.reelsassistant.ru/success');
     },
     onFail: function (reason, options) {
-      //действие при неуспешной оплате
+      window.location.replace('https://api.reelsassistant.ru/fail');
     },
     onComplete: function (paymentResult, options) { //Вызывается как только виджет получает от api.cloudpayments ответ с результатом транзакции.
       //например вызов вашей аналитики Facebook Pixel
