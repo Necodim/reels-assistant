@@ -82,6 +82,10 @@ ${products.text}`;
       await bot.sendMessage(chatId, message, options);
     } else {
       const idea = await fetchIdeaForUser(user._id);
+      if (!!idea && !!idea.message) {
+        const options = buttons.home('getYetIdea');
+        await bot.sendMessage(chatId, idea.message, options);
+      }
       const caption = `${idea.caption}
 
 Сложность: ${idea.difficulty}

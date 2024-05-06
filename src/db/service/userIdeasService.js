@@ -102,7 +102,7 @@ const fetchIdeaForUser = async (userId) => {
   try {
     const newIdea = await findNewIdeaForUser(userId);
     if (!newIdea) {
-      throw new Error('Новые идеи не найдены');
+      return {message: 'Новых идей пока что нет, вы просмотрели всё, что на данный момент придумали наши эксперты. Приходите чуть позже 😉'}
     }
   
     await saveSentIdeaInfo(userId, newIdea._id);
