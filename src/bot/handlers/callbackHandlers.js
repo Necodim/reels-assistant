@@ -217,7 +217,7 @@ const cancelSubscription = async (callbackQuery) => {
   try {
     const subscription = getSubscriptionById(subscriptionId);
     const response = await subscriptionsCancel(subscription.subscriptionId);
-    console.log(response)
+    console.log('unsubscribe:', response)
     if (response.Success) {
       const updatedSubscription = await updateSubscription(subscription._id, { status: response.Success });
       
