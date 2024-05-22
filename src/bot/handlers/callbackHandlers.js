@@ -215,6 +215,9 @@ const cancelSubscription = async (callbackQuery) => {
   console.log(callbackQuery.data);
   
   try {
+    const baseMessage = 'Я сейчас попробую отключить вам подписку. Если у меня не выйдет, вы всегда можете сделать это самостоятельно на странице <a href="https://my.cloudpayments.ru" target="_blank">my.cloudpayments.ru</a>';
+    await bot.sendMessage(chatId, baseMessage, {parse_mode: 'HTML'});
+    
     const subscription = getSubscriptionById(subscriptionId);
     const response = await subscriptionsCancel(subscription.subscriptionId);
     console.log('unsubscribe:', response)
@@ -230,8 +233,8 @@ const cancelSubscription = async (callbackQuery) => {
       // const messageExpert = 'Один из ваших подопечных отменил подписку';
       // await bot.sendMessage(expert.chatId, messageExpert);
     } else {
-      const message = 'Произошла ошибка, попробуйте ещё раз. Если ошибка повторится, обратитесь в поддержку.';
-      const options = buttons.home('support');
+      const message = 'Произошла ошибка, попробуйте ещё раз. Если ошибка повторится, обратитесь в поддержку. Или вы можете самостоятельно отписаться на странице <a href="https://my.cloudpayments.ru" target="_blank">my.cloudpayments.ru</a>';
+      const options = {...buttons.home('support'), parse_mode: 'HTML'};
       await bot.sendMessage(chatId, message, options);
       throw Error('CloudPayments не смог отменить подписку');
     }
